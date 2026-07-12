@@ -18,7 +18,7 @@ export const HomeActivity: React.FC<any> = () => {
 
   const item: Variants = {
     hidden: { opacity: 0, x: 50 },
-    show: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+    show: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
   };
 
   return (
@@ -33,22 +33,25 @@ export const HomeActivity: React.FC<any> = () => {
         >
           <motion.button
             variants={item}
+            whileTap={{ scale: 0.95, opacity: 0.7 }}
             onClick={() => push("CategoryActivity", { category: "Technology" })}
-            className="p-4 bg-blue-100 dark:bg-blue-900 rounded-xl text-left font-semibold active:opacity-70 transition-opacity"
+            className="p-4 bg-blue-100 dark:bg-blue-900 rounded-xl text-left font-semibold"
           >
             Technology
           </motion.button>
           <motion.button
             variants={item}
+            whileTap={{ scale: 0.95, opacity: 0.7 }}
             onClick={() => push("CategoryActivity", { category: "Lifestyle" })}
-            className="p-4 bg-green-100 dark:bg-green-900 rounded-xl text-left font-semibold active:opacity-70 transition-opacity"
+            className="p-4 bg-green-100 dark:bg-green-900 rounded-xl text-left font-semibold"
           >
             Lifestyle
           </motion.button>
           <motion.button
             variants={item}
+            whileTap={{ scale: 0.95, opacity: 0.7 }}
             onClick={() => push("CategoryActivity", { category: "Education" })}
-            className="p-4 bg-purple-100 dark:bg-purple-900 rounded-xl text-left font-semibold active:opacity-70 transition-opacity"
+            className="p-4 bg-purple-100 dark:bg-purple-900 rounded-xl text-left font-semibold"
           >
             Education
           </motion.button>
