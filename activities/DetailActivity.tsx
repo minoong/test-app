@@ -25,7 +25,12 @@ export const DetailActivity: React.FC<any> = ({ params }: any) => {
         ) 
       }}
     >
-      <div className="flex flex-col p-4">
+      <motion.div 
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.3 }}
+        className="flex flex-col p-4"
+      >
         <div className="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
           <p className="text-sm text-gray-500 mb-4">Item ID: {id}</p>
           <div className="space-y-3 text-gray-700 dark:text-gray-300">
@@ -37,7 +42,7 @@ export const DetailActivity: React.FC<any> = ({ params }: any) => {
             </p>
           </div>
         </div>
-      </div>
+      </motion.div>
     </AppScreen>
   );
 };

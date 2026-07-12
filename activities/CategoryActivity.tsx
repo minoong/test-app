@@ -19,7 +19,7 @@ export const CategoryActivity: React.FC<any> = ({ params }: any) => {
           {[1, 2, 3, 4, 5].map((item) => (
             <button
               key={item}
-              onClick={() => push("DetailActivity", { title: `${params.category} Item ${item}`, id: item.toString() })}
+              onClick={() => push("DetailActivity", { title: `${params.category} Item ${item}`, id: item.toString() }, { animate: false })}
               className="p-4 border border-gray-200 dark:border-gray-700 rounded-xl text-left active:bg-gray-100 dark:active:bg-gray-800 transition-colors"
             >
               <motion.span 
