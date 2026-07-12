@@ -1,8 +1,8 @@
-import { ActivityComponentType, useFlow } from "@stackflow/react";
+import { useFlow } from "@stackflow/react";
 import { AppScreen } from "@stackflow/plugin-basic-ui";
 import { BottomNav } from "../components/BottomNav";
 
-export const HomeActivity: ActivityComponentType = () => {
+export const HomeActivity: React.FC<any> = () => {
   const { push } = useFlow();
 
   return (

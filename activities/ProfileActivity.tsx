@@ -1,8 +1,7 @@
-import { ActivityComponentType } from "@stackflow/react";
 import { AppScreen } from "@stackflow/plugin-basic-ui";
 import { BottomNav } from "../components/BottomNav";
 
-export const ProfileActivity: ActivityComponentType = () => {
+export const ProfileActivity: React.FC<any> = () => {
   return (
     <AppScreen appBar={{ title: "Profile" }}>
       <div className="flex flex-col flex-1 p-4 pb-20 items-center justify-center">

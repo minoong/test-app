@@ -1,8 +1,8 @@
-import { ActivityComponentType } from "@stackflow/react";
+import React from "react";
 import { AppScreen } from "@stackflow/plugin-basic-ui";
 import { BottomNav } from "../components/BottomNav";
 
-export const SearchActivity: ActivityComponentType = () => {
+export const SearchActivity: React.FC<any> = () => {
   return (
     <AppScreen appBar={{ title: "Search" }}>
       <div className="flex flex-col flex-1 p-4 pb-20">

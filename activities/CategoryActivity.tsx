@@ -1,4 +1,4 @@
-import { ActivityComponentType, useFlow, useActivity } from "@stackflow/react";
+import { useFlow, useActivity } from "@stackflow/react";
 import { AppScreen } from "@stackflow/plugin-basic-ui";
 import { motion } from "framer-motion";
 
@@ -6,12 +6,13 @@ type CategoryParams = {
   category: string;
 };
 
-export const CategoryActivity: ActivityComponentType<CategoryParams> = ({ params }) => {
+export const CategoryActivity: React.FC<any> = ({ params }: any) => {
   const { push } = useFlow();
   const { isTop } = useActivity();
+  const category = params.category as string;
 
   return (
-    <AppScreen appBar={{ title: params.category }}>
+    <AppScreen appBar={{ title: category }}>
       <div className="flex flex-col p-4">
         <h2 className="text-xl font-bold mb-4">{params.category} Items</h2>
         <div className="flex flex-col gap-3">
