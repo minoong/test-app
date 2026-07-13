@@ -22,13 +22,9 @@ export const CategoryActivity: React.FC<any> = ({ params }: any) => {
               onClick={() => push("DetailActivity", { title: `${category} Item ${item}`, id: item.toString() })}
               className="p-4 border border-gray-200 dark:border-gray-700 rounded-xl text-left active:bg-gray-100 dark:active:bg-gray-800 transition-colors"
             >
-              <motion.span 
-                layoutId={isTop ? `title-${item}` : undefined}
-                className={`relative z-[99999] inline-block font-semibold ${category === 'Lifestyle' ? 'text-black dark:text-black text-lg' : ''}`}
-                transition={{ duration: 0 }}
-              >
+              <span className={`relative z-[99999] inline-block font-semibold ${category === 'Lifestyle' ? 'text-black dark:text-black text-lg' : ''}`}>
                 View {category} Item {item}
-              </motion.span>
+              </span>
             </button>
           ))}
         </div>

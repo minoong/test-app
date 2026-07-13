@@ -28,13 +28,9 @@ export const DetailActivity: React.FC<any> = ({ params }: any) => {
     <AppScreen 
       appBar={{ 
         title: (
-          <motion.span 
-            layoutId={isTop ? `title-${id}` : undefined}
-            className="relative z-[99999] inline-block font-bold"
-            transition={{ duration: 0.3 }}
-          >
+          <span className="relative z-[99999] inline-block font-bold">
             {title}
-          </motion.span>
+          </span>
         ) 
       }}
     >
@@ -84,8 +80,12 @@ export const DetailActivity: React.FC<any> = ({ params }: any) => {
                           </DrawerDescription>
                         </DrawerHeader>
                         <DrawerPanel>
-                          <div className="flex justify-center">
-                            <div className="size-48 shrink-0 rounded-xl border bg-muted" />
+                          <div className="max-h-[60vh] overflow-y-auto flex flex-col gap-4 p-4">
+                            {Array.from({ length: 20 }).map((_, i) => (
+                              <div key={i} className="h-16 shrink-0 rounded-xl border bg-muted flex items-center justify-center">
+                                2Depth Item {i + 1}
+                              </div>
+                            ))}
                           </div>
                         </DrawerPanel>
                         <DrawerFooter
@@ -108,9 +108,13 @@ export const DetailActivity: React.FC<any> = ({ params }: any) => {
                                 </DrawerDescription>
                               </DrawerHeader>
                               <DrawerPanel>
-                                <div className="flex justify-center">
-                                  <div className="size-32 shrink-0 rounded-full border bg-muted" />
-                                </div>
+                                  <div className="max-h-[70vh] overflow-y-auto flex flex-col gap-4 p-4">
+                                    {Array.from({ length: 30 }).map((_, i) => (
+                                      <div key={i} className="h-16 shrink-0 rounded-xl border bg-muted flex items-center justify-center">
+                                        3Depth Item {i + 1}
+                                      </div>
+                                    ))}
+                                  </div>
                               </DrawerPanel>
                             </DrawerPopup>
                           </Drawer>
