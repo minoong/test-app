@@ -12,6 +12,48 @@ const PHRASES = [
 
 export const DictionaryActivity: React.FC<any> = () => {
   const [selected, setSelected] = useState(PHRASES[0]);
+  const [isListening, setIsListening] = useState(false);
+  const [transcript, setTranscript] = useState("");
+
+  const startListening = () => {
+    // @ts-ignore
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("이 브라우저에서는 마이크(받아쓰기) 기능이 지원되지 않습니다.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'ko-KR'; // Listen in Korean
+    recognition.interimResults = false;
+
+    recognition.onstart = () => {
+      setIsListening(true);
+      setTranscript("말씀해 주세요...");
+    };
+
+    recognition.onresult = (event: any) => {
+      const text = event.results[0][0].transcript;
+      setTranscript(`인식됨: "${text}"`);
+      
+      // Auto-select if the phrase matches
+      const matched = PHRASES.find(p => p.ko.includes(text) || text.includes(p.ko.replace('?', '')));
+      if (matched) {
+        setSelected(matched);
+      }
+    };
+
+    recognition.onerror = () => {
+      setTranscript("음성 인식 실패");
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.start();
+  };
 
   const playAudio = (text: string) => {
     if ('speechSynthesis' in window) {
@@ -65,6 +107,27 @@ export const DictionaryActivity: React.FC<any> = () => {
                 <path d="M15.932 7.757a.75.75 0 011.061 0 6 6 0 010 8.486.75.75 0 01-1.06-1.061 4.5 4.5 0 000-6.364.75.75 0 010-1.06z" />
               </svg>
             </button>
+          </div>
+
+          {/* Voice Recognition Section */}
+          <div className="mb-6 flex flex-col gap-2">
+            <button
+              onClick={startListening}
+              disabled={isListening}
+              className={`flex items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all ${
+                isListening 
+                  ? "bg-red-100 text-red-600 border border-red-200 animate-pulse" 
+                  : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 active:scale-95"
+              }`}
+            >
+              <span className="text-xl">🎤</span>
+              {isListening ? "듣고 있어요..." : "마이크 누르고 한국어로 말하기"}
+            </button>
+            {transcript && (
+              <p className="text-sm text-center text-gray-500 font-medium">
+                {transcript}
+              </p>
+            )}
           </div>
 
           <h4 className="font-bold text-gray-700 dark:text-gray-300 mb-3">자주 쓰는 표현</h4>
