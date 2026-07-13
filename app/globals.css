@@ -188,6 +188,7 @@ body {
 }
 
 :root {
+  --sa-bottom: env(safe-area-inset-bottom, 0px);
   --card: var(--color-white);
   --card-foreground: var(--color-neutral-800);
   --popover: var(--color-white);
