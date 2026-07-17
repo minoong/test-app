@@ -3,9 +3,9 @@ import { useFlow } from "@stackflow/react";
 import { AppScreen } from "@stackflow/plugin-basic-ui";
 import { BottomNav } from "../components/BottomNav";
 import { motion } from "framer-motion";
-import { Button } from "../components/ui/button";
+import NeumorphButton from "../components/ui/neumorph-button";
 
-export const HomeActivity: React.FC<any> = () => {
+export const HomeActivity: React.FC = () => {
   const { push } = useFlow();
   const [tripState, setTripState] = useState<"before" | "during" | "after">("before");
 
@@ -14,9 +14,9 @@ export const HomeActivity: React.FC<any> = () => {
       <div className="flex flex-col flex-1 pb-24 overflow-y-auto">
         {/* State Toggle for Mockup */}
         <div className="flex justify-center gap-2 p-4 bg-muted/30 border-b">
-          <Button variant={tripState === "before" ? "default" : "outline"} size="sm" onClick={() => setTripState("before")}>여행 전</Button>
-          <Button variant={tripState === "during" ? "default" : "outline"} size="sm" onClick={() => setTripState("during")}>여행 중</Button>
-          <Button variant={tripState === "after" ? "default" : "outline"} size="sm" onClick={() => setTripState("after")}>여행 후</Button>
+          <NeumorphButton intent={tripState === "before" ? "primary" : "secondary"} size="small" onClick={() => setTripState("before")}>여행 전</NeumorphButton>
+          <NeumorphButton intent={tripState === "during" ? "primary" : "secondary"} size="small" onClick={() => setTripState("during")}>여행 중</NeumorphButton>
+          <NeumorphButton intent={tripState === "after" ? "primary" : "secondary"} size="small" onClick={() => setTripState("after")}>여행 후</NeumorphButton>
         </div>
 
         <div className="p-4 flex flex-col gap-6">

@@ -11,7 +11,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "../components/ui/drawer";
-import { Button } from "../components/ui/button";
+import NeumorphButton from "../components/ui/neumorph-button";
 
 const FOOD_ITEMS = [
   { id: 1, title: "세븐일레븐 필수 간식", desc: "토스트 샌드위치, 벤또 쥐포, 마일로 초코우유", emoji: "🥪" },
@@ -25,7 +25,7 @@ const SHOPPING_ITEMS = [
   { id: 6, title: "약국 쇼핑", desc: "타이레놀(매우 저렴), 모기 기피제, 소화제", emoji: "💊" },
 ];
 
-export const DiscoverActivity: React.FC<any> = () => {
+export const DiscoverActivity: React.FC = () => {
   const [tab, setTab] = useState<"food" | "shopping">("food");
 
   const items = tab === "food" ? FOOD_ITEMS : SHOPPING_ITEMS;
@@ -82,7 +82,7 @@ export const DiscoverActivity: React.FC<any> = () => {
                   </div>
                 </DrawerPanel>
                 <DrawerFooter className="justify-center mt-6">
-                  <DrawerClose render={<Button className="w-full" size="lg" />}>
+                  <DrawerClose render={<NeumorphButton fullWidth size="large">{null}</NeumorphButton>}>
                     닫기
                   </DrawerClose>
                 </DrawerFooter>
