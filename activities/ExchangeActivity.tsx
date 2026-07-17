@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { AppScreen } from "@stackflow/plugin-basic-ui";
 import { supabase } from "../lib/supabase";
 import { RefreshCcw, Save, Loader2 } from "lucide-react";
+import NumberFlow from "@number-flow/react";
+import { NumberFlowInput } from "@daformat/react-number-flow-input";
+import { motion } from "framer-motion";
 
 interface ExchangeRate {
   currency: string;
@@ -11,7 +14,7 @@ interface ExchangeRate {
 }
 
 export const ExchangeActivity: React.FC = () => {
-  const [krw, setKrw] = useState<string>("38000");
+  const [krw, setKrw] = useState<number | undefined>(100000);
   const [rates, setRates] = useState<{ THB: number; USD: number }>({ THB: 38.5, USD: 1380 });
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
@@ -53,12 +56,10 @@ export const ExchangeActivity: React.FC = () => {
   const handleUpdateAPI = async () => {
     try {
       setUpdating(true);
-      // Fetch latest rates using free ExchangeRate-API
       const res = await fetch("https://open.er-api.com/v6/latest/KRW");
       const data = await res.json();
       
       if (data && data.rates) {
-        // Since base is KRW, 1 KRW = x THB. Therefore 1 THB = 1 / x KRW
         const thbRate = 1 / data.rates.THB;
         const usdRate = 1 / data.rates.USD;
         
@@ -96,97 +97,129 @@ export const ExchangeActivity: React.FC = () => {
     }
   };
 
-  const krwValue = parseFloat(krw || "0");
-  const thbValue = (krwValue / rates.THB).toFixed(2);
-  const usdValue = (krwValue / rates.USD).toFixed(2);
+  const thbValue = krw ? krw / rates.THB : 0;
+  const usdValue = krw ? krw / rates.USD : 0;
+
+  // 가변 사이즈 로직: 숫자가 길어지면 폰트를 줄임
+  const getFontSize = (val: number | undefined) => {
+    if (!val) return "text-6xl md:text-8xl";
+    const len = String(val).length;
+    if (len > 12) return "text-3xl md:text-5xl";
+    if (len > 9) return "text-4xl md:text-6xl";
+    if (len > 6) return "text-5xl md:text-7xl";
+    return "text-6xl md:text-8xl";
+  };
 
   return (
     <AppScreen appBar={{ title: "환율 계산기" }}>
-      <div className="flex flex-col flex-1 p-4 bg-gray-50 dark:bg-gray-900 pb-20 overflow-y-auto">
-        <div className="flex justify-between items-center mb-2 px-2">
-          <p className="text-xs text-gray-500">
-            마지막 업데이트: {lastUpdated || "로딩 중..."}
+      <div className="flex flex-col flex-1 bg-neutral-950 text-white pb-20 overflow-y-auto">
+        
+        {/* 상단 컨트롤 영역 */}
+        <div className="flex justify-between items-center p-4 border-b border-neutral-800 bg-neutral-950/80 backdrop-blur z-10 sticky top-0">
+          <p className="text-xs text-neutral-400">
+            {lastUpdated ? `업데이트: ${lastUpdated}` : "로딩 중..."}
           </p>
           <button 
             onClick={handleUpdateAPI}
             disabled={updating || loading}
-            className="flex items-center gap-1 text-xs bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full font-medium hover:bg-blue-200 transition disabled:opacity-50"
+            className="flex items-center gap-1.5 text-xs bg-white/10 text-white px-3 py-1.5 rounded-full font-medium hover:bg-white/20 transition disabled:opacity-50"
           >
-            {updating ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCcw className="w-3 h-3" />}
-            API 업데이트
+            {updating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCcw className="w-3.5 h-3.5" />}
+            API 갱신
           </button>
         </div>
 
-        <div className="bg-white dark:bg-black rounded-3xl p-6 shadow-sm flex flex-col gap-6">
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-500">원화 (KRW)</label>
-            <div className="flex items-end gap-2 border-b-2 border-blue-500 pb-2">
-              <span className="text-3xl font-bold">₩</span>
-              <input 
-                type="number" 
+        {/* 메인 KRW 입력 영역 */}
+        <div className="flex flex-col items-center justify-center p-8 min-h-[40vh] border-b border-neutral-900 relative overflow-hidden">
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center w-full"
+          >
+            <p className="text-neutral-500 text-sm mb-6 font-medium tracking-widest uppercase">
+              Enter KRW Amount
+            </p>
+            <div className="flex justify-center w-full overflow-visible">
+              <NumberFlowInput
                 value={krw}
-                onChange={(e) => setKrw(e.target.value)}
-                className="text-4xl font-extrabold w-full bg-transparent outline-none"
+                onChange={(val) => setKrw(val)}
+                format
                 placeholder="0"
+                className={`font-semibold tracking-tighter w-full bg-transparent outline-none text-center transition-all duration-300 ease-out ${getFontSize(krw)}`}
               />
             </div>
-          </div>
+          </motion.div>
+        </div>
 
-          <div className="flex justify-center -my-2 relative z-10">
-            <div className="bg-gray-100 dark:bg-gray-800 text-gray-500 p-2 rounded-full shadow-sm">
-              ⇅
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <div className="flex justify-between items-end">
-              <label className="text-sm font-semibold text-gray-500">바트 (THB)</label>
-              <div className="flex items-center gap-2 text-xs text-gray-400">
-                1 THB = 
+        {/* 변환 결과 영역 */}
+        <div className="flex flex-col flex-1 p-6 gap-8 bg-neutral-950">
+          {/* THB */}
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="flex flex-col gap-3"
+          >
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-neutral-400 font-medium">태국 바트 (THB)</span>
+              <div className="flex items-center gap-2 text-neutral-500">
+                <span>1 THB =</span>
                 <input 
-                  className="w-16 bg-gray-100 dark:bg-gray-800 rounded px-1 py-0.5 text-right outline-none focus:ring-1 focus:ring-blue-500" 
+                  className="w-16 bg-neutral-900 rounded px-2 py-1 text-right text-white outline-none focus:ring-1 focus:ring-neutral-700 transition" 
                   value={rates.THB}
                   onChange={(e) => setRates({...rates, THB: parseFloat(e.target.value) || 0})}
-                /> KRW
-                <button onClick={() => handleManualSave('THB', rates.THB.toString())} className="text-blue-500 hover:text-blue-600"><Save className="w-3 h-3"/></button>
+                />
+                <span>KRW</span>
+                <button onClick={() => handleManualSave('THB', rates.THB.toString())} className="text-neutral-400 hover:text-white transition">
+                  <Save className="w-4 h-4"/>
+                </button>
               </div>
             </div>
-            <div className="flex items-end gap-2 border-b-2 border-gray-200 dark:border-gray-800 pb-2">
-              <span className="text-3xl font-bold text-gray-400">฿</span>
-              <span className="text-4xl font-extrabold w-full truncate">{loading ? "..." : thbValue}</span>
+            <div className="text-4xl md:text-5xl font-bold tracking-tight text-white flex gap-2">
+              <span className="text-neutral-600">฿</span>
+              <NumberFlow 
+                value={thbValue} 
+                format={{ minimumFractionDigits: 2, maximumFractionDigits: 2 }} 
+                className={loading ? "opacity-50" : ""}
+              />
             </div>
-          </div>
+          </motion.div>
 
-          <div className="flex flex-col gap-2 mt-4">
-            <div className="flex justify-between items-end">
-              <label className="text-sm font-semibold text-gray-500">미국 달러 (USD)</label>
-              <div className="flex items-center gap-2 text-xs text-gray-400">
-                1 USD = 
+          <div className="h-px bg-neutral-900 w-full" />
+
+          {/* USD */}
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="flex flex-col gap-3"
+          >
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-neutral-400 font-medium">미국 달러 (USD)</span>
+              <div className="flex items-center gap-2 text-neutral-500">
+                <span>1 USD =</span>
                 <input 
-                  className="w-16 bg-gray-100 dark:bg-gray-800 rounded px-1 py-0.5 text-right outline-none focus:ring-1 focus:ring-blue-500" 
+                  className="w-16 bg-neutral-900 rounded px-2 py-1 text-right text-white outline-none focus:ring-1 focus:ring-neutral-700 transition" 
                   value={rates.USD}
                   onChange={(e) => setRates({...rates, USD: parseFloat(e.target.value) || 0})}
-                /> KRW
-                <button onClick={() => handleManualSave('USD', rates.USD.toString())} className="text-blue-500 hover:text-blue-600"><Save className="w-3 h-3"/></button>
+                />
+                <span>KRW</span>
+                <button onClick={() => handleManualSave('USD', rates.USD.toString())} className="text-neutral-400 hover:text-white transition">
+                  <Save className="w-4 h-4"/>
+                </button>
               </div>
             </div>
-            <div className="flex items-end gap-2 border-b-2 border-gray-200 dark:border-gray-800 pb-2">
-              <span className="text-3xl font-bold text-gray-400">$</span>
-              <span className="text-4xl font-extrabold w-full truncate">{loading ? "..." : usdValue}</span>
+            <div className="text-4xl md:text-5xl font-bold tracking-tight text-white flex gap-2">
+              <span className="text-neutral-600">$</span>
+              <NumberFlow 
+                value={usdValue} 
+                format={{ minimumFractionDigits: 2, maximumFractionDigits: 2 }} 
+                className={loading ? "opacity-50" : ""}
+              />
             </div>
-          </div>
+          </motion.div>
         </div>
 
-        <div className="mt-8 bg-blue-50 dark:bg-blue-900/20 p-5 rounded-2xl border border-blue-100 dark:border-blue-800">
-          <h3 className="font-bold text-blue-800 dark:text-blue-300 flex items-center gap-2">
-            💡 환율 계산기 사용법
-          </h3>
-          <ul className="mt-2 text-blue-700 dark:text-blue-400 leading-relaxed text-sm list-disc pl-4 space-y-1">
-            <li>원화를 입력하면 바트(THB)와 달러(USD)로 자동 변환됩니다.</li>
-            <li>우측 상단 <strong>API 업데이트</strong> 버튼을 누르면 최신 환율 정보를 불러옵니다.</li>
-            <li>기준 환율(1 THB = ? KRW) 값을 직접 수정하고 저장 버튼(<Save className="w-3 h-3 inline"/>)을 눌러 임의의 환율을 저장할 수 있습니다.</li>
-          </ul>
-        </div>
       </div>
     </AppScreen>
   );
