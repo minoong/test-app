@@ -9,12 +9,12 @@ import {
   DrawerClose,
   DrawerFooter,
 } from "@/components/ui/drawer";
+import NeumorphButton from "../ui/neumorph-button";
+import StatusButton from "../animata/button/status-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, Radio } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
 
 interface ChecklistDrawerProps {
   open: boolean;
@@ -173,22 +173,14 @@ export function ChecklistDrawer({ open, onOpenChange, onSuccess }: ChecklistDraw
         </DrawerPanel>
 
         <DrawerFooter className="flex-row gap-3 justify-center mt-2 px-6 pb-6">
-          <DrawerClose render={<Button variant="outline" className="flex-1">취소</Button>} />
-          <Button
-            className="flex-1 transition-all"
-            disabled={!isFormValid || loading || success}
+          <DrawerClose render={<NeumorphButton intent="secondary" className="flex-1">취소</NeumorphButton>} />
+          <StatusButton
+            intent="primary"
+            className="flex-1"
+            disabled={!isFormValid}
             onClick={handleSubmit}
-          >
-            {loading ? (
-              <div className="flex items-center gap-2">
-                <Spinner className="w-4 h-4" /> 처리 중...
-              </div>
-            ) : success ? (
-              "등록 완료!"
-            ) : (
-              "등록하기"
-            )}
-          </Button>
+            status={loading ? "loading" : success ? "success" : "idle"}
+          />
         </DrawerFooter>
       </DrawerPopup>
     </Drawer>
