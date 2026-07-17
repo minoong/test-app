@@ -113,10 +113,7 @@ export const ExchangeActivity: React.FC = () => {
                 <div 
                   id="thb-input-container"
                   className={`flex justify-center items-center w-full max-w-full cursor-text ${getFontSize(thb)}`} 
-                  onClick={() => {
-                    const input = document.querySelector('#thb-input-container input') as HTMLInputElement;
-                    input?.focus();
-                  }}
+                  onClick={() => inputRef.current?.focus()}
                 >
                   <span className="font-bold text-slate-400 dark:text-slate-600 mr-2">฿</span>
                   <NumberFlowInput
@@ -129,9 +126,9 @@ export const ExchangeActivity: React.FC = () => {
                     onFocus={(e) => {
                       setIsFocused(true);
                       setTimeout(() => {
-                        const input = document.querySelector('#thb-input-container input') as HTMLInputElement;
-                        if (input && typeof input.select === 'function') {
-                          input.select();
+                        const activeEl = document.activeElement as HTMLInputElement;
+                        if (activeEl && typeof activeEl.select === 'function') {
+                          activeEl.select();
                         }
                       }, 50);
                     }}
