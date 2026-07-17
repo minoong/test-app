@@ -186,13 +186,16 @@ export const ExchangeActivity: React.FC = () => {
                       {isFocused && thb !== undefined && String(thb).length > 0 && (
                         <button
                           type="button"
-                          onPointerDown={(e) => {
+                          onMouseDown={(e) => e.preventDefault()}
+                          onTouchStart={(e) => e.preventDefault()}
+                          onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
                             isPristine.current = false;
                             setThb(undefined);
+                            inputRef.current?.focus();
                           }}
-                          className="ml-2 p-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors"
+                          className="ml-2 p-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors z-10 relative cursor-pointer"
                         >
                           <X className="w-5 h-5 sm:w-6 sm:h-6" />
                         </button>
