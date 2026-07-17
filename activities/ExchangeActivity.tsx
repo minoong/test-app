@@ -82,6 +82,13 @@ export const ExchangeActivity: React.FC = () => {
 
   // 가변 사이즈 로직: 모바일 환경에 맞춰 극단적으로 줄이도록 조정
   const getFontSize = (val: number | undefined) => {
+    if (isFocused) {
+      if (!val) return "text-4xl";
+      const len = String(val).length;
+      if (len > 10) return "text-2xl";
+      if (len > 8) return "text-3xl";
+      return "text-4xl";
+    }
     if (!val) return "text-6xl";
     const len = String(val).length;
     if (len > 10) return "text-4xl";
@@ -97,68 +104,70 @@ export const ExchangeActivity: React.FC = () => {
         <div className="flex flex-col p-5 gap-5 max-w-lg mx-auto w-full pt-8">
           
           {/* 메인 입력 (THB) 카드 */}
-          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: "easeOut" }}>
-            <Card className="border-white/60 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] bg-white/70 dark:bg-black/40 backdrop-blur-xl overflow-hidden rounded-3xl">
-              <CardContent className="p-8">
-                <div className="flex flex-col items-center justify-center gap-3 mb-8">
-                  <Avatar className="size-14 ring-4 ring-white/80 dark:ring-white/10 shadow-sm">
-                    <AvatarImage src="https://flagcdn.com/w80/th.png" alt="Thailand Flag" />
-                    <AvatarFallback>TH</AvatarFallback>
-                  </Avatar>
-                  <p className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
-                    태국 바트 (THB)
-                  </p>
-                </div>
-                
-                <div 
-                  id="thb-input-container"
-                  className={`flex justify-center items-center w-full max-w-full cursor-text ${getFontSize(thb)}`} 
-                  onClick={() => inputRef.current?.focus()}
-                >
-                  <span className="font-bold text-slate-400 dark:text-slate-600 mr-2">฿</span>
-                  <NumberFlowInput
-                    ref={inputRef}
-                    value={thb}
-                    onChange={(val) => {
-                      isPristine.current = false;
-                      setThb(val);
-                    }}
-                    onFocus={(e) => {
-                      setIsFocused(true);
-                      setTimeout(() => {
-                        const activeEl = document.activeElement as HTMLInputElement;
-                        if (activeEl && typeof activeEl.select === 'function') {
-                          activeEl.select();
-                        }
-                      }, 50);
-                    }}
-                    onBlur={() => setIsFocused(false)}
-                    format
-                    placeholder="0"
-                    maxLength={10}
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    {...({ inputMode: "numeric", pattern: "[0-9]*" } as any)}
-                    className="font-extrabold tracking-tighter bg-transparent outline-none text-slate-800 dark:text-white"
-                  />
-                  {/* Blinking Cursor Animation (Only when NOT focused) */}
-                  {!isFocused && (
-                    <motion.div 
-                      animate={{ opacity: [1, 0] }} 
-                      transition={{ repeat: Infinity, duration: 0.9, ease: "easeInOut" }}
-                      className={`w-[3px] bg-indigo-500 dark:bg-indigo-400 ml-1 rounded-full ${thb === 0 || thb === undefined ? 'block' : 'opacity-70'}`}
-                      style={{ height: '0.85em' }}
+          <motion.div layout initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: "easeOut" }}>
+            <motion.div layout className="border border-white/60 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] bg-white/70 dark:bg-black/40 backdrop-blur-xl overflow-hidden rounded-3xl">
+              <motion.div layout className={`transition-all duration-300 ${isFocused ? 'p-5' : 'p-8'}`}>
+                <motion.div layout className={`flex ${isFocused ? 'flex-row items-center justify-between mb-0' : 'flex-col items-center justify-center gap-3 mb-8'}`}>
+                  <motion.div layout className={`flex items-center ${isFocused ? 'flex-row gap-3' : 'flex-col gap-3'}`}>
+                    <motion.div layout className={`relative flex shrink-0 justify-center items-center ${isFocused ? 'size-9 ring-2' : 'size-14 ring-4'} ring-white/80 dark:ring-white/10 shadow-sm rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800`}>
+                      <img src="https://flagcdn.com/w80/th.png" alt="Thailand Flag" className="w-full h-full object-cover" />
+                    </motion.div>
+                    <motion.p layout className={`${isFocused ? 'text-xs' : 'text-sm'} font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest`}>
+                      {isFocused ? 'THB' : '태국 바트 (THB)'}
+                    </motion.p>
+                  </motion.div>
+                  
+                  <motion.div 
+                    layout
+                    id="thb-input-container"
+                    className={`flex ${isFocused ? 'justify-end w-auto' : 'justify-center w-full max-w-full'} items-center cursor-text transition-all duration-300 ${getFontSize(thb)}`} 
+                    onClick={() => inputRef.current?.focus()}
+                  >
+                    <span className="font-bold text-slate-400 dark:text-slate-600 mr-2">฿</span>
+                    <NumberFlowInput
+                      ref={inputRef}
+                      value={thb}
+                      onChange={(val) => {
+                        isPristine.current = false;
+                        setThb(val);
+                      }}
+                      onFocus={(e) => {
+                        setIsFocused(true);
+                        setTimeout(() => {
+                          const activeEl = document.activeElement as HTMLInputElement;
+                          if (activeEl && typeof activeEl.select === 'function') {
+                            activeEl.select();
+                          }
+                        }, 50);
+                      }}
+                      onBlur={() => setIsFocused(false)}
+                      format
+                      placeholder="0"
+                      maxLength={10}
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      {...({ inputMode: "numeric", pattern: "[0-9]*" } as any)}
+                      className={`font-extrabold tracking-tighter bg-transparent outline-none text-slate-800 dark:text-white ${isFocused ? 'w-[4.5ch]' : ''}`}
                     />
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+                    {/* Blinking Cursor Animation (Only when NOT focused) */}
+                    {!isFocused && (
+                      <motion.div 
+                        animate={{ opacity: [1, 0] }} 
+                        transition={{ repeat: Infinity, duration: 0.9, ease: "easeInOut" }}
+                        className={`w-[3px] bg-indigo-500 dark:bg-indigo-400 ml-1 rounded-full ${thb === 0 || thb === undefined ? 'block' : 'opacity-70'}`}
+                        style={{ height: '0.85em' }}
+                      />
+                    )}
+                  </motion.div>
+                </motion.div>
+              </motion.div>
+            </motion.div>
           </motion.div>
 
           {/* 환산 결과 (KRW, USD) */}
           <div className="grid grid-cols-1 gap-4 mt-2">
             
             {/* KRW 카드 */}
-            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}>
+            <motion.div layout initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}>
               <Card className="border-white/60 dark:border-white/10 shadow-[0_4px_20px_rgb(0,0,0,0.04)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.15)] bg-white/70 dark:bg-black/40 backdrop-blur-xl rounded-3xl transition-transform hover:scale-[1.01]">
                 <CardContent className="p-6 flex flex-col gap-4">
                   <div className="flex justify-between items-center">
@@ -194,7 +203,7 @@ export const ExchangeActivity: React.FC = () => {
             </motion.div>
 
             {/* USD 카드 */}
-            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}>
+            <motion.div layout initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}>
               <Card className="border-white/60 dark:border-white/10 shadow-[0_4px_20px_rgb(0,0,0,0.04)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.15)] bg-white/70 dark:bg-black/40 backdrop-blur-xl rounded-3xl transition-transform hover:scale-[1.01]">
                 <CardContent className="p-6 flex flex-col gap-4">
                   <div className="flex justify-between items-center">
