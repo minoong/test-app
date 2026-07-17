@@ -3,7 +3,8 @@ import { AppScreen } from "@stackflow/plugin-basic-ui";
 import { BottomNav } from "../components/BottomNav";
 import { Plus, Bell } from "lucide-react";
 import { ChecklistDrawer } from "../components/checklist/ChecklistDrawer";
-import { toastManager } from "../components/ui/toast";
+import { toast } from "sonner";
+import { supabase } from "../lib/supabase";
 
 interface PreparationItem {
   id: string;
@@ -18,6 +19,7 @@ export const ChecklistActivity: React.FC = () => {
   const [items, setItems] = useState<PreparationItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null);
 
   const fetchItems = async () => {
     try {
@@ -36,6 +38,43 @@ export const ChecklistActivity: React.FC = () => {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchItems();
+
+    const channel = supabase
+      .channel('preparation_items_changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'preparation_items' },
+        (payload) => {
+          if (payload.eventType === 'INSERT') {
+            toast("새로운 준비물이 등록되었습니다.", {
+              action: {
+                label: "새로고침",
+                onClick: () => fetchItems(),
+              },
+              duration: 5000,
+            });
+          } else if (payload.eventType === 'UPDATE') {
+            const updatedItem = payload.new as PreparationItem;
+            setItems((prev) =>
+              prev.map((i) => (i.id === updatedItem.id ? updatedItem : i))
+            );
+            
+            // Trigger highlight
+            setHighlightedItemId(updatedItem.id);
+            setTimeout(() => {
+              setHighlightedItemId(null);
+            }, 2000);
+          } else if (payload.eventType === 'DELETE') {
+            const deletedItem = payload.old as { id: string };
+            setItems((prev) => prev.filter((i) => i.id !== deletedItem.id));
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const toggleCheck = async (id: string, isChecked: boolean, targetUser: string) => {
@@ -69,13 +108,9 @@ export const ChecklistActivity: React.FC = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ target }),
       });
-      toastManager.add({
-        description: `푸시 알림 전송 완료 (${target})`,
-      });
+      toast.success(`푸시 알림 전송 완료 (${target})`);
     } catch {
-      toastManager.add({
-        description: "푸시 알림 전송에 실패했습니다.",
-      });
+      toast.error("푸시 알림 전송에 실패했습니다.");
     }
   };
 
@@ -92,12 +127,14 @@ export const ChecklistActivity: React.FC = () => {
       <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800 mb-6">
         {list.map((item, idx) => {
           const isChecked = item.completed_by.includes(targetUser);
+          const isHighlighted = highlightedItemId === item.id;
+          
           return (
             <div
               key={item.id}
-              className={`flex items-center justify-between gap-3 p-4 active:bg-gray-100 dark:active:bg-gray-800 transition-colors ${
+              className={`flex items-center justify-between gap-3 p-4 active:bg-gray-100 dark:active:bg-gray-800 transition-colors duration-500 ${
                 idx !== list.length - 1 ? "border-b border-gray-100 dark:border-gray-800" : ""
-              }`}
+              } ${isHighlighted ? "bg-yellow-100 dark:bg-yellow-900/50" : ""}`}
             >
               <label className="flex items-center gap-3 flex-1 cursor-pointer">
                 <input

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { Toaster } from "@/components/ui/sonner";
 
 const interHeading = Inter({subsets:['latin'],variable:'--font-heading'});
 
@@ -41,7 +42,10 @@ export default function RootLayout({
       lang="en"
       className={cn("fixed w-full h-[100dvh] overflow-hidden overscroll-none", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable, interHeading.variable)}
     >
-      <body className="fixed w-full h-[100dvh] overflow-hidden overscroll-none isolate flex flex-col">{children}</body>
+      <body className="fixed w-full h-[100dvh] overflow-hidden overscroll-none isolate flex flex-col">
+        {children}
+        <Toaster />
+      </body>
     </html>
   );
 }
