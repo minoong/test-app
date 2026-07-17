@@ -106,8 +106,8 @@ export const ExchangeActivity: React.FC = () => {
           {/* 메인 입력 (THB) 카드 */}
           <motion.div layout initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: "easeOut" }}>
             <motion.div layout className="border border-white/60 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] bg-white/70 dark:bg-black/40 backdrop-blur-xl overflow-hidden rounded-3xl">
-              <motion.div layout className={`transition-all duration-300 ${isFocused ? 'py-3 px-5' : 'p-8'}`}>
-                <motion.div layout className={`flex flex-col items-center justify-center`}>
+              <motion.div layout className={`transition-all duration-300 ${isFocused ? 'py-2 px-4' : 'p-6'}`}>
+                <motion.div layout className={`flex flex-col`}>
                   <AnimatePresence>
                     {!isFocused && (
                       <motion.div 
@@ -129,7 +129,7 @@ export const ExchangeActivity: React.FC = () => {
                   <motion.div 
                     layout
                     id="thb-input-container"
-                    className={`flex justify-center items-center w-full max-w-full cursor-text transition-all duration-300 ${getFontSize(thb)}`} 
+                    className={`flex ${isFocused ? 'justify-end' : 'justify-center'} items-center w-full max-w-full cursor-text transition-all duration-300 ${getFontSize(thb)}`} 
                     onClick={() => inputRef.current?.focus()}
                   >
                     <span className="font-bold text-slate-400 dark:text-slate-600 mr-2">฿</span>
@@ -178,7 +178,7 @@ export const ExchangeActivity: React.FC = () => {
             {/* KRW 카드 */}
             <motion.div layout initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}>
               <Card className="border-white/60 dark:border-white/10 shadow-[0_4px_20px_rgb(0,0,0,0.04)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.15)] bg-white/70 dark:bg-black/40 backdrop-blur-xl rounded-3xl transition-transform hover:scale-[1.01]">
-                <CardContent className="p-6 flex flex-col gap-4">
+                <CardContent className="p-5 flex flex-col gap-3">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2.5">
                       <Avatar className="size-7 shadow-sm ring-1 ring-black/5 dark:ring-white/10">
@@ -199,7 +199,7 @@ export const ExchangeActivity: React.FC = () => {
                       </button>
                     </div>
                   </div>
-                  <div className="text-3xl font-bold tracking-tight flex items-center gap-1.5 mt-0.5 pl-1">
+                  <div className="text-3xl font-bold tracking-tight flex items-center justify-end gap-1.5 mt-0.5">
                     <span className="text-slate-400 dark:text-slate-500 text-2xl font-semibold mt-0.5">₩</span>
                     <NumberFlow 
                       value={krwValue} 
@@ -214,7 +214,7 @@ export const ExchangeActivity: React.FC = () => {
             {/* USD 카드 */}
             <motion.div layout initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}>
               <Card className="border-white/60 dark:border-white/10 shadow-[0_4px_20px_rgb(0,0,0,0.04)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.15)] bg-white/70 dark:bg-black/40 backdrop-blur-xl rounded-3xl transition-transform hover:scale-[1.01]">
-                <CardContent className="p-6 flex flex-col gap-4">
+                <CardContent className="p-5 flex flex-col gap-3">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2.5">
                       <Avatar className="size-7 shadow-sm ring-1 ring-black/5 dark:ring-white/10">
@@ -236,7 +236,7 @@ export const ExchangeActivity: React.FC = () => {
                       </button>
                     </div>
                   </div>
-                  <div className="text-3xl font-bold tracking-tight flex items-center gap-1.5 mt-0.5 pl-1">
+                  <div className="text-3xl font-bold tracking-tight flex items-center justify-end gap-1.5 mt-0.5">
                     <span className="text-slate-400 dark:text-slate-500 text-2xl font-semibold mt-0.5">$</span>
                     <NumberFlow 
                       value={usdValue} 
