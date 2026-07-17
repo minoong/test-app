@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { supabase } from "../lib/supabase";
 import NumberFlow from "@number-flow/react";
 import { Skeleton } from "../components/ui/skeleton";
+import NeumorphButton from "../components/ui/neumorph-button";
 
 interface PreparationItem {
   id: string;
@@ -229,13 +230,14 @@ export const ChecklistActivity: React.FC = () => {
         </div>
 
         {/* Floating Action Button */}
-        <button
-          className="fixed right-6 w-14 h-14 rounded-full bg-blue-600 text-white shadow-xl flex items-center justify-center hover:bg-blue-700 transition-colors z-50"
+        <NeumorphButton
+          intent="primary"
+          className="fixed right-6 w-14 h-14 !rounded-full !p-0 z-50 flex items-center justify-center shadow-xl"
           style={{ bottom: "calc(88px + env(safe-area-inset-bottom))" }}
           onClick={() => setDrawerOpen(true)}
         >
           <Plus size={24} />
-        </button>
+        </NeumorphButton>
 
         <ChecklistDrawer
           open={drawerOpen}
