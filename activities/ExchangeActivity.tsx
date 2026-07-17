@@ -16,20 +16,11 @@ interface ExchangeRate {
 }
 
 export const ExchangeActivity: React.FC = () => {
-  const activity = useActivity();
-  const [thb, setThb] = useState<number | undefined>(0);
+  const [thb, setThb] = useState<number | undefined>(1000);
   const [rates, setRates] = useState<{ THB: number; USD: number }>({ THB: 38.5, USD: 1380 });
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<string>("");
-
-  useEffect(() => {
-    // Stackflow 화면 진입 애니메이션이 완전히 끝난 후 숫자가 올라가도록 처리
-    if (activity.transitionState === "enter-done" && thb === 0) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setThb(1000);
-    }
-  }, [activity.transitionState, thb]);
 
   const fetchRatesFromDB = React.useCallback(async () => {
     try {
