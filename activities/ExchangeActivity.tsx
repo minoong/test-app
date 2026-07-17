@@ -119,7 +119,7 @@ export const ExchangeActivity: React.FC = () => {
 
   return (
     <AppScreen appBar={{ title: "환율 계산기" }}>
-      <div className="flex flex-col flex-1 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white pb-20 overflow-y-auto overflow-x-hidden">
+      <div className="flex flex-col h-[calc(100dvh-64px)] bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white pb-20 overflow-y-auto overflow-x-hidden">
         
         {/* 상단 컨트롤 영역 */}
         <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200 dark:border-neutral-800 bg-gray-50/90 dark:bg-gray-950/90 backdrop-blur z-10 sticky top-0">
