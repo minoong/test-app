@@ -16,6 +16,7 @@ import {
   SIZE_PRESETS,
   useDynamicIslandSize,
 } from "../components/ui/dynamic-island";
+import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 
 const AnimatedNumber = ({ value }: { value: number }) => {
   const [displayValue, setDisplayValue] = useState(0);
@@ -59,8 +60,8 @@ const ProgressIslandContent = ({
           <div className="flex items-center gap-3">
             <RingChart rings={rings} size={52} strokeWidth={6} gap={2.5} />
             <div className="text-left flex flex-col justify-center">
-              <h2 className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider mb-0.5">진행 상황</h2>
-              <span className="text-white font-extrabold flex items-center text-xl tracking-tight leading-none">
+              <h2 className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-0.5">진행 상황</h2>
+              <span className="text-gray-900 dark:text-gray-100 font-extrabold flex items-center text-xl tracking-tight leading-none">
                 <AnimatedNumber value={progress} />%
               </span>
             </div>
@@ -95,11 +96,11 @@ const ProgressIslandContent = ({
               }}
               className="w-full flex flex-col mt-4 overflow-hidden"
             >
-              <div className="pt-3 border-t border-white/10 flex flex-col gap-3 w-full text-left">
+              <div className="pt-3 border-t border-gray-100 dark:border-gray-800 flex flex-col gap-3 w-full text-left">
                 {[
-                  { label: "전체", progress, text: "text-blue-400", bg: "bg-blue-500" },
-                  { label: "가현쨩", progress: gahyunProgress, text: "text-pink-400", bg: "bg-pink-500" },
-                  { label: "미누쿤", progress: minuProgress, text: "text-emerald-400", bg: "bg-emerald-500" },
+                  { label: "전체", progress, text: "text-blue-500", bg: "bg-blue-500", avatar: null },
+                  { label: "가현쨩", progress: gahyunProgress, text: "text-pink-500", bg: "bg-pink-500", avatar: "G" },
+                  { label: "미누쿤", progress: minuProgress, text: "text-emerald-500", bg: "bg-emerald-500", avatar: "M" },
                 ].map((item, i) => (
                   <motion.div
                     key={i}
@@ -111,13 +112,21 @@ const ProgressIslandContent = ({
                     transition={{ duration: 0.4, ease: "easeOut" }}
                     className="space-y-1"
                   >
-                    <div className="flex justify-between text-[11px]">
-                      <span className="font-bold text-neutral-300">{item.label}</span>
+                    <div className="flex justify-between items-center text-[11px]">
+                      <div className="flex items-center gap-1.5">
+                        {item.avatar && (
+                          <Avatar className="w-4 h-4">
+                            <AvatarImage src="" />
+                            <AvatarFallback className="text-[8px] bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">{item.avatar}</AvatarFallback>
+                          </Avatar>
+                        )}
+                        <span className="font-bold text-gray-700 dark:text-gray-300">{item.label}</span>
+                      </div>
                       <span className={`${item.text} font-bold flex items-center`}>
                         <AnimatedNumber value={item.progress} />%
                       </span>
                     </div>
-                    <div className="w-full h-2 bg-neutral-800 rounded-full overflow-hidden">
+                    <div className="w-full h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                       <motion.div
                         className={`h-full ${item.bg} rounded-full`}
                         initial={{ width: 0 }}
