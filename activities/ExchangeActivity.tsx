@@ -106,7 +106,7 @@ export const ExchangeActivity: React.FC = () => {
           {/* 메인 입력 (THB) 카드 */}
           <motion.div layout initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: "easeOut" }}>
             <motion.div layout className="border border-white/60 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] bg-white/70 dark:bg-black/40 backdrop-blur-xl overflow-hidden rounded-3xl">
-              <motion.div layout className={`transition-all duration-300 ${isFocused ? 'py-2 px-4' : 'p-6'}`}>
+              <motion.div layout className={`${isFocused ? 'py-2 px-4' : 'p-6'}`}>
                 <motion.div layout className={`flex flex-col`}>
                   <AnimatePresence>
                     {!isFocused && (
@@ -129,7 +129,7 @@ export const ExchangeActivity: React.FC = () => {
                   <motion.div 
                     layout
                     id="thb-input-container"
-                    className={`flex ${isFocused ? 'justify-end' : 'justify-center'} items-center w-full max-w-full cursor-text transition-all duration-300 ${getFontSize(thb)}`} 
+                    className={`flex ${isFocused ? 'justify-end' : 'justify-center'} items-center w-full max-w-full cursor-text ${getFontSize(thb)}`} 
                     onClick={() => inputRef.current?.focus()}
                   >
                     <motion.div layout className="flex items-center">
