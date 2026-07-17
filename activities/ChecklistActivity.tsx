@@ -75,45 +75,65 @@ const ProgressIslandContent = ({
         <AnimatePresence>
           {isExpanded && (
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={{
+                hidden: { opacity: 0, y: -5, filter: "blur(4px)" },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  filter: "blur(0px)",
+                  transition: {
+                    staggerChildren: 0.08,
+                    delayChildren: 0.1,
+                  },
+                },
+                exit: {
+                  opacity: 0,
+                  y: -5,
+                  filter: "blur(4px)",
+                  transition: {
+                    staggerChildren: 0.05,
+                    staggerDirection: -1,
+                    when: "afterChildren"
+                  }
+                },
+              }}
               className="w-full flex flex-col mt-4"
             >
               <div className="pt-3 border-t border-white/10 flex flex-col gap-3 w-full text-left">
-                {/* Total */}
-                <div className="space-y-1">
-                  <div className="flex justify-between text-[11px]">
-                    <span className="font-bold text-neutral-300">전체</span>
-                    <span className="text-blue-400 font-bold flex items-center"><AnimatedNumber value={progress} />%</span>
-                  </div>
-                  <div className="w-full h-2 bg-neutral-800 rounded-full overflow-hidden">
-                    <motion.div className="h-full bg-blue-500 rounded-full" initial={{ width: 0 }} animate={{ width: `${progress}%` }} transition={{ duration: 0.5 }} />
-                  </div>
-                </div>
-
-                {/* Gahyun */}
-                <div className="space-y-1">
-                  <div className="flex justify-between text-[11px]">
-                    <span className="font-bold text-neutral-300">가현쨩</span>
-                    <span className="text-pink-400 font-bold flex items-center"><AnimatedNumber value={gahyunProgress} />%</span>
-                  </div>
-                  <div className="w-full h-2 bg-neutral-800 rounded-full overflow-hidden">
-                    <motion.div className="h-full bg-pink-500 rounded-full" initial={{ width: 0 }} animate={{ width: `${gahyunProgress}%` }} transition={{ duration: 0.5 }} />
-                  </div>
-                </div>
-
-                {/* Minu */}
-                <div className="space-y-1">
-                  <div className="flex justify-between text-[11px]">
-                    <span className="font-bold text-neutral-300">미누쿤</span>
-                    <span className="text-emerald-400 font-bold flex items-center"><AnimatedNumber value={minuProgress} />%</span>
-                  </div>
-                  <div className="w-full h-2 bg-neutral-800 rounded-full overflow-hidden">
-                    <motion.div className="h-full bg-emerald-500 rounded-full" initial={{ width: 0 }} animate={{ width: `${minuProgress}%` }} transition={{ duration: 0.5 }} />
-                  </div>
-                </div>
+                {[
+                  { label: "전체", progress, text: "text-blue-400", bg: "bg-blue-500" },
+                  { label: "가현쨩", progress: gahyunProgress, text: "text-pink-400", bg: "bg-pink-500" },
+                  { label: "미누쿤", progress: minuProgress, text: "text-emerald-400", bg: "bg-emerald-500" },
+                ].map((item, i) => (
+                  <motion.div
+                    key={i}
+                    variants={{
+                      hidden: { opacity: 0, x: -10, filter: "blur(4px)" },
+                      visible: { opacity: 1, x: 0, filter: "blur(0px)" },
+                      exit: { opacity: 0, filter: "blur(4px)" },
+                    }}
+                    transition={{ type: "spring", stiffness: 300, damping: 24 }}
+                    className="space-y-1"
+                  >
+                    <div className="flex justify-between text-[11px]">
+                      <span className="font-bold text-neutral-300">{item.label}</span>
+                      <span className={`${item.text} font-bold flex items-center`}>
+                        <AnimatedNumber value={item.progress} />%
+                      </span>
+                    </div>
+                    <div className="w-full h-2 bg-neutral-800 rounded-full overflow-hidden">
+                      <motion.div
+                        className={`h-full ${item.bg} rounded-full`}
+                        initial={{ width: 0 }}
+                        animate={{ width: `${item.progress}%` }}
+                        transition={{ duration: 0.6, delay: 0.2 + i * 0.1, ease: "easeOut" }}
+                      />
+                    </div>
+                  </motion.div>
+                ))}
               </div>
             </motion.div>
           )}
