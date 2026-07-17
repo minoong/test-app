@@ -105,16 +105,17 @@ export const ExchangeActivity: React.FC = () => {
           
           {/* 메인 입력 (THB) 카드 */}
           <motion.div layout initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: "easeOut" }}>
-            <motion.div layout className="border border-white/60 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] bg-white/70 dark:bg-black/40 backdrop-blur-xl overflow-hidden rounded-3xl">
+            <motion.div layout className="border border-white/60 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] bg-white/70 dark:bg-black/40 backdrop-blur-xl rounded-3xl">
               <motion.div layout className={`relative ${isFocused ? 'py-2 px-4' : 'p-6'}`}>
                 <motion.div layout className={`flex flex-col`}>
                   
                   {/* The flying flag */}
                   <motion.div 
                     layout
-                    className={`flex justify-center ${isFocused ? 'absolute top-4 left-5' : 'mb-3'}`}
+                    layoutDependency={isFocused}
+                    className={`flex justify-center z-10 ${isFocused ? 'absolute -top-2 -left-2' : 'mb-3'}`}
                   >
-                    <motion.div layout className={`relative flex shrink-0 justify-center items-center rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800 ring-white/80 dark:ring-white/10 ${isFocused ? 'size-6 ring-1 shadow-none' : 'size-14 ring-4 shadow-sm'}`}>
+                    <motion.div layout layoutDependency={isFocused} className={`relative flex shrink-0 justify-center items-center rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800 ring-white/80 dark:ring-white/10 ${isFocused ? 'size-5 ring-1 shadow-md' : 'size-14 ring-4 shadow-sm'}`}>
                       <img src="https://flagcdn.com/w80/th.png" alt="Thailand Flag" className="w-full h-full object-cover" />
                     </motion.div>
                   </motion.div>
