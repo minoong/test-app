@@ -83,11 +83,11 @@ export const ExchangeActivity: React.FC = () => {
   // 가변 사이즈 로직: 모바일 환경에 맞춰 극단적으로 줄이도록 조정
   const getFontSize = (val: number | undefined) => {
     if (isFocused) {
-      if (!val) return "text-6xl";
+      if (!val) return "text-4xl";
       const len = String(val).length;
-      if (len > 10) return "text-4xl";
-      if (len > 8) return "text-5xl";
-      return "text-6xl";
+      if (len > 10) return "text-2xl";
+      if (len > 8) return "text-3xl";
+      return "text-4xl";
     }
     if (!val) return "text-6xl";
     const len = String(val).length;
@@ -106,7 +106,7 @@ export const ExchangeActivity: React.FC = () => {
           {/* 메인 입력 (THB) 카드 */}
           <motion.div layout initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: "easeOut" }}>
             <motion.div layout className="border border-white/60 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] bg-white/70 dark:bg-black/40 backdrop-blur-xl overflow-hidden rounded-3xl">
-              <motion.div layout className={`transition-all duration-300 ${isFocused ? 'p-5' : 'p-8'}`}>
+              <motion.div layout className={`transition-all duration-300 ${isFocused ? 'py-3 px-5' : 'p-8'}`}>
                 <motion.div layout className={`flex flex-col items-center justify-center`}>
                   <AnimatePresence>
                     {!isFocused && (
