@@ -174,7 +174,8 @@ export const ChecklistActivity: React.FC = () => {
 
         {/* Floating Action Button */}
         <button
-          className="absolute bottom-6 right-6 w-14 h-14 rounded-full bg-blue-600 text-white shadow-xl flex items-center justify-center hover:bg-blue-700 transition-colors z-50"
+          className="fixed right-6 w-14 h-14 rounded-full bg-blue-600 text-white shadow-xl flex items-center justify-center hover:bg-blue-700 transition-colors z-50"
+          style={{ bottom: "calc(88px + env(safe-area-inset-bottom))" }}
           onClick={() => setDrawerOpen(true)}
         >
           <Plus size={24} />
