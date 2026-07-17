@@ -125,9 +125,9 @@ export function DrawerViewport({
         position === "top" && "grid grid-rows-[auto_1fr] pb-12",
         position === "left" && "flex justify-start",
         position === "right" && "flex justify-end",
-        variant === "inset" && "px-(--inset) sm:[--inset:--spacing(4)]",
-        variant === "inset" && position !== "bottom" && "pt-(--inset)",
-        variant === "inset" && position !== "top" && "pb-(--inset)",
+        variant === "inset" && "px-(--inset) [--inset:--spacing(4)]",
+        variant === "inset" && position !== "bottom" && "pt-[calc(var(--inset)+env(safe-area-inset-top,0px))]",
+        variant === "inset" && position !== "top" && "pb-[calc(var(--inset)+env(safe-area-inset-bottom,0px))]",
         className,
       )}
       data-slot="drawer-viewport"
@@ -193,7 +193,7 @@ export function DrawerPopup({
                   "before:rounded-s-[calc(var(--radius-2xl)_-_1px)]",
               ),
             variant === "inset" &&
-              "before:hidden sm:rounded-2xl sm:border sm:after:bg-transparent sm:before:rounded-[calc(var(--radius-2xl)_-_1px)] sm:**:data-[slot=drawer-footer]:rounded-b-[calc(var(--radius-2xl)_-_1px)]",
+              "before:hidden rounded-2xl border after:bg-transparent before:rounded-[calc(var(--radius-2xl)_-_1px)] **:data-[slot=drawer-footer]:rounded-b-[calc(var(--radius-2xl)_-_1px)]",
             variant === "straight" && "[--stack-step:0]",
             (position === "bottom" || position === "top") &&
               "h-(--drawer-height,auto) [--height:max(0px,calc(var(--drawer-frontmost-height,var(--drawer-height))))] data-nested-drawer-open:h-(--height)",
