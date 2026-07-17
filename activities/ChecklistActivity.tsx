@@ -42,7 +42,7 @@ const ProgressIslandContent = ({
 
   const toggleExpand = () => {
     if (isExpanded) {
-      setSize(SIZE_PRESETS.LONG);
+      setSize(SIZE_PRESETS.PROGRESS_COLLAPSED);
     } else {
       setSize(SIZE_PRESETS.PROGRESS_EXPANDED);
     }
@@ -79,20 +79,15 @@ const ProgressIslandContent = ({
               animate="visible"
               exit="exit"
               variants={{
-                hidden: { opacity: 0, y: -5, filter: "blur(4px)" },
+                hidden: { opacity: 0 },
                 visible: {
                   opacity: 1,
-                  y: 0,
-                  filter: "blur(0px)",
                   transition: {
-                    staggerChildren: 0.08,
-                    delayChildren: 0.1,
+                    staggerChildren: 0.1,
                   },
                 },
                 exit: {
                   opacity: 0,
-                  y: -5,
-                  filter: "blur(4px)",
                   transition: {
                     duration: 0.1
                   }
@@ -109,11 +104,11 @@ const ProgressIslandContent = ({
                   <motion.div
                     key={i}
                     variants={{
-                      hidden: { opacity: 0, x: -10, filter: "blur(4px)" },
-                      visible: { opacity: 1, x: 0, filter: "blur(0px)" },
-                      exit: { opacity: 0, filter: "blur(4px)", transition: { duration: 0.1 } },
+                      hidden: { opacity: 0, y: 20 },
+                      visible: { opacity: 1, y: 0 },
+                      exit: { opacity: 0, y: 10, transition: { duration: 0.1 } },
                     }}
-                    transition={{ type: "spring", stiffness: 300, damping: 24 }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
                     className="space-y-1"
                   >
                     <div className="flex justify-between text-[11px]">
@@ -329,7 +324,7 @@ export const ChecklistActivity: React.FC = () => {
     <AppScreen appBar={{ title: "여행 준비물 체크리스트" }}>
       <div className="flex flex-col h-[calc(100dvh-64px)] bg-white dark:bg-black relative">
         <div className="py-4 pb-2 shrink-0 flex justify-center w-full">
-          <DynamicIslandProvider initialSize={SIZE_PRESETS.LONG}>
+          <DynamicIslandProvider initialSize={SIZE_PRESETS.PROGRESS_COLLAPSED}>
             <ProgressIslandContent rings={rings} progress={progress} gahyunProgress={gahyunProgress} minuProgress={minuProgress} />
           </DynamicIslandProvider>
         </div>

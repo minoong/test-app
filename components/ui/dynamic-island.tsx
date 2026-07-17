@@ -36,6 +36,7 @@ export type SizePresets =
   | "ultra"
   | "massive"
   | "progressExpanded"
+  | "progressCollapsed"
 
 const SIZE_PRESETS = {
   RESET: "reset",
@@ -53,6 +54,7 @@ const SIZE_PRESETS = {
   ULTRA: "ultra",
   MASSIVE: "massive",
   PROGRESS_EXPANDED: "progressExpanded",
+  PROGRESS_COLLAPSED: "progressCollapsed",
 } as const
 
 type Preset = {
@@ -137,6 +139,11 @@ const DynamicIslandSizePresets: Record<SizePresets, Preset> = {
   [SIZE_PRESETS.PROGRESS_EXPANDED]: {
     width: 371,
     aspectRatio: 240 / 371,
+    borderRadius: 42,
+  },
+  [SIZE_PRESETS.PROGRESS_COLLAPSED]: {
+    width: 220,
+    aspectRatio: 84 / 220,
     borderRadius: 42,
   },
 }
