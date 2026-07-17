@@ -132,40 +132,42 @@ export const ExchangeActivity: React.FC = () => {
                     className={`flex ${isFocused ? 'justify-end' : 'justify-center'} items-center w-full max-w-full cursor-text transition-all duration-300 ${getFontSize(thb)}`} 
                     onClick={() => inputRef.current?.focus()}
                   >
-                    <span className="font-bold text-slate-400 dark:text-slate-600 mr-2">฿</span>
-                    <NumberFlowInput
-                      ref={inputRef}
-                      value={thb}
-                      onChange={(val) => {
-                        isPristine.current = false;
-                        setThb(val);
-                      }}
-                      onFocus={(e) => {
-                        setIsFocused(true);
-                        setTimeout(() => {
-                          const activeEl = document.activeElement as HTMLInputElement;
-                          if (activeEl && typeof activeEl.select === 'function') {
-                            activeEl.select();
-                          }
-                        }, 50);
-                      }}
-                      onBlur={() => setIsFocused(false)}
-                      format
-                      placeholder="0"
-                      maxLength={15}
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      {...({ inputMode: "numeric", pattern: "[0-9]*" } as any)}
-                      className={`font-extrabold tracking-tighter bg-transparent outline-none text-slate-800 dark:text-white`}
-                    />
-                    {/* Blinking Cursor Animation (Only when NOT focused) */}
-                    {!isFocused && (
-                      <motion.div 
-                        animate={{ opacity: [1, 0] }} 
-                        transition={{ repeat: Infinity, duration: 0.9, ease: "easeInOut" }}
-                        className={`w-[3px] bg-indigo-500 dark:bg-indigo-400 ml-1 rounded-full ${thb === 0 || thb === undefined ? 'block' : 'opacity-70'}`}
-                        style={{ height: '0.85em' }}
+                    <motion.div layout className="flex items-center">
+                      <span className="font-bold text-slate-400 dark:text-slate-600 mr-2">฿</span>
+                      <NumberFlowInput
+                        ref={inputRef}
+                        value={thb}
+                        onChange={(val) => {
+                          isPristine.current = false;
+                          setThb(val);
+                        }}
+                        onFocus={(e) => {
+                          setIsFocused(true);
+                          setTimeout(() => {
+                            const activeEl = document.activeElement as HTMLInputElement;
+                            if (activeEl && typeof activeEl.select === 'function') {
+                              activeEl.select();
+                            }
+                          }, 50);
+                        }}
+                        onBlur={() => setIsFocused(false)}
+                        format
+                        placeholder="0"
+                        maxLength={15}
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        {...({ inputMode: "numeric", pattern: "[0-9]*" } as any)}
+                        className={`font-extrabold tracking-tighter bg-transparent outline-none text-slate-800 dark:text-white`}
                       />
-                    )}
+                      {/* Blinking Cursor Animation (Only when NOT focused) */}
+                      {!isFocused && (
+                        <motion.div 
+                          animate={{ opacity: [1, 0] }} 
+                          transition={{ repeat: Infinity, duration: 0.9, ease: "easeInOut" }}
+                          className={`w-[3px] bg-indigo-500 dark:bg-indigo-400 ml-1 rounded-full ${thb === 0 || thb === undefined ? 'block' : 'opacity-70'}`}
+                          style={{ height: '0.85em' }}
+                        />
+                      )}
+                    </motion.div>
                   </motion.div>
                 </motion.div>
               </motion.div>
