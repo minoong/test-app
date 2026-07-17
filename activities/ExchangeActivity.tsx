@@ -17,6 +17,7 @@ interface ExchangeRate {
 
 export const ExchangeActivity: React.FC = () => {
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const [isFocused, setIsFocused] = useState(false);
   const [thb, setThb] = useState<number | undefined>(1000);
   const [rates, setRates] = useState<{ THB: number; USD: number }>({ THB: 38.5, USD: 1380 });
   const [loading, setLoading] = useState(true);
@@ -108,6 +109,8 @@ export const ExchangeActivity: React.FC = () => {
                     ref={inputRef}
                     value={thb}
                     onChange={(val) => setThb(val)}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
                     format
                     placeholder="0"
                     maxLength={10}
@@ -115,13 +118,15 @@ export const ExchangeActivity: React.FC = () => {
                     {...({ inputMode: "numeric", pattern: "[0-9]*" } as any)}
                     className="font-extrabold tracking-tighter bg-transparent outline-none text-slate-800 dark:text-white"
                   />
-                  {/* Blinking Cursor Animation */}
-                  <motion.div 
-                    animate={{ opacity: [1, 0] }} 
-                    transition={{ repeat: Infinity, duration: 0.9, ease: "easeInOut" }}
-                    className={`w-[3px] bg-indigo-500 dark:bg-indigo-400 ml-1 rounded-full ${thb === 0 || thb === undefined ? 'block' : 'opacity-70'}`}
-                    style={{ height: '0.85em' }}
-                  />
+                  {/* Blinking Cursor Animation (Only when NOT focused) */}
+                  {!isFocused && (
+                    <motion.div 
+                      animate={{ opacity: [1, 0] }} 
+                      transition={{ repeat: Infinity, duration: 0.9, ease: "easeInOut" }}
+                      className={`w-[3px] bg-indigo-500 dark:bg-indigo-400 ml-1 rounded-full ${thb === 0 || thb === undefined ? 'block' : 'opacity-70'}`}
+                      style={{ height: '0.85em' }}
+                    />
+                  )}
                 </div>
               </CardContent>
             </Card>
