@@ -13,7 +13,7 @@ const INITIAL_ITEMS = [
   { id: 8, category: "의류 및 기타", text: "모기 기피제 / 비상약", checked: false },
 ];
 
-export const ChecklistActivity: React.FC<any> = () => {
+export const ChecklistActivity: React.FC = () => {
   const [items, setItems] = useState(INITIAL_ITEMS);
 
   const toggleCheck = (id: number) => {

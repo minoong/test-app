@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { AppScreen } from "@stackflow/plugin-basic-ui";
 
-export const ExchangeActivity: React.FC<any> = () => {
+export const ExchangeActivity: React.FC = () => {
   const [krw, setKrw] = useState<string>("38000");
   const exchangeRate = 38.5; // Dummy rate: 1 THB = 38.5 KRW
 

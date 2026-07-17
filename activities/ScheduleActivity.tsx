@@ -33,7 +33,7 @@ const SCHEDULE_DATA = [
   }
 ];
 
-export const ScheduleActivity: React.FC<any> = () => {
+export const ScheduleActivity: React.FC = () => {
   const [activeDay, setActiveDay] = useState(2); // Default to Day 2 for demo
 
   return (

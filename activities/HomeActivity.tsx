@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import NeumorphButton from "../components/ui/neumorph-button";
 
 export const HomeActivity: React.FC = () => {
-  const { push } = useFlow();
+  const { push, replace } = useFlow();
   const [tripState, setTripState] = useState<"before" | "during" | "after">("before");
 
   return (
@@ -28,7 +28,7 @@ export const HomeActivity: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <button onClick={() => push("ChecklistActivity", {})} className="p-4 bg-white dark:bg-gray-800 rounded-2xl border shadow-sm flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform">
+                <button onClick={() => replace("ChecklistActivity", {}, { animate: false })} className="p-4 bg-white dark:bg-gray-800 rounded-2xl border shadow-sm flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform">
                   <span className="text-2xl">📝</span>
                   <span className="font-semibold">준비물 리스트</span>
                 </button>
@@ -59,11 +59,11 @@ export const HomeActivity: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <button onClick={() => push("ScheduleActivity", {})} className="p-4 bg-white dark:bg-gray-800 rounded-2xl border shadow-sm flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform">
+                <button onClick={() => replace("ScheduleActivity", {}, { animate: false })} className="p-4 bg-white dark:bg-gray-800 rounded-2xl border shadow-sm flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform">
                   <span className="text-2xl">📅</span>
                   <span className="font-semibold">오늘의 일정</span>
                 </button>
-                <button onClick={() => push("DictionaryActivity", {})} className="p-4 bg-white dark:bg-gray-800 rounded-2xl border shadow-sm flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform">
+                <button onClick={() => replace("DictionaryActivity", {}, { animate: false })} className="p-4 bg-white dark:bg-gray-800 rounded-2xl border shadow-sm flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform">
                   <span className="text-2xl">🗣️</span>
                   <span className="font-semibold">태국어 회화</span>
                 </button>
