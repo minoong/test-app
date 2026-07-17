@@ -64,6 +64,10 @@ export const ChecklistActivity: React.FC = () => {
             setTimeout(() => {
               setHighlightedItemId(null);
             }, 2000);
+            
+            toast("준비물 항목이 업데이트되었습니다.", {
+              duration: 3000,
+            });
           } else if (payload.eventType === 'DELETE') {
             const deletedItem = payload.old as { id: string };
             setItems((prev) => prev.filter((i) => i.id !== deletedItem.id));

@@ -44,7 +44,7 @@ export default function RootLayout({
     >
       <body className="fixed w-full h-[100dvh] overflow-hidden overscroll-none isolate flex flex-col">
         {children}
-        <Toaster />
+        <Toaster position="top-center" />
       </body>
     </html>
   );
