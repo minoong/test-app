@@ -109,25 +109,39 @@ export const ExchangeActivity: React.FC = () => {
               <motion.div layout className={`relative ${isFocused ? 'py-2 px-4' : 'p-6'}`}>
                 <motion.div layout className={`flex flex-col`}>
                   
-                  {/* The flying flag */}
-                  <motion.div 
-                    layout
-                    layoutDependency={isFocused}
-                    className={`flex justify-center z-10 ${isFocused ? 'absolute -top-2 -left-2' : 'mb-3'}`}
-                  >
-                    <motion.div layout layoutDependency={isFocused} className={`relative flex shrink-0 justify-center items-center rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800 ring-white/80 dark:ring-white/10 ${isFocused ? 'size-5 ring-1 shadow-md' : 'size-14 ring-4 shadow-sm'}`}>
-                      <img src="https://flagcdn.com/w80/th.png" alt="Thailand Flag" className="w-full h-full object-cover" />
+                  {/* The flying flag (Focused State) */}
+                  {isFocused && (
+                    <motion.div 
+                      layoutId="thb-flag-wrapper"
+                      className="absolute -top-2 -left-2 z-10"
+                    >
+                      <motion.div layoutId="thb-flag-circle" className="relative flex shrink-0 justify-center items-center rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800 ring-white/80 dark:ring-white/10 size-5 ring-1 shadow-md">
+                        <img src="https://flagcdn.com/w80/th.png" alt="Thailand Flag" className="w-full h-full object-cover" />
+                      </motion.div>
                     </motion.div>
-                  </motion.div>
+                  )}
+
+                  {/* The flying flag (Unfocused State) */}
+                  {!isFocused && (
+                    <motion.div 
+                      layoutId="thb-flag-wrapper"
+                      className="flex justify-center z-10 mb-3"
+                    >
+                      <motion.div layoutId="thb-flag-circle" className="relative flex shrink-0 justify-center items-center rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800 ring-white/80 dark:ring-white/10 size-14 ring-4 shadow-sm">
+                        <img src="https://flagcdn.com/w80/th.png" alt="Thailand Flag" className="w-full h-full object-cover" />
+                      </motion.div>
+                    </motion.div>
+                  )}
 
                   {/* The disappearing text */}
-                  <AnimatePresence mode="popLayout">
+                  <AnimatePresence>
                     {!isFocused && (
                       <motion.div 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="flex justify-center overflow-hidden mb-8 w-full"
+                        layout
+                        initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+                        animate={{ opacity: 1, height: 'auto', marginBottom: 32 }}
+                        exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                        className="flex justify-center overflow-hidden w-full"
                       >
                         <p className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
                           태국 바트 (THB)
