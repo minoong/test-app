@@ -16,6 +16,7 @@ import {
   SIZE_PRESETS,
   useDynamicIslandSize,
 } from "../components/ui/dynamic-island";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 
 const AnimatedNumber = ({ value }: { value: number }) => {
@@ -155,30 +156,22 @@ interface PreparationItem {
 }
 
 export const ChecklistActivity: React.FC = () => {
-  const [items, setItems] = useState<PreparationItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null);
   const [rotation, setRotation] = useState(0);
 
-  const fetchItems = async () => {
-    try {
+  const { data: items = [], isLoading: loading } = useQuery<PreparationItem[]>({
+    queryKey: ["checklist"],
+    queryFn: async () => {
       const res = await fetch("/api/checklist");
-      if (res.ok) {
-        const json = await res.json();
-        setItems(json.data || []);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+      if (!res.ok) throw new Error("Failed to fetch");
+      const json = await res.json();
+      return json.data || [];
+    },
+  });
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    fetchItems();
-
     const channel = supabase
       .channel('preparation_items_changes')
       .on(
@@ -186,17 +179,18 @@ export const ChecklistActivity: React.FC = () => {
         { event: '*', schema: 'public', table: 'preparation_items' },
         (payload) => {
           if (payload.eventType === 'INSERT') {
+            queryClient.invalidateQueries({ queryKey: ["checklist"] });
             toast("새로운 준비물이 등록되었습니다.", {
               action: {
                 label: "새로고침",
-                onClick: () => fetchItems(),
+                onClick: () => queryClient.invalidateQueries({ queryKey: ["checklist"] }),
               },
               duration: 5000,
             });
           } else if (payload.eventType === 'UPDATE') {
             const updatedItem = payload.new as PreparationItem;
-            setItems((prev) =>
-              prev.map((i) => (i.id === updatedItem.id ? updatedItem : i))
+            queryClient.setQueryData<PreparationItem[]>(["checklist"], (old = []) =>
+              old.map((i) => (i.id === updatedItem.id ? updatedItem : i))
             );
             
             // Trigger highlight
@@ -210,7 +204,9 @@ export const ChecklistActivity: React.FC = () => {
             });
           } else if (payload.eventType === 'DELETE') {
             const deletedItem = payload.old as { id: string };
-            setItems((prev) => prev.filter((i) => i.id !== deletedItem.id));
+            queryClient.setQueryData<PreparationItem[]>(["checklist"], (old = []) =>
+              old.filter((i) => i.id !== deletedItem.id)
+            );
           }
         }
       )
@@ -219,43 +215,85 @@ export const ChecklistActivity: React.FC = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [queryClient]);
 
-  const toggleCheck = async (id: string, isChecked: boolean, targetUser: string) => {
-    const item = items.find((i) => i.id === id);
-    if (!item) return;
+  const toggleMutation = useMutation({
+    mutationFn: async ({ id, isChecked, targetUser }: { id: string; isChecked: boolean; targetUser: string }) => {
+      const item = items.find((i) => i.id === id);
+      if (!item) throw new Error("Item not found");
 
-    // Optimistic UI update
-    let newCompletedBy = [...item.completed_by];
-    if (isChecked) {
-      if (!newCompletedBy.includes(targetUser)) newCompletedBy.push(targetUser);
-    } else {
-      newCompletedBy = newCompletedBy.filter((u) => u !== targetUser);
-    }
+      let newCompletedBy = [...item.completed_by];
+      if (isChecked) {
+        if (!newCompletedBy.includes(targetUser)) newCompletedBy.push(targetUser);
+      } else {
+        newCompletedBy = newCompletedBy.filter((u) => u !== targetUser);
+      }
 
-    setItems((prev) =>
-      prev.map((i) => (i.id === id ? { ...i, completed_by: newCompletedBy } : i))
-    );
+      const res = await fetch("/api/checklist", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, completed_by: newCompletedBy }),
+      });
+      if (!res.ok) throw new Error("Update failed");
+      return { id, newCompletedBy };
+    },
+    onMutate: async ({ id, isChecked, targetUser }) => {
+      await queryClient.cancelQueries({ queryKey: ["checklist"] });
+      const previousItems = queryClient.getQueryData<PreparationItem[]>(["checklist"]);
 
-    // API update
-    await fetch("/api/checklist", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, completed_by: newCompletedBy }),
-    });
+      queryClient.setQueryData<PreparationItem[]>(["checklist"], (old = []) => {
+        return old.map((i) => {
+          if (i.id === id) {
+            let newCompletedBy = [...i.completed_by];
+            if (isChecked) {
+              if (!newCompletedBy.includes(targetUser)) newCompletedBy.push(targetUser);
+            } else {
+              newCompletedBy = newCompletedBy.filter((u) => u !== targetUser);
+            }
+            return { ...i, completed_by: newCompletedBy };
+          }
+          return i;
+        });
+      });
+
+      return { previousItems };
+    },
+    onError: (err, variables, context) => {
+      if (context?.previousItems) {
+        queryClient.setQueryData(["checklist"], context.previousItems);
+      }
+      toast.error("업데이트 실패");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["checklist"] });
+    },
+  });
+
+  const toggleCheck = (id: string, isChecked: boolean, targetUser: string) => {
+    toggleMutation.mutate({ id, isChecked, targetUser });
   };
 
-  const handleNudge = async (target: string) => {
-    try {
-      await fetch("/api/checklist/nudge", {
+  const nudgeMutation = useMutation({
+    mutationFn: async (target: string) => {
+      const res = await fetch("/api/checklist/nudge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ target }),
       });
-      toast.success(`푸시 알림 전송 완료 (${target})`);
-    } catch {
+      if (!res.ok) throw new Error("Nudge failed");
+    },
+    onSuccess: (_, variables) => {
+      toast.success(`푸시 알림 전송 완료 (${variables})`, {
+        description: "상대방에게 푸시 알림이 전송되었습니다.",
+      });
+    },
+    onError: () => {
       toast.error("푸시 알림 전송에 실패했습니다.");
-    }
+    },
+  });
+
+  const handleNudge = (target: string) => {
+    nudgeMutation.mutate(target);
   };
 
   const masterItems = items.filter((i) => i.type === "master");
@@ -414,7 +452,6 @@ export const ChecklistActivity: React.FC = () => {
             }
             setDrawerOpen(open);
           }}
-          onSuccess={fetchItems}
         />
       </div>
       <BottomNav active="checklist" />

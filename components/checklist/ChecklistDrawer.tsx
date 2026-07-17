@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Drawer,
   DrawerPanel,
@@ -19,10 +20,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 interface ChecklistDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSuccess: () => void;
 }
 
-export function ChecklistDrawer({ open, onOpenChange, onSuccess }: ChecklistDrawerProps) {
+export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
+  const queryClient = useQueryClient();
   const [title, setTitle] = useState("");
   const [importance, setImportance] = useState<"high" | "normal" | "low">("normal");
   const [targets, setTargets] = useState<{ master: boolean; gahyun: boolean; minu: boolean }>({
@@ -30,7 +31,6 @@ export function ChecklistDrawer({ open, onOpenChange, onSuccess }: ChecklistDraw
     gahyun: false,
     minu: false,
   });
-  const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
   // 대상자 체크 핸들러
@@ -42,39 +42,20 @@ export function ChecklistDrawer({ open, onOpenChange, onSuccess }: ChecklistDraw
     title.trim().length > 0 &&
     (targets.master || targets.gahyun || targets.minu);
 
-  const handleSubmit = async () => {
-    if (!isFormValid) return;
-
-    setLoading(true);
-
-    try {
-      const isMaster = targets.master;
-      const type = isMaster ? "master" : "personal";
-      const assignees = isMaster ? ["all"] : [];
-      
-      if (!isMaster) {
-        if (targets.gahyun) assignees.push("gahyun");
-        if (targets.minu) assignees.push("minu");
-      }
-
+  const addMutation = useMutation({
+    mutationFn: async (payload: { title: string; type: string; assignees: string[]; importance: string }) => {
       const res = await fetch("/api/checklist", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title,
-          type,
-          assignees,
-          importance,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
-
       if (!res.ok) throw new Error("Failed to register item");
-
+      return res.json();
+    },
+    onSuccess: () => {
       setSuccess(true);
-      onSuccess();
-
+      queryClient.invalidateQueries({ queryKey: ["checklist"] });
+      
       // 성공 메시지 표시 후 닫기 및 초기화
       setTimeout(() => {
         onOpenChange(false);
@@ -86,12 +67,26 @@ export function ChecklistDrawer({ open, onOpenChange, onSuccess }: ChecklistDraw
           setSuccess(false);
         }, 300); // 닫히는 애니메이션 시간 대기
       }, 1000);
-    } catch (error) {
-      console.error(error);
+    },
+    onError: (err) => {
+      console.error(err);
       alert("등록에 실패했습니다.");
-    } finally {
-      setLoading(false);
+    },
+  });
+
+  const handleSubmit = () => {
+    if (!isFormValid) return;
+
+    const isMaster = targets.master;
+    const type = isMaster ? "master" : "personal";
+    const assignees = isMaster ? ["all"] : [];
+    
+    if (!isMaster) {
+      if (targets.gahyun) assignees.push("gahyun");
+      if (targets.minu) assignees.push("minu");
     }
+
+    addMutation.mutate({ title, type, assignees, importance });
   };
 
   return (
@@ -179,7 +174,7 @@ export function ChecklistDrawer({ open, onOpenChange, onSuccess }: ChecklistDraw
             className="flex-1"
             disabled={!isFormValid}
             onClick={handleSubmit}
-            status={loading ? "loading" : success ? "success" : "idle"}
+            status={addMutation.isPending ? "loading" : success ? "success" : "idle"}
           />
         </DrawerFooter>
       </DrawerPopup>

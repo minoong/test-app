@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
+import { QueryProvider } from "@/components/providers/query-provider";
 
 const interHeading = Inter({subsets:['latin'],variable:'--font-heading'});
 
@@ -43,8 +44,10 @@ export default function RootLayout({
       className={cn("fixed w-full h-[100dvh] overflow-hidden overscroll-none", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable, interHeading.variable)}
     >
       <body className="fixed w-full h-[100dvh] overflow-hidden overscroll-none isolate flex flex-col">
-        {children}
-        <Toaster position="top-center" />
+        <QueryProvider>
+          {children}
+          <Toaster position="top-center" />
+        </QueryProvider>
       </body>
     </html>
   );
