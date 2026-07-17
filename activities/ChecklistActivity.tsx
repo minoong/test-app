@@ -12,6 +12,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { RingChart } from "../components/ui/ring-chart";
 import { Card, CardContent } from "../components/ui/card";
 
+const AnimatedNumber = ({ value }: { value: number }) => {
+  const [displayValue, setDisplayValue] = useState(0);
+  useEffect(() => {
+    const timer = setTimeout(() => setDisplayValue(value), 50);
+    return () => clearTimeout(timer);
+  }, [value]);
+  return <NumberFlow value={displayValue} />;
+};
+
 interface PreparationItem {
   id: string;
   title: string;
@@ -236,7 +245,7 @@ export const ChecklistActivity: React.FC = () => {
                       <div className="space-y-1">
                         <div className="flex justify-between text-xs">
                           <span className="font-bold text-gray-700 dark:text-gray-300">전체</span>
-                          <span className="text-blue-500 font-bold flex items-center"><NumberFlow value={progress} />%</span>
+                          <span className="text-blue-500 font-bold flex items-center"><AnimatedNumber value={progress} />%</span>
                         </div>
                         <div className="w-full h-2.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                           <motion.div className="h-full bg-blue-500 rounded-full" initial={{ width: 0 }} animate={{ width: `${progress}%` }} transition={{ duration: 0.5 }} />
@@ -247,7 +256,7 @@ export const ChecklistActivity: React.FC = () => {
                       <div className="space-y-1">
                         <div className="flex justify-between text-xs">
                           <span className="font-bold text-gray-700 dark:text-gray-300">가현쨩</span>
-                          <span className="text-pink-500 font-bold flex items-center"><NumberFlow value={gahyunProgress} />%</span>
+                          <span className="text-pink-500 font-bold flex items-center"><AnimatedNumber value={gahyunProgress} />%</span>
                         </div>
                         <div className="w-full h-2.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                           <motion.div className="h-full bg-pink-500 rounded-full" initial={{ width: 0 }} animate={{ width: `${gahyunProgress}%` }} transition={{ duration: 0.5 }} />
@@ -258,7 +267,7 @@ export const ChecklistActivity: React.FC = () => {
                       <div className="space-y-1">
                         <div className="flex justify-between text-xs">
                           <span className="font-bold text-gray-700 dark:text-gray-300">미누쿤</span>
-                          <span className="text-emerald-500 font-bold flex items-center"><NumberFlow value={minuProgress} />%</span>
+                          <span className="text-emerald-500 font-bold flex items-center"><AnimatedNumber value={minuProgress} />%</span>
                         </div>
                         <div className="w-full h-2.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                           <motion.div className="h-full bg-emerald-500 rounded-full" initial={{ width: 0 }} animate={{ width: `${minuProgress}%` }} transition={{ duration: 0.5 }} />
