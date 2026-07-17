@@ -139,7 +139,7 @@ export const ExchangeActivity: React.FC = () => {
                   <motion.div 
                     layout
                     id="thb-input-container"
-                    className={`flex ${isFocused ? 'justify-end' : 'justify-center'} items-center w-full max-w-full cursor-text ${getFontSize(thb)}`} 
+                    className={`flex ${isFocused ? 'justify-end min-h-[40px]' : 'justify-center min-h-[72px]'} items-center w-full max-w-full cursor-text ${getFontSize(thb)}`} 
                     onClick={() => inputRef.current?.focus()}
                   >
                     <motion.div layout className="flex items-center">
