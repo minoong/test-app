@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, Radio } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "../ui/badge";
 
 interface ChecklistDrawerProps {
   open: boolean;
@@ -118,13 +119,16 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
               className="flex flex-row gap-4"
             >
               <Label className="flex items-center gap-2 cursor-pointer">
-                <Radio value="high" /> 높음
+                <Radio value="high" />
+                <Badge variant="high">높음</Badge>
               </Label>
               <Label className="flex items-center gap-2 cursor-pointer">
-                <Radio value="normal" /> 보통
+                <Radio value="normal" />
+                <Badge variant="normal">보통</Badge>
               </Label>
               <Label className="flex items-center gap-2 cursor-pointer">
-                <Radio value="low" /> 낮음
+                <Radio value="low" />
+                <Badge variant="low">낮음</Badge>
               </Label>
             </RadioGroup>
           </div>

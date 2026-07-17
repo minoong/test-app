@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { supabase } from "../lib/supabase";
 import NumberFlow from "@number-flow/react";
 import { Skeleton } from "../components/ui/skeleton";
+import { Badge } from "../components/ui/badge";
 import NeumorphButton from "../components/ui/neumorph-button";
 import { motion, AnimatePresence } from "framer-motion";
 import { RingChart } from "../components/ui/ring-chart";
@@ -331,7 +332,9 @@ export const ChecklistActivity: React.FC = () => {
                   }`}
                 >
                   {item.title}
-                  {item.importance === "high" && <span className="ml-2 text-xs text-red-500 font-bold">중요</span>}
+                  <Badge variant={item.importance as "high" | "normal" | "low"} className="ml-2">
+                    {item.importance === "high" ? "높음" : item.importance === "low" ? "낮음" : "보통"}
+                  </Badge>
                 </span>
               </label>
               {!isChecked && item.type === "personal" && (
