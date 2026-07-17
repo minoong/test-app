@@ -114,17 +114,17 @@ export const ExchangeActivity: React.FC = () => {
   return (
     <AppScreen appBar={{ title: "환율 계산기" }}>
       {/* 가로 스크롤 완전 차단을 위해 overflow-x-hidden 추가 */}
-      <div className="flex flex-col flex-1 bg-neutral-950 text-white pb-20 overflow-y-auto overflow-x-hidden">
+      <div className="flex flex-col flex-1 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white pb-20 overflow-y-auto overflow-x-hidden">
         
         {/* 상단 컨트롤 영역 */}
-        <div className="flex justify-between items-center p-4 border-b border-neutral-800 bg-neutral-950/80 backdrop-blur z-10 sticky top-0">
-          <p className="text-xs text-neutral-400">
+        <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-neutral-800 bg-gray-50/80 dark:bg-gray-950/80 backdrop-blur z-10 sticky top-0">
+          <p className="text-xs text-gray-500 dark:text-neutral-400">
             {lastUpdated ? `업데이트: ${lastUpdated}` : "로딩 중..."}
           </p>
           <button 
             onClick={handleUpdateAPI}
             disabled={updating || loading}
-            className="flex items-center gap-1.5 text-xs bg-white/10 text-white px-3 py-1.5 rounded-full font-medium hover:bg-white/20 transition disabled:opacity-50"
+            className="flex items-center gap-1.5 text-xs bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 px-3 py-1.5 rounded-full font-medium hover:bg-blue-200 dark:hover:bg-blue-800 transition disabled:opacity-50"
           >
             {updating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCcw className="w-3.5 h-3.5" />}
             API 갱신
@@ -132,30 +132,31 @@ export const ExchangeActivity: React.FC = () => {
         </div>
 
         {/* 메인 KRW 입력 영역 */}
-        <div className="flex flex-col items-center justify-center p-8 min-h-[40vh] border-b border-neutral-900 relative overflow-hidden w-full max-w-full">
+        <div className="flex flex-col items-center justify-center p-8 min-h-[40vh] border-b border-gray-200 dark:border-neutral-900 relative overflow-hidden w-full max-w-full">
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center w-full max-w-full"
           >
-            <p className="text-neutral-500 text-sm mb-6 font-medium tracking-widest uppercase">
+            <p className="text-gray-500 text-sm mb-6 font-medium tracking-widest uppercase">
               Enter KRW Amount
             </p>
-            <div className="flex justify-center w-full max-w-full">
+            <div className="flex justify-center items-center w-full max-w-full">
+              <span className={`font-semibold tracking-tighter text-gray-400 dark:text-neutral-600 mr-1 transition-all duration-300 ease-out ${getFontSize(krw)}`}>₩</span>
               <NumberFlowInput
                 value={krw}
                 onChange={(val) => setKrw(val)}
                 format
                 placeholder="0"
                 maxLength={14}
-                className={`font-semibold tracking-tighter w-full max-w-full bg-transparent outline-none text-center transition-all duration-300 ease-out ${getFontSize(krw)}`}
+                className={`font-semibold tracking-tighter max-w-full bg-transparent outline-none transition-all duration-300 ease-out ${getFontSize(krw)}`}
               />
             </div>
           </motion.div>
         </div>
 
         {/* 변환 결과 영역 */}
-        <div className="flex flex-col flex-1 p-6 gap-8 bg-neutral-950">
+        <div className="flex flex-col flex-1 p-6 gap-8 bg-gray-50 dark:bg-gray-950">
           {/* THB */}
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
@@ -164,22 +165,22 @@ export const ExchangeActivity: React.FC = () => {
             className="flex flex-col gap-3"
           >
             <div className="flex justify-between items-center text-sm">
-              <span className="text-neutral-400 font-medium">태국 바트 (THB)</span>
-              <div className="flex items-center gap-2 text-neutral-500">
+              <span className="text-gray-600 dark:text-neutral-400 font-medium">태국 바트 (THB)</span>
+              <div className="flex items-center gap-2 text-gray-500">
                 <span>1 THB =</span>
                 <input 
-                  className="w-16 bg-neutral-900 rounded px-2 py-1 text-right text-white outline-none focus:ring-1 focus:ring-neutral-700 transition" 
+                  className="w-16 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-transparent rounded px-2 py-1 text-right text-gray-900 dark:text-white outline-none focus:ring-1 focus:ring-blue-500 dark:focus:ring-neutral-700 transition" 
                   value={rates.THB}
                   onChange={(e) => setRates({...rates, THB: parseFloat(e.target.value) || 0})}
                 />
                 <span>KRW</span>
-                <button onClick={() => handleManualSave('THB', rates.THB.toString())} className="text-neutral-400 hover:text-white transition">
+                <button onClick={() => handleManualSave('THB', rates.THB.toString())} className="text-gray-400 hover:text-blue-500 transition">
                   <Save className="w-4 h-4"/>
                 </button>
               </div>
             </div>
-            <div className="text-4xl md:text-5xl font-bold tracking-tight text-white flex gap-2">
-              <span className="text-neutral-600">฿</span>
+            <div className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 dark:text-white flex gap-2">
+              <span className="text-gray-400 dark:text-neutral-600">฿</span>
               <NumberFlow 
                 value={thbValue} 
                 format={{ minimumFractionDigits: 2, maximumFractionDigits: 2 }} 
@@ -188,7 +189,7 @@ export const ExchangeActivity: React.FC = () => {
             </div>
           </motion.div>
 
-          <div className="h-px bg-neutral-900 w-full" />
+          <div className="h-px bg-gray-200 dark:bg-neutral-900 w-full" />
 
           {/* USD */}
           <motion.div 
@@ -198,22 +199,22 @@ export const ExchangeActivity: React.FC = () => {
             className="flex flex-col gap-3"
           >
             <div className="flex justify-between items-center text-sm">
-              <span className="text-neutral-400 font-medium">미국 달러 (USD)</span>
-              <div className="flex items-center gap-2 text-neutral-500">
+              <span className="text-gray-600 dark:text-neutral-400 font-medium">미국 달러 (USD)</span>
+              <div className="flex items-center gap-2 text-gray-500">
                 <span>1 USD =</span>
                 <input 
-                  className="w-16 bg-neutral-900 rounded px-2 py-1 text-right text-white outline-none focus:ring-1 focus:ring-neutral-700 transition" 
+                  className="w-16 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-transparent rounded px-2 py-1 text-right text-gray-900 dark:text-white outline-none focus:ring-1 focus:ring-blue-500 dark:focus:ring-neutral-700 transition" 
                   value={rates.USD}
                   onChange={(e) => setRates({...rates, USD: parseFloat(e.target.value) || 0})}
                 />
                 <span>KRW</span>
-                <button onClick={() => handleManualSave('USD', rates.USD.toString())} className="text-neutral-400 hover:text-white transition">
+                <button onClick={() => handleManualSave('USD', rates.USD.toString())} className="text-gray-400 hover:text-blue-500 transition">
                   <Save className="w-4 h-4"/>
                 </button>
               </div>
             </div>
-            <div className="text-4xl md:text-5xl font-bold tracking-tight text-white flex gap-2">
-              <span className="text-neutral-600">$</span>
+            <div className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 dark:text-white flex gap-2">
+              <span className="text-gray-400 dark:text-neutral-600">$</span>
               <NumberFlow 
                 value={usdValue} 
                 format={{ minimumFractionDigits: 2, maximumFractionDigits: 2 }} 
