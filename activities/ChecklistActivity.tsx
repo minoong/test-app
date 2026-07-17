@@ -94,13 +94,11 @@ const ProgressIslandContent = ({
                   y: -5,
                   filter: "blur(4px)",
                   transition: {
-                    staggerChildren: 0.05,
-                    staggerDirection: -1,
-                    when: "afterChildren"
+                    duration: 0.1
                   }
                 },
               }}
-              className="w-full flex flex-col mt-4"
+              className="w-full flex flex-col mt-4 overflow-hidden"
             >
               <div className="pt-3 border-t border-white/10 flex flex-col gap-3 w-full text-left">
                 {[
@@ -113,7 +111,7 @@ const ProgressIslandContent = ({
                     variants={{
                       hidden: { opacity: 0, x: -10, filter: "blur(4px)" },
                       visible: { opacity: 1, x: 0, filter: "blur(0px)" },
-                      exit: { opacity: 0, filter: "blur(4px)" },
+                      exit: { opacity: 0, filter: "blur(4px)", transition: { duration: 0.1 } },
                     }}
                     transition={{ type: "spring", stiffness: 300, damping: 24 }}
                     className="space-y-1"
