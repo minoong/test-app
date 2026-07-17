@@ -7,6 +7,7 @@ import { NumberFlowInput } from "@daformat/react-number-flow-input";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "../components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import NeumorphButton from "../components/ui/neumorph-button";
 import { gsap } from "gsap";
 import { Flip } from "gsap/Flip";
 import { useGSAP } from "@gsap/react";
@@ -191,8 +192,10 @@ export const ExchangeActivity: React.FC = () => {
                         className={`font-extrabold tracking-tighter bg-transparent outline-none text-slate-800 dark:text-white`}
                       />
                       {isFocused && thb !== undefined && String(thb).length > 0 && (
-                        <button
+                        <NeumorphButton
                           type="button"
+                          intent="secondary"
+                          size="small"
                           onPointerDown={(e) => e.preventDefault()}
                           onClick={(e) => {
                             e.preventDefault();
@@ -206,10 +209,10 @@ export const ExchangeActivity: React.FC = () => {
                               isClearing.current = false;
                             }, 50);
                           }}
-                          className="ml-2 p-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors z-10 relative cursor-pointer"
+                          className="ml-2 !p-1.5 !h-auto !w-auto !rounded-full z-10 relative cursor-pointer"
                         >
-                          <X className="w-5 h-5 sm:w-6 sm:h-6" />
-                        </button>
+                          <X className="w-4 h-4 sm:w-5 sm:h-5 text-slate-500" />
+                        </NeumorphButton>
                       )}
                       {/* Blinking Cursor Animation (Only when NOT focused) */}
                       {!isFocused && (
