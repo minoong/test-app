@@ -109,7 +109,11 @@ export const ExchangeActivity: React.FC = () => {
                     ref={inputRef}
                     value={thb}
                     onChange={(val) => setThb(val)}
-                    onFocus={() => setIsFocused(true)}
+                    onFocus={(e) => {
+                      setIsFocused(true);
+                      const target = e.target;
+                      setTimeout(() => target.select(), 50);
+                    }}
                     onBlur={() => setIsFocused(false)}
                     format
                     placeholder="0"
