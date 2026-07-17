@@ -4,7 +4,7 @@ import { supabase } from "../lib/supabase";
 import { Save } from "lucide-react";
 import NumberFlow from "@number-flow/react";
 import { NumberFlowInput } from "@daformat/react-number-flow-input";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "../components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 
@@ -83,11 +83,11 @@ export const ExchangeActivity: React.FC = () => {
   // 가변 사이즈 로직: 모바일 환경에 맞춰 극단적으로 줄이도록 조정
   const getFontSize = (val: number | undefined) => {
     if (isFocused) {
-      if (!val) return "text-4xl";
+      if (!val) return "text-6xl";
       const len = String(val).length;
-      if (len > 10) return "text-2xl";
-      if (len > 8) return "text-3xl";
-      return "text-4xl";
+      if (len > 10) return "text-4xl";
+      if (len > 8) return "text-5xl";
+      return "text-6xl";
     }
     if (!val) return "text-6xl";
     const len = String(val).length;
@@ -107,20 +107,29 @@ export const ExchangeActivity: React.FC = () => {
           <motion.div layout initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: "easeOut" }}>
             <motion.div layout className="border border-white/60 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] bg-white/70 dark:bg-black/40 backdrop-blur-xl overflow-hidden rounded-3xl">
               <motion.div layout className={`transition-all duration-300 ${isFocused ? 'p-5' : 'p-8'}`}>
-                <motion.div layout className={`flex ${isFocused ? 'flex-row items-center justify-between mb-0' : 'flex-col items-center justify-center gap-3 mb-8'}`}>
-                  <motion.div layout className={`flex items-center ${isFocused ? 'flex-row gap-3' : 'flex-col gap-3'}`}>
-                    <motion.div layout className={`relative flex shrink-0 justify-center items-center ${isFocused ? 'size-9 ring-2' : 'size-14 ring-4'} ring-white/80 dark:ring-white/10 shadow-sm rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800`}>
-                      <img src="https://flagcdn.com/w80/th.png" alt="Thailand Flag" className="w-full h-full object-cover" />
-                    </motion.div>
-                    <motion.p layout className={`${isFocused ? 'text-xs' : 'text-sm'} font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest`}>
-                      {isFocused ? 'THB' : '태국 바트 (THB)'}
-                    </motion.p>
-                  </motion.div>
+                <motion.div layout className={`flex flex-col items-center justify-center`}>
+                  <AnimatePresence>
+                    {!isFocused && (
+                      <motion.div 
+                        initial={{ opacity: 0, height: 0, scale: 0.8, marginBottom: 0 }} 
+                        animate={{ opacity: 1, height: 'auto', scale: 1, marginBottom: 32 }} 
+                        exit={{ opacity: 0, height: 0, scale: 0.8, marginBottom: 0 }} 
+                        className="flex flex-col items-center justify-center gap-3 overflow-hidden"
+                      >
+                        <motion.div className="relative flex shrink-0 justify-center items-center size-14 ring-4 ring-white/80 dark:ring-white/10 shadow-sm rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800">
+                          <img src="https://flagcdn.com/w80/th.png" alt="Thailand Flag" className="w-full h-full object-cover" />
+                        </motion.div>
+                        <motion.p className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                          태국 바트 (THB)
+                        </motion.p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                   
                   <motion.div 
                     layout
                     id="thb-input-container"
-                    className={`flex ${isFocused ? 'justify-end w-auto' : 'justify-center w-full max-w-full'} items-center cursor-text transition-all duration-300 ${getFontSize(thb)}`} 
+                    className={`flex justify-center items-center w-full max-w-full cursor-text transition-all duration-300 ${getFontSize(thb)}`} 
                     onClick={() => inputRef.current?.focus()}
                   >
                     <span className="font-bold text-slate-400 dark:text-slate-600 mr-2">฿</span>
@@ -146,7 +155,7 @@ export const ExchangeActivity: React.FC = () => {
                       maxLength={10}
                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       {...({ inputMode: "numeric", pattern: "[0-9]*" } as any)}
-                      className={`font-extrabold tracking-tighter bg-transparent outline-none text-slate-800 dark:text-white ${isFocused ? 'w-[4.5ch]' : ''}`}
+                      className={`font-extrabold tracking-tighter bg-transparent outline-none text-slate-800 dark:text-white`}
                     />
                     {/* Blinking Cursor Animation (Only when NOT focused) */}
                     {!isFocused && (
