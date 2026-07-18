@@ -242,6 +242,7 @@ const SwipeableItem = ({
         }}
         onDragEnd={(e, info) => {
           if (info.offset.x < -80) {
+            triggerHapticFeedback();
             animate(x, -500, {
               duration: 0.25,
               ease: "easeOut",
@@ -262,6 +263,7 @@ const SwipeableItem = ({
             type="button"
             onClick={(e) => {
               e.preventDefault();
+              triggerHapticFeedback();
               onToggleCheck(item.id, !isChecked, targetUser);
             }}
             className="flex-shrink-0 focus:outline-none"
