@@ -18,6 +18,7 @@ import { RadioGroup, Radio } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "../ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { motion } from "framer-motion";
 
 interface ChecklistDrawerProps {
   open: boolean;
@@ -85,6 +86,26 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
     addMutation.mutate({ title, type, assignees, importance });
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.15,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { type: "spring" as const, stiffness: 300, damping: 24 } 
+    },
+  };
+
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerPopup variant="inset" showBar>
@@ -93,80 +114,97 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
           <DrawerDescription>새로운 여행 준비물을 등록하세요.</DrawerDescription>
         </DrawerHeader>
 
-        <DrawerPanel className="px-6 py-4 flex flex-col gap-6">
-          {/* 제목 */}
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="title">제목</Label>
-            <Input
-              id="title"
-              placeholder="예) 보조배터리 챙기기"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </div>
+        <DrawerPanel className="px-6 py-6 flex flex-col gap-8">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate={open ? "visible" : "hidden"}
+            className="flex flex-col gap-8"
+          >
+            {/* 제목 */}
+            <motion.div variants={itemVariants} className="flex flex-col gap-3">
+              <Label htmlFor="title" className="text-base font-bold text-gray-700 dark:text-gray-300">제목</Label>
+              <Input
+                id="title"
+                placeholder="예) 보조배터리 챙기기"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="h-14 text-lg rounded-xl px-4 bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800"
+              />
+            </motion.div>
 
-          {/* 중요도 */}
-          <div className="flex flex-col gap-2">
-            <Label>중요도</Label>
-            <RadioGroup
-              value={importance}
-              onValueChange={(val) => setImportance(val as "high" | "normal" | "low")}
-              className="flex flex-row gap-4"
-            >
-              <Label className="flex items-center gap-2 cursor-pointer">
-                <Radio value="high" />
-                <Badge variant="high">높음</Badge>
-              </Label>
-              <Label className="flex items-center gap-2 cursor-pointer">
-                <Radio value="normal" />
-                <Badge variant="normal">보통</Badge>
-              </Label>
-              <Label className="flex items-center gap-2 cursor-pointer">
-                <Radio value="low" />
-                <Badge variant="low">낮음</Badge>
-              </Label>
-            </RadioGroup>
-          </div>
+            {/* 중요도 */}
+            <motion.div variants={itemVariants} className="flex flex-col gap-3">
+              <Label className="text-base font-bold text-gray-700 dark:text-gray-300">중요도</Label>
+              <RadioGroup
+                value={importance}
+                onValueChange={(val) => setImportance(val as "high" | "normal" | "low")}
+                className="flex flex-row gap-5 mt-1"
+              >
+                <Label className="flex items-center gap-2.5 cursor-pointer text-base">
+                  <Radio value="high" className="scale-125" />
+                  <Badge variant="high" className="text-xs px-3 py-1 h-auto">높음</Badge>
+                </Label>
+                <Label className="flex items-center gap-2.5 cursor-pointer text-base">
+                  <Radio value="normal" className="scale-125" />
+                  <Badge variant="normal" className="text-xs px-3 py-1 h-auto">보통</Badge>
+                </Label>
+                <Label className="flex items-center gap-2.5 cursor-pointer text-base">
+                  <Radio value="low" className="scale-125" />
+                  <Badge variant="low" className="text-xs px-3 py-1 h-auto">낮음</Badge>
+                </Label>
+              </RadioGroup>
+            </motion.div>
 
-          {/* 대상자 */}
-          <div className="flex flex-col gap-2">
-            <Label>대상자 (최소 1명 선택)</Label>
-            <div className="flex flex-row gap-4">
-              <Label className="flex items-center gap-2 cursor-pointer">
-                <Checkbox
-                  checked={targets.gahyun}
-                  onCheckedChange={handleTargetChange("gahyun")}
-                />
-                <Avatar className="w-5 h-5">
-                  <AvatarImage src="" />
-                  <AvatarFallback className="text-[10px] bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">G</AvatarFallback>
-                </Avatar>
-                가현쨩
-              </Label>
-              <Label className="flex items-center gap-2 cursor-pointer">
-                <Checkbox
-                  checked={targets.minu}
-                  onCheckedChange={handleTargetChange("minu")}
-                />
-                <Avatar className="w-5 h-5">
-                  <AvatarImage src="" />
-                  <AvatarFallback className="text-[10px] bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">M</AvatarFallback>
-                </Avatar>
-                미누쿤
-              </Label>
-            </div>
-          </div>
+            {/* 대상자 */}
+            <motion.div variants={itemVariants} className="flex flex-col gap-3">
+              <Label className="text-base font-bold text-gray-700 dark:text-gray-300">대상자 (최소 1명 선택)</Label>
+              <div className="flex flex-row gap-6 mt-1">
+                <Label className="flex items-center gap-3 cursor-pointer text-base font-medium">
+                  <Checkbox
+                    checked={targets.gahyun}
+                    onCheckedChange={handleTargetChange("gahyun")}
+                    className="scale-125"
+                  />
+                  <Avatar className="w-8 h-8 ring-2 ring-gray-100 dark:ring-gray-800">
+                    <AvatarImage src="" />
+                    <AvatarFallback className="text-xs bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold">G</AvatarFallback>
+                  </Avatar>
+                  가현쨩
+                </Label>
+                <Label className="flex items-center gap-3 cursor-pointer text-base font-medium">
+                  <Checkbox
+                    checked={targets.minu}
+                    onCheckedChange={handleTargetChange("minu")}
+                    className="scale-125"
+                  />
+                  <Avatar className="w-8 h-8 ring-2 ring-gray-100 dark:ring-gray-800">
+                    <AvatarImage src="" />
+                    <AvatarFallback className="text-xs bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold">M</AvatarFallback>
+                  </Avatar>
+                  미누쿤
+                </Label>
+              </div>
+            </motion.div>
+          </motion.div>
         </DrawerPanel>
 
-        <DrawerFooter className="flex-row gap-3 justify-center mt-2 px-6 pb-6">
-          <DrawerClose render={<NeumorphButton intent="secondary" className="flex-1">취소</NeumorphButton>} />
-          <StatusButton
-            intent="primary"
-            className="flex-1"
-            disabled={!isFormValid}
-            onClick={handleSubmit}
-            status={addMutation.isPending ? "loading" : success ? "success" : "idle"}
-          />
+        <DrawerFooter className="flex-row gap-4 justify-center mt-4 px-6 pb-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 15 }}
+            animate={open ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+            transition={{ type: "spring" as const, stiffness: 300, damping: 24, delay: 0.35 }}
+            className="flex w-full gap-4"
+          >
+            <DrawerClose render={<NeumorphButton intent="secondary" className="flex-1 h-14 text-lg rounded-xl">취소</NeumorphButton>} />
+            <StatusButton
+              intent="primary"
+              className="flex-1 h-14 text-lg rounded-xl"
+              disabled={!isFormValid}
+              onClick={handleSubmit}
+              status={addMutation.isPending ? "loading" : success ? "success" : "idle"}
+            />
+          </motion.div>
         </DrawerFooter>
       </DrawerPopup>
     </Drawer>
