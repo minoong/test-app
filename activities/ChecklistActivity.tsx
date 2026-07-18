@@ -179,9 +179,14 @@ const SwipeableItem = ({
 }: SwipeableItemProps) => {
   const isChecked = item.completed_by.includes(targetUser);
   const [willDelete, setWillDelete] = useState(false);
+  const [willNudge, setWillNudge] = useState(false);
   const x = useMotionValue(0);
-  const backgroundOpacity = useTransform(x, [0, -20], [0, 1]);
+  const rightBackgroundOpacity = useTransform(x, [0, -20], [0, 1]);
+  const leftBackgroundOpacity = useTransform(x, [0, 20], [0, 1]);
   const itemRef = useRef<HTMLDivElement>(null);
+
+  const isNudgeAllowed = !isChecked && item.type === "personal";
+  const dragElastic = { left: 0.5, right: isNudgeAllowed ? 0.5 : 0 };
 
   useEffect(() => {
     const el = itemRef.current;
@@ -208,24 +213,52 @@ const SwipeableItem = ({
       style={{ overflow: "hidden" }}
       className="checklist-item relative border-b border-gray-200 dark:border-white/10 last:border-b-0"
     >
-      {/* Background Trash Icon */}
-      <motion.div style={{ opacity: backgroundOpacity }} className="absolute inset-0 bg-red-500 flex items-center justify-end px-6 text-white">
-        <motion.div animate={{ scale: willDelete ? 1.3 : 1 }} transition={{ type: "spring", stiffness: 400, damping: 20 }}>
-          <Trash2 size={24} />
+      {/* Swipe Background (Trash on the right, Bell on the left) */}
+      <div className="absolute inset-0 select-none pointer-events-none">
+        {/* Left Side: Orange Bell background (revealed when dragging right) */}
+        {isNudgeAllowed && (
+          <motion.div 
+            style={{ opacity: leftBackgroundOpacity }} 
+            className="absolute inset-0 bg-orange-500 flex items-center justify-start px-6 text-white"
+          >
+            <motion.div animate={{ scale: willNudge ? 1.3 : 1 }} transition={{ type: "spring", stiffness: 400, damping: 20 }}>
+              <Bell size={24} />
+            </motion.div>
+          </motion.div>
+        )}
+
+        {/* Right Side: Red Trash background (revealed when dragging left) */}
+        <motion.div 
+          style={{ opacity: rightBackgroundOpacity }} 
+          className="absolute inset-0 bg-red-500 flex items-center justify-end px-6 text-white"
+        >
+          <motion.div animate={{ scale: willDelete ? 1.3 : 1 }} transition={{ type: "spring", stiffness: 400, damping: 20 }}>
+            <Trash2 size={24} />
+          </motion.div>
         </motion.div>
-      </motion.div>
+      </div>
       
       {/* Foreground Swipeable Content */}
       <motion.div
         drag="x"
         style={{ x }}
         dragConstraints={{ left: 0, right: 0 }}
-        dragElastic={{ left: 0.5, right: 0 }}
+        dragElastic={dragElastic}
         onDrag={(e, info) => {
+          // Left drag (delete)
           if (info.offset.x < -80 && !willDelete) {
             setWillDelete(true);
           } else if (info.offset.x >= -80 && willDelete) {
             setWillDelete(false);
+          }
+
+          // Right drag (nudge)
+          if (isNudgeAllowed) {
+            if (info.offset.x > 80 && !willNudge) {
+              setWillNudge(true);
+            } else if (info.offset.x <= 80 && willNudge) {
+              setWillNudge(false);
+            }
           }
         }}
         onDragEnd={(e, info) => {
@@ -237,8 +270,20 @@ const SwipeableItem = ({
                 onDelete(item.id, item.assignees, targetUser);
               }
             });
+          } else if (isNudgeAllowed && info.offset.x > 80) {
+            animate(x, 200, {
+              duration: 0.2,
+              ease: "easeOut",
+              onComplete: () => {
+                onNudge(targetUser);
+                animate(x, 0, { type: "spring", stiffness: 300, damping: 20 });
+                setWillNudge(false);
+              }
+            });
           } else {
             setWillDelete(false);
+            setWillNudge(false);
+            animate(x, 0, { type: "spring", stiffness: 300, damping: 20 });
           }
         }}
         className={`relative z-10 flex items-center justify-between gap-3 p-4 bg-white dark:bg-[#1C1C1E] transition-colors ${
@@ -294,15 +339,6 @@ const SwipeableItem = ({
             </Badge>
           </div>
         </label>
-        {!isChecked && item.type === "personal" && (
-          <button
-            onClick={() => onNudge(targetUser)}
-            className="p-2 text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded-full transition-colors flex-shrink-0"
-            aria-label="재촉하기"
-          >
-            <Bell size={20} />
-          </button>
-        )}
       </motion.div>
     </motion.div>
   );
