@@ -249,15 +249,19 @@ const SwipeableItem = ({
         }`}
       >
         <label className="flex items-center gap-3 flex-1 cursor-pointer py-1">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              triggerHapticFeedback();
-              onToggleCheck(item.id, !isChecked, targetUser);
-            }}
-            className="flex-shrink-0 focus:outline-none"
-          >
+          <div className="flex-shrink-0 relative w-6 h-6">
+            <input
+              type="checkbox"
+              // @ts-expect-error: React typings do not support the standard switch attribute for checkboxes
+              switch={true}
+              checked={isChecked}
+              onChange={() => {
+                triggerHapticFeedback();
+                onToggleCheck(item.id, !isChecked, targetUser);
+              }}
+              className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
+              style={{ WebkitTapHighlightColor: "transparent" }}
+            />
             <motion.div
               animate={{
                 scale: isChecked ? [1, 0.8, 1.1, 1] : 1,
@@ -284,7 +288,7 @@ const SwipeableItem = ({
                 </motion.svg>
               )}
             </motion.div>
-          </button>
+          </div>
           <div className="flex items-center flex-1 gap-2 flex-wrap">
             <span
               className={`text-[16px] font-medium tracking-tight transition-all ${
