@@ -126,14 +126,14 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
             <motion.div variants={itemVariants} className="flex flex-col gap-3">
               <Label htmlFor="title" className="text-base font-bold text-gray-700 dark:text-gray-300">
                 <TextEffect
-                  per="char"
+                  per="line"
                   as="span"
-                  segmentWrapperClassName="overflow-hidden inline-block"
+                  segmentWrapperClassName="overflow-hidden block"
                   variants={{
-                    container: { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.05 } } },
+                    container: { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.2 } } },
                     item: {
-                      hidden: { opacity: 0, y: 20 },
-                      visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+                      hidden: { opacity: 0, y: 40 },
+                      visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
                     },
                   }}
                 >
@@ -145,7 +145,7 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
                 placeholder="예) 보조배터리 챙기기"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="h-14 text-lg rounded-xl px-4 bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800"
+                className="h-14 rounded-xl bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800 [&>[data-slot=input]]:h-full [&>[data-slot=input]]:text-lg [&>[data-slot=input]]:px-4 [&>[data-slot=input]]:leading-normal"
               />
             </motion.div>
 
@@ -153,14 +153,14 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
             <motion.div variants={itemVariants} className="flex flex-col gap-3">
               <Label className="text-base font-bold text-gray-700 dark:text-gray-300">
                 <TextEffect
-                  per="char"
+                  per="line"
                   as="span"
-                  segmentWrapperClassName="overflow-hidden inline-block"
+                  segmentWrapperClassName="overflow-hidden block"
                   variants={{
-                    container: { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.05 } } },
+                    container: { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.2 } } },
                     item: {
-                      hidden: { opacity: 0, y: 20 },
-                      visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+                      hidden: { opacity: 0, y: 40 },
+                      visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
                     },
                   }}
                 >
@@ -191,14 +191,14 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
             <motion.div variants={itemVariants} className="flex flex-col gap-3">
               <Label className="text-base font-bold text-gray-700 dark:text-gray-300">
                 <TextEffect
-                  per="char"
+                  per="line"
                   as="span"
-                  segmentWrapperClassName="overflow-hidden inline-block"
+                  segmentWrapperClassName="overflow-hidden block"
                   variants={{
-                    container: { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.05 } } },
+                    container: { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.2 } } },
                     item: {
-                      hidden: { opacity: 0, y: 20 },
-                      visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+                      hidden: { opacity: 0, y: 40 },
+                      visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
                     },
                   }}
                 >
