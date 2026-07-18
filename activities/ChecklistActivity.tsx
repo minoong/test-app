@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { AppScreen } from "@stackflow/plugin-basic-ui";
-import { BottomNav, triggerHapticFeedback } from "../components/BottomNav";
+import { BottomNav } from "../components/BottomNav";
 import { Plus, Bell, ChevronDown, Trash2 } from "lucide-react";
 import { ChecklistDrawer } from "../components/checklist/ChecklistDrawer";
 import { toast } from "sonner";
@@ -224,15 +224,12 @@ const SwipeableItem = ({
         onDrag={(e, info) => {
           if (info.offset.x < -80 && !willDelete) {
             setWillDelete(true);
-            triggerHapticFeedback();
           } else if (info.offset.x >= -80 && willDelete) {
             setWillDelete(false);
-            triggerHapticFeedback();
           }
         }}
         onDragEnd={(e, info) => {
           if (info.offset.x < -80) {
-            triggerHapticFeedback();
             animate(x, -500, {
               duration: 0.25,
               ease: "easeOut",
@@ -248,14 +245,15 @@ const SwipeableItem = ({
           isHighlighted ? "bg-yellow-50 dark:bg-yellow-900/20" : ""
         }`}
       >
-        <div 
-          onClick={() => {
-            triggerHapticFeedback();
-            onToggleCheck(item.id, !isChecked, targetUser);
-          }}
-          className="flex items-center gap-3 flex-1 cursor-pointer py-1 select-none"
-        >
-          <div className="flex-shrink-0 relative w-6 h-6">
+        <label className="flex items-center gap-3 flex-1 cursor-pointer py-1">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              onToggleCheck(item.id, !isChecked, targetUser);
+            }}
+            className="flex-shrink-0 focus:outline-none"
+          >
             <motion.div
               animate={{
                 scale: isChecked ? [1, 0.8, 1.1, 1] : 1,
@@ -282,7 +280,7 @@ const SwipeableItem = ({
                 </motion.svg>
               )}
             </motion.div>
-          </div>
+          </button>
           <div className="flex items-center flex-1 gap-2 flex-wrap">
             <span
               className={`text-[16px] font-medium tracking-tight transition-all ${
@@ -295,17 +293,11 @@ const SwipeableItem = ({
               {item.importance === "high" ? "높음" : item.importance === "low" ? "낮음" : "보통"}
             </Badge>
           </div>
-        </div>
-
-        {/* Nudge button */}
+        </label>
         {!isChecked && item.type === "personal" && (
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              triggerHapticFeedback();
-              onNudge(targetUser);
-            }}
-            className="relative z-20 p-2 text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded-full transition-colors flex-shrink-0"
+            onClick={() => onNudge(targetUser)}
+            className="p-2 text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded-full transition-colors flex-shrink-0"
             aria-label="재촉하기"
           >
             <Bell size={20} />
