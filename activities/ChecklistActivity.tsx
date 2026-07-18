@@ -9,7 +9,7 @@ import NumberFlow from "@number-flow/react";
 import { Skeleton } from "../components/ui/skeleton";
 import { Badge } from "../components/ui/badge";
 import NeumorphButton from "../components/ui/neumorph-button";
-import { motion, AnimatePresence, useMotionValue } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, animate } from "framer-motion";
 import { RingChart } from "../components/ui/ring-chart";
 import {
   DynamicIslandProvider,
@@ -357,7 +357,14 @@ export const ChecklistActivity: React.FC = () => {
           }}
           onDragEnd={(e, info) => {
             if (info.offset.x < -80) {
-              handleDelete(item.id, item.assignees, targetUser);
+              // 손을 떼었을 때 바로 삭제되지 않고, 화면 밖으로 부드럽게 날아가는 애니메이션 후 삭제
+              animate(x, -500, {
+                duration: 0.25,
+                ease: "easeOut",
+                onComplete: () => {
+                  handleDelete(item.id, item.assignees, targetUser);
+                }
+              });
             } else {
               setWillDelete(false);
             }
