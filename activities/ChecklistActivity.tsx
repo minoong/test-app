@@ -314,8 +314,32 @@ export const ChecklistActivity: React.FC = () => {
         if (!res.ok) throw new Error("Update failed");
       }
     },
-    onSuccess: () => {
+    onMutate: async ({ id, targetUser }) => {
+      await queryClient.cancelQueries({ queryKey: ["checklist"] });
+      const previousItems = queryClient.getQueryData<PreparationItem[]>(["checklist"]);
+
+      queryClient.setQueryData<PreparationItem[]>(["checklist"], (old = []) => {
+        return old.map((i) => {
+          if (i.id === id) {
+            const newAssignees = i.assignees.filter((a) => a !== targetUser && a !== "all");
+            return { ...i, assignees: newAssignees };
+          }
+          return i;
+        }).filter((i) => i.assignees.length > 0);
+      });
+
+      return { previousItems };
+    },
+    onError: (err, variables, context) => {
+      if (context?.previousItems) {
+        queryClient.setQueryData(["checklist"], context.previousItems);
+      }
+      toast.error("항목 삭제에 실패했습니다.");
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["checklist"] });
+    },
+    onSuccess: () => {
       toast.success("항목이 삭제되었습니다.");
     },
   });
@@ -336,6 +360,7 @@ export const ChecklistActivity: React.FC = () => {
         animate={{ opacity: 1, height: "auto" }}
         exit={{ opacity: 0, height: 0 }}
         transition={{ duration: 0.3 }}
+        style={{ overflow: "hidden" }}
         className={`relative border-b border-gray-100 dark:border-gray-800 last:border-b-0`}
       >
         {/* Background Trash Icon */}
