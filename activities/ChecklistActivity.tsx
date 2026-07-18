@@ -350,7 +350,7 @@ export const ChecklistActivity: React.FC = () => {
     deleteMutation.mutate({ id, assignees, targetUser });
   };
 
-  const SwipeableItem = ({ item, targetUser, isHighlighted, rootRef }: { item: PreparationItem, targetUser: string, isHighlighted: boolean, rootRef: React.RefObject<HTMLDivElement | null> }) => {
+  const SwipeableItem = ({ item, targetUser, isHighlighted, rootRef, drawerOpen }: { item: PreparationItem, targetUser: string, isHighlighted: boolean, rootRef: React.RefObject<HTMLDivElement | null>, drawerOpen: boolean }) => {
     const isChecked = item.completed_by.includes(targetUser);
     const [willDelete, setWillDelete] = useState(false);
     const x = useMotionValue(0);
@@ -358,6 +358,13 @@ export const ChecklistActivity: React.FC = () => {
     
     const ref = useRef<HTMLDivElement>(null);
     const inView = useInView(ref, { root: rootRef, amount: 0.4, once: false });
+    const [isVisible, setIsVisible] = useState(true);
+
+    useEffect(() => {
+      if (!drawerOpen) {
+        setIsVisible(inView);
+      }
+    }, [inView, drawerOpen]);
 
     return (
       <motion.div
@@ -365,9 +372,9 @@ export const ChecklistActivity: React.FC = () => {
         layout
         initial={{ opacity: 0, height: 0, scale: 0.8 }}
         animate={{ 
-          opacity: inView ? 1 : 0.3,
+          opacity: isVisible ? 1 : 0.3,
           height: "auto",
-          scale: inView ? 1 : 0.9
+          scale: isVisible ? 1 : 0.9
         }}
         exit={{ opacity: 0, height: 0, scale: 0.8 }}
         transition={{ duration: 0.3, ease: "easeOut" }}
@@ -492,6 +499,7 @@ export const ChecklistActivity: React.FC = () => {
                 targetUser={targetUser}
                 isHighlighted={isHighlighted}
                 rootRef={scrollRef}
+                drawerOpen={drawerOpen}
               />
             );
           })}
