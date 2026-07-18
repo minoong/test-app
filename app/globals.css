@@ -298,3 +298,16 @@ body {
     font-family: var(--font-mono);
   }
 }
+
+/* Checklist scroll reveal - CSS only, no React re-render jitter */
+.checklist-item {
+  opacity: 0.3;
+  transform: scale(0.92);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  will-change: opacity, transform;
+}
+
+.checklist-item.checklist-item-visible {
+  opacity: 1;
+  transform: scale(1);
+}

@@ -163,7 +163,7 @@ export const ChecklistActivity: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null);
   const [rotation, setRotation] = useState(0);
-  const scrollRef = useRef<HTMLDivElement>(null);
+
 
   const { data: items = [], isLoading: loading } = useQuery<PreparationItem[]>({
     queryKey: ["checklist"],
@@ -350,29 +350,39 @@ export const ChecklistActivity: React.FC = () => {
     deleteMutation.mutate({ id, assignees, targetUser });
   };
 
-  const SwipeableItem = ({ item, targetUser, isHighlighted, rootRef }: { item: PreparationItem, targetUser: string, isHighlighted: boolean, rootRef: React.RefObject<HTMLDivElement | null> }) => {
+  const SwipeableItem = ({ item, targetUser, isHighlighted }: { item: PreparationItem, targetUser: string, isHighlighted: boolean }) => {
     const isChecked = item.completed_by.includes(targetUser);
     const [willDelete, setWillDelete] = useState(false);
     const x = useMotionValue(0);
     const backgroundOpacity = useTransform(x, [0, -20], [0, 1]);
+    const itemRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+      const el = itemRef.current;
+      if (!el) return;
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            el.classList.add("checklist-item-visible");
+          } else {
+            el.classList.remove("checklist-item-visible");
+          }
+        },
+        { threshold: 0.3 }
+      );
+      observer.observe(el);
+      return () => observer.disconnect();
+    }, []);
 
     return (
       <motion.div
-        initial={{ opacity: 0, height: 0, scale: 0.8 }}
-        animate={{ 
-          opacity: 0.3,
-          height: "auto",
-          scale: 0.9
-        }}
-        whileInView={{
-          opacity: 1,
-          scale: 1
-        }}
-        viewport={{ root: rootRef, amount: 0.4, once: false }}
-        exit={{ opacity: 0, height: 0, scale: 0.8 }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
+        ref={itemRef}
+        initial={{ opacity: 1, height: 0 }}
+        animate={{ height: "auto" }}
+        exit={{ opacity: 0, height: 0 }}
+        transition={{ duration: 0.25, ease: "easeOut" }}
         style={{ overflow: "hidden" }}
-        className="relative border-b border-gray-200 dark:border-white/10 last:border-b-0"
+        className="checklist-item relative border-b border-gray-200 dark:border-white/10 last:border-b-0"
       >
         {/* Background Trash Icon */}
         <motion.div style={{ opacity: backgroundOpacity }} className="absolute inset-0 bg-red-500 flex items-center justify-end px-6 text-white">
@@ -393,7 +403,6 @@ export const ChecklistActivity: React.FC = () => {
           }}
           onDragEnd={(e, info) => {
             if (info.offset.x < -80) {
-              // 손을 떼었을 때 바로 삭제되지 않고, 화면 밖으로 부드럽게 날아가는 애니메이션 후 삭제
               animate(x, -500, {
                 duration: 0.25,
                 ease: "easeOut",
@@ -405,7 +414,7 @@ export const ChecklistActivity: React.FC = () => {
               setWillDelete(false);
             }
           }}
-          className={`relative z-10 flex items-center justify-between gap-3 p-4 bg-white dark:bg-[#1C1C1E] active:bg-gray-50 dark:active:bg-white/5 transition-colors ${
+          className={`relative z-10 flex items-center justify-between gap-3 p-4 bg-white dark:bg-[#1C1C1E] transition-colors ${
             isHighlighted ? "bg-yellow-50 dark:bg-yellow-900/20" : ""
           }`}
         >
@@ -491,7 +500,6 @@ export const ChecklistActivity: React.FC = () => {
                 item={item}
                 targetUser={targetUser}
                 isHighlighted={isHighlighted}
-                rootRef={scrollRef}
               />
             );
           })}
@@ -525,7 +533,7 @@ export const ChecklistActivity: React.FC = () => {
           </DynamicIslandProvider>
         </div>
 
-        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 pb-24">
+        <div className="flex-1 overflow-y-auto p-4 pb-24">
           {loading ? (
             <div className="flex flex-col gap-4">
               <Skeleton className="h-6 w-32 mb-2" />
