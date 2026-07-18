@@ -9,8 +9,9 @@ import NumberFlow from "@number-flow/react";
 import { Skeleton } from "../components/ui/skeleton";
 import { Badge } from "../components/ui/badge";
 import NeumorphButton from "../components/ui/neumorph-button";
-import { motion, AnimatePresence, useMotionValue, animate, useTransform } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, animate, useTransform, useInView } from "framer-motion";
 import { RingChart } from "../components/ui/ring-chart";
+import { useRef } from "react";
 import {
   DynamicIslandProvider,
   DynamicIsland,
@@ -353,16 +354,24 @@ export const ChecklistActivity: React.FC = () => {
     const [willDelete, setWillDelete] = useState(false);
     const x = useMotionValue(0);
     const backgroundOpacity = useTransform(x, [0, -20], [0, 1]);
+    
+    const ref = useRef<HTMLDivElement>(null);
+    const inView = useInView(ref, { amount: 0.4, once: false });
 
     return (
       <motion.div
+        ref={ref}
         layout
-        initial={{ opacity: 0, height: 0 }}
-        animate={{ opacity: 1, height: "auto" }}
-        exit={{ opacity: 0, height: 0 }}
-        transition={{ duration: 0.3 }}
+        initial={{ opacity: 0, height: 0, scale: 0.8 }}
+        animate={{ 
+          opacity: inView ? 1 : 0.3,
+          height: "auto",
+          scale: inView ? 1 : 0.9
+        }}
+        exit={{ opacity: 0, height: 0, scale: 0.8 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
         style={{ overflow: "hidden" }}
-        className="relative border-b border-gray-50 dark:border-white/5 last:border-b-0"
+        className="relative border-b border-gray-200 dark:border-white/10 last:border-b-0"
       >
         {/* Background Trash Icon */}
         <motion.div style={{ opacity: backgroundOpacity }} className="absolute inset-0 bg-red-500 flex items-center justify-end px-6 text-white">
