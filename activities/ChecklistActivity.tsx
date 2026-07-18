@@ -9,7 +9,7 @@ import NumberFlow from "@number-flow/react";
 import { Skeleton } from "../components/ui/skeleton";
 import { Badge } from "../components/ui/badge";
 import NeumorphButton from "../components/ui/neumorph-button";
-import { motion, AnimatePresence, useMotionValue, animate } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, animate, useTransform } from "framer-motion";
 import { RingChart } from "../components/ui/ring-chart";
 import {
   DynamicIslandProvider,
@@ -352,6 +352,7 @@ export const ChecklistActivity: React.FC = () => {
     const isChecked = item.completed_by.includes(targetUser);
     const [willDelete, setWillDelete] = useState(false);
     const x = useMotionValue(0);
+    const backgroundOpacity = useTransform(x, [0, -20], [0, 1]);
 
     return (
       <motion.div
@@ -361,14 +362,14 @@ export const ChecklistActivity: React.FC = () => {
         exit={{ opacity: 0, height: 0 }}
         transition={{ duration: 0.3 }}
         style={{ overflow: "hidden" }}
-        className="relative border-b border-gray-100 dark:border-white/5 last:border-b-0"
+        className="relative border-b border-gray-50 dark:border-white/5 last:border-b-0"
       >
         {/* Background Trash Icon */}
-        <div className="absolute inset-0 bg-red-500 flex items-center justify-end px-6 text-white">
+        <motion.div style={{ opacity: backgroundOpacity }} className="absolute inset-0 bg-red-500 flex items-center justify-end px-6 text-white">
           <motion.div animate={{ scale: willDelete ? 1.3 : 1 }} transition={{ type: "spring", stiffness: 400, damping: 20 }}>
             <Trash2 size={24} />
           </motion.div>
-        </div>
+        </motion.div>
         
         {/* Foreground Swipeable Content */}
         <motion.div
@@ -470,7 +471,7 @@ export const ChecklistActivity: React.FC = () => {
     }
 
     return (
-      <div className="bg-white dark:bg-[#1C1C1E] rounded-3xl overflow-hidden shadow-sm border border-gray-100 dark:border-white/10 mb-6">
+      <div className="bg-white dark:bg-[#1C1C1E] rounded-3xl overflow-hidden mb-6">
         <AnimatePresence initial={false}>
           {list.map((item) => {
             const isHighlighted = highlightedItemId === item.id;
