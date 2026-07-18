@@ -356,7 +356,7 @@ export const ChecklistActivity: React.FC = () => {
     const backgroundOpacity = useTransform(x, [0, -20], [0, 1]);
     
     const ref = useRef<HTMLDivElement>(null);
-    const inView = useInView(ref, { amount: 0.4, once: false });
+    const inView = useInView(ref, { amount: 0.4, once: true });
 
     return (
       <motion.div
