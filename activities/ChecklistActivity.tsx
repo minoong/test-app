@@ -158,6 +158,151 @@ interface PreparationItem {
   importance: "high" | "normal" | "low";
 }
 
+interface SwipeableItemProps {
+  item: PreparationItem;
+  targetUser: string;
+  isHighlighted: boolean;
+  onDelete: (id: string, assignees: string[], targetUser: string) => void;
+  onToggleCheck: (id: string, checked: boolean, targetUser: string) => void;
+  onNudge: (target: string) => void;
+}
+
+const SwipeableItem = ({
+  item,
+  targetUser,
+  isHighlighted,
+  onDelete,
+  onToggleCheck,
+  onNudge,
+}: SwipeableItemProps) => {
+  const isChecked = item.completed_by.includes(targetUser);
+  const [willDelete, setWillDelete] = useState(false);
+  const x = useMotionValue(0);
+  const backgroundOpacity = useTransform(x, [0, -20], [0, 1]);
+  const itemRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = itemRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add("checklist-item-visible");
+        } else {
+          el.classList.remove("checklist-item-visible");
+        }
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <motion.div
+      ref={itemRef}
+      exit={{ opacity: 0, height: 0 }}
+      transition={{ duration: 0.25, ease: "easeOut" }}
+      style={{ overflow: "hidden" }}
+      className="checklist-item relative border-b border-gray-200 dark:border-white/10 last:border-b-0"
+    >
+      {/* Background Trash Icon */}
+      <motion.div style={{ opacity: backgroundOpacity }} className="absolute inset-0 bg-red-500 flex items-center justify-end px-6 text-white">
+        <motion.div animate={{ scale: willDelete ? 1.3 : 1 }} transition={{ type: "spring", stiffness: 400, damping: 20 }}>
+          <Trash2 size={24} />
+        </motion.div>
+      </motion.div>
+      
+      {/* Foreground Swipeable Content */}
+      <motion.div
+        drag="x"
+        style={{ x }}
+        dragConstraints={{ left: 0, right: 0 }}
+        dragElastic={{ left: 0.5, right: 0 }}
+        onDrag={(e, info) => {
+          if (info.offset.x < -80 && !willDelete) setWillDelete(true);
+          else if (info.offset.x >= -80 && willDelete) setWillDelete(false);
+        }}
+        onDragEnd={(e, info) => {
+          if (info.offset.x < -80) {
+            animate(x, -500, {
+              duration: 0.25,
+              ease: "easeOut",
+              onComplete: () => {
+                onDelete(item.id, item.assignees, targetUser);
+              }
+            });
+          } else {
+            setWillDelete(false);
+          }
+        }}
+        className={`relative z-10 flex items-center justify-between gap-3 p-4 bg-white dark:bg-[#1C1C1E] transition-colors ${
+          isHighlighted ? "bg-yellow-50 dark:bg-yellow-900/20" : ""
+        }`}
+      >
+        <label className="flex items-center gap-3 flex-1 cursor-pointer py-1">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              onToggleCheck(item.id, !isChecked, targetUser);
+            }}
+            className="flex-shrink-0 focus:outline-none"
+          >
+            <motion.div
+              animate={{
+                scale: isChecked ? [1, 0.8, 1.1, 1] : 1,
+                backgroundColor: isChecked ? "#3b82f6" : "transparent",
+                borderColor: isChecked ? "#3b82f6" : "#d1d5db"
+              }}
+              transition={{ duration: 0.3 }}
+              className="w-6 h-6 rounded-full border-2 flex items-center justify-center dark:border-gray-600"
+            >
+              {isChecked && (
+                <motion.svg
+                  initial={{ opacity: 0, pathLength: 0 }}
+                  animate={{ opacity: 1, pathLength: 1 }}
+                  transition={{ duration: 0.3 }}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-4 h-4"
+                >
+                  <polyline points="20 6 9 17 4 12" />
+                </motion.svg>
+              )}
+            </motion.div>
+          </button>
+          <div className="flex items-center flex-1 gap-2 flex-wrap">
+            <span
+              className={`text-[16px] font-medium tracking-tight transition-all ${
+                isChecked ? "text-gray-400 dark:text-gray-500 line-through" : "text-gray-800 dark:text-gray-100"
+              }`}
+            >
+              {item.title}
+            </span>
+            <Badge variant={item.importance as "high" | "normal" | "low"} className="px-1.5 py-0 h-5 text-[11px] font-medium rounded-md">
+              {item.importance === "high" ? "높음" : item.importance === "low" ? "낮음" : "보통"}
+            </Badge>
+          </div>
+        </label>
+        {!isChecked && item.type === "personal" && (
+          <button
+            onClick={() => onNudge(targetUser)}
+            className="p-2 text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded-full transition-colors flex-shrink-0"
+            aria-label="재촉하기"
+          >
+            <Bell size={20} />
+          </button>
+        )}
+      </motion.div>
+    </motion.div>
+  );
+};
+
 export const ChecklistActivity: React.FC = () => {
   const queryClient = useQueryClient();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -350,134 +495,7 @@ export const ChecklistActivity: React.FC = () => {
     deleteMutation.mutate({ id, assignees, targetUser });
   };
 
-  const SwipeableItem = ({ item, targetUser, isHighlighted }: { item: PreparationItem, targetUser: string, isHighlighted: boolean }) => {
-    const isChecked = item.completed_by.includes(targetUser);
-    const [willDelete, setWillDelete] = useState(false);
-    const x = useMotionValue(0);
-    const backgroundOpacity = useTransform(x, [0, -20], [0, 1]);
-    const itemRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-      const el = itemRef.current;
-      if (!el) return;
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            el.classList.add("checklist-item-visible");
-          } else {
-            el.classList.remove("checklist-item-visible");
-          }
-        },
-        { threshold: 0.3 }
-      );
-      observer.observe(el);
-      return () => observer.disconnect();
-    }, []);
-
-    return (
-      <motion.div
-        ref={itemRef}
-        exit={{ opacity: 0, height: 0 }}
-        transition={{ duration: 0.25, ease: "easeOut" }}
-        style={{ overflow: "hidden" }}
-        className="checklist-item relative border-b border-gray-200 dark:border-white/10 last:border-b-0"
-      >
-        {/* Background Trash Icon */}
-        <motion.div style={{ opacity: backgroundOpacity }} className="absolute inset-0 bg-red-500 flex items-center justify-end px-6 text-white">
-          <motion.div animate={{ scale: willDelete ? 1.3 : 1 }} transition={{ type: "spring", stiffness: 400, damping: 20 }}>
-            <Trash2 size={24} />
-          </motion.div>
-        </motion.div>
-        
-        {/* Foreground Swipeable Content */}
-        <motion.div
-          drag="x"
-          style={{ x }}
-          dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={{ left: 0.5, right: 0 }}
-          onDrag={(e, info) => {
-            if (info.offset.x < -80 && !willDelete) setWillDelete(true);
-            else if (info.offset.x >= -80 && willDelete) setWillDelete(false);
-          }}
-          onDragEnd={(e, info) => {
-            if (info.offset.x < -80) {
-              animate(x, -500, {
-                duration: 0.25,
-                ease: "easeOut",
-                onComplete: () => {
-                  handleDelete(item.id, item.assignees, targetUser);
-                }
-              });
-            } else {
-              setWillDelete(false);
-            }
-          }}
-          className={`relative z-10 flex items-center justify-between gap-3 p-4 bg-white dark:bg-[#1C1C1E] transition-colors ${
-            isHighlighted ? "bg-yellow-50 dark:bg-yellow-900/20" : ""
-          }`}
-        >
-          <label className="flex items-center gap-3 flex-1 cursor-pointer py-1">
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                toggleCheck(item.id, !isChecked, targetUser);
-              }}
-              className="flex-shrink-0 focus:outline-none"
-            >
-              <motion.div
-                animate={{
-                  scale: isChecked ? [1, 0.8, 1.1, 1] : 1,
-                  backgroundColor: isChecked ? "#3b82f6" : "transparent",
-                  borderColor: isChecked ? "#3b82f6" : "#d1d5db"
-                }}
-                transition={{ duration: 0.3 }}
-                className="w-6 h-6 rounded-full border-2 flex items-center justify-center dark:border-gray-600"
-              >
-                {isChecked && (
-                  <motion.svg
-                    initial={{ opacity: 0, pathLength: 0 }}
-                    animate={{ opacity: 1, pathLength: 1 }}
-                    transition={{ duration: 0.3 }}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="white"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="w-4 h-4"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </motion.svg>
-                )}
-              </motion.div>
-            </button>
-            <div className="flex items-center flex-1 gap-2 flex-wrap">
-              <span
-                className={`text-[16px] font-medium tracking-tight transition-all ${
-                  isChecked ? "text-gray-400 dark:text-gray-500 line-through" : "text-gray-800 dark:text-gray-100"
-                }`}
-              >
-                {item.title}
-              </span>
-              <Badge variant={item.importance as "high" | "normal" | "low"} className="px-1.5 py-0 h-5 text-[11px] font-medium rounded-md">
-                {item.importance === "high" ? "높음" : item.importance === "low" ? "낮음" : "보통"}
-              </Badge>
-            </div>
-          </label>
-          {!isChecked && item.type === "personal" && (
-            <button
-              onClick={() => handleNudge(targetUser)}
-              className="p-2 text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded-full transition-colors flex-shrink-0"
-              aria-label="재촉하기"
-            >
-              <Bell size={20} />
-            </button>
-          )}
-        </motion.div>
-      </motion.div>
-    );
-  };
 
   const gahyunItems = items.filter((i) => i.assignees.includes("gahyun") || i.type === "master" || i.assignees.includes("all"));
   const minuItems = items.filter((i) => i.assignees.includes("minu") || i.type === "master" || i.assignees.includes("all"));
@@ -498,6 +516,9 @@ export const ChecklistActivity: React.FC = () => {
                 item={item}
                 targetUser={targetUser}
                 isHighlighted={isHighlighted}
+                onDelete={handleDelete}
+                onToggleCheck={toggleCheck}
+                onNudge={handleNudge}
               />
             );
           })}
