@@ -567,7 +567,7 @@ export const ChecklistActivity: React.FC = () => {
         <label
           id="ios-haptic-label"
           htmlFor="ios-haptic-input"
-          style={{ position: "absolute", width: "1px", height: "1px", opacity: 0, pointerEvents: "none" }}
+          style={{ position: "absolute", left: "-9999px", top: "-9999px", opacity: 0, width: "1px", height: "1px" }}
         >
           <input
             type="checkbox"
