@@ -166,7 +166,10 @@ const ReservationStayCard: React.FC<{ onOpen: () => void }> = ({ onOpen }) => (
       aria-label="숙소 자세히 보기"
       className="mt-3 flex h-11 w-full items-center justify-center gap-1 rounded-xl bg-indigo-600 text-sm font-bold text-white transition-transform active:scale-[0.98]"
     >
-      <AutoTextRoll labels={["숙소 자세히 보기", ...ACCOMMODATIONS.map((stay) => stay.name)]} /> <ChevronRight size={17} />
+      <span className="flex w-64 max-w-[calc(100%-1rem)] items-center gap-1">
+        <AutoTextRoll labels={["숙소 자세히 보기", ...ACCOMMODATIONS.map((stay) => stay.name)]} />
+        <ChevronRight size={17} className="shrink-0" />
+      </span>
     </button>
   </section>
 );
