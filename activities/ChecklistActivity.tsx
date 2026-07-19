@@ -10,7 +10,7 @@ import { Skeleton } from "../components/ui/skeleton";
 import { ImportanceChip } from "../components/ui/chip";
 import NeumorphButton from "../components/ui/neumorph-button";
 import { Checkbox } from "../components/animate-ui/components/radix/checkbox";
-import { motion, AnimatePresence, useMotionValue, animate, useTransform, useReducedMotion, type Transition } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, animate, useTransform, useReducedMotion } from "framer-motion";
 import { RingChart } from "../components/ui/ring-chart";
 import { useRef } from "react";
 import {
@@ -165,21 +165,6 @@ const ProgressIslandContent = ({
   );
 };
 
-const getPathAnimate = (isChecked: boolean) => ({
-  pathLength: isChecked ? 1 : 0,
-  opacity: isChecked ? 1 : 0,
-});
-
-const getPathTransition = (isChecked: boolean, prefersReducedMotion = false): Transition => ({
-  pathLength: { duration: prefersReducedMotion ? 0 : 1, ease: 'easeInOut' },
-  opacity: {
-    duration: prefersReducedMotion ? 0 : 0.01,
-    delay: prefersReducedMotion ? 0 : isChecked ? 0 : 1,
-  },
-});
-
-
-
 interface PreparationItem {
   id: string;
   title: string;
@@ -250,19 +235,23 @@ const SwipeableItem = ({
         {isNudgeAllowed && (
           <motion.div 
             style={{ opacity: leftBackgroundOpacity }} 
-            className="absolute inset-0 bg-orange-500 flex items-center justify-start px-6 text-white"
+            className="absolute inset-0 flex items-center justify-start gap-2 bg-amber-500 px-5 text-white"
+            aria-hidden="true"
           >
             <motion.div animate={{ scale: willNudge ? 1.3 : 1 }} transition={{ type: "spring", stiffness: 400, damping: 20 }}>
               <Bell size={18} />
             </motion.div>
+            <span className="text-sm font-semibold">알림</span>
           </motion.div>
         )}
 
         {/* Right Side: Red Trash background (revealed when dragging left) */}
         <motion.div 
           style={{ opacity: rightBackgroundOpacity }} 
-          className="absolute inset-0 bg-red-500 flex items-center justify-end px-6 text-white"
+          className="absolute inset-0 flex items-center justify-end gap-2 bg-red-500 px-5 text-white"
+          aria-hidden="true"
         >
+          <span className="text-sm font-semibold">삭제</span>
           <motion.div animate={{ scale: willDelete ? 1.3 : 1 }} transition={{ type: "spring", stiffness: 400, damping: 20 }}>
             <Trash2 size={18} />
           </motion.div>
@@ -272,6 +261,8 @@ const SwipeableItem = ({
       {/* Foreground Swipeable Content */}
       <motion.div
         drag={prefersReducedMotion ? false : "x"}
+        dragDirectionLock
+        dragMomentum={false}
         style={{ x }}
         dragConstraints={{ left: 0, right: 0 }}
         dragElastic={dragElastic}
@@ -317,7 +308,7 @@ const SwipeableItem = ({
             animate(x, 0, { type: "spring", stiffness: 300, damping: 20 });
           }
         }}
-        className={`relative z-10 flex select-none items-center justify-between gap-3 p-4 touch-manipulation bg-white dark:bg-[#1C1C1E] transition-colors ${
+        className={`relative z-10 flex min-h-16 select-none items-center justify-between gap-3 px-4 py-3 touch-pan-y bg-white dark:bg-[#1C1C1E] transition-colors hover:bg-gray-50 dark:hover:bg-white/5 ${
           isHighlighted ? "bg-yellow-50 dark:bg-yellow-900/20" : ""
         }`}
       >
@@ -332,35 +323,21 @@ const SwipeableItem = ({
             className="flex-shrink-0 cursor-pointer"
           />
           <div className="flex min-w-0 items-center flex-1 gap-2 flex-wrap">
-            <div className="relative inline-block min-w-0 cursor-pointer">
-              <label
-                htmlFor={checkboxId}
-                className={`break-words text-[16px] font-medium tracking-tight transition-colors cursor-pointer select-none ${
-                  isChecked ? "text-gray-400 dark:text-gray-500" : "text-gray-800 dark:text-gray-100"
-                }`}
-              >
-                {item.title}
-              </label>
-              <motion.svg
-                width="340"
-                height="32"
-                viewBox="0 0 340 32"
-                className="absolute left-0 top-1/2 -translate-y-1/2 pointer-events-none z-20 w-full h-10"
-              >
-                <motion.path
-                  d="M 10 16.91 s 79.8 -11.36 98.1 -11.34 c 22.2 0.02 -47.82 14.25 -33.39 22.02 c 12.61 6.77 124.18 -27.98 133.31 -17.28 c 7.52 8.38 -26.8 20.02 4.61 22.05 c 24.55 1.93 113.37 -20.36 113.37 -20.36"
-                  vectorEffect="non-scaling-stroke"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeMiterlimit={10}
-                  fill="none"
-                  initial={false}
-                  animate={getPathAnimate(isChecked)}
-                  transition={getPathTransition(isChecked, prefersReducedMotion ?? false)}
-                  className="stroke-neutral-400 dark:stroke-neutral-600"
-                />
-              </motion.svg>
-            </div>
+            <label
+              htmlFor={checkboxId}
+              className={`relative min-w-0 break-words text-[16px] font-medium tracking-tight transition-colors cursor-pointer select-none ${
+                isChecked ? "text-gray-400 dark:text-gray-500" : "text-gray-800 dark:text-gray-100"
+              }`}
+            >
+              {item.title}
+              <motion.span
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 top-1/2 h-0.5 origin-left rounded-full bg-gray-400 dark:bg-gray-500"
+                initial={false}
+                animate={{ scaleX: isChecked ? 1 : 0, opacity: isChecked ? 1 : 0 }}
+                transition={{ duration: prefersReducedMotion ? 0 : 0.2, ease: "easeOut" }}
+              />
+            </label>
             <ImportanceChip importance={item.importance} />
           </div>
         </div>
