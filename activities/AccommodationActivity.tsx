@@ -1,23 +1,137 @@
 import React from "react";
 import { AppScreen } from "@stackflow/plugin-basic-ui";
 import { ExternalLink, MapPin, CalendarDays, Clock3, Star, Wifi, Waves, Dumbbell, Luggage, Coffee, Car } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import { BottomNav } from "../components/BottomNav";
-import { ACCOMMODATIONS } from "../lib/accommodations";
+import { ACCOMMODATIONS, type Accommodation } from "../lib/accommodations";
 
 const amenityIcons = [Wifi, Waves, Dumbbell, Luggage, Coffee, Car];
+type StayFilter = "all" | Accommodation["id"];
+
+const useWindowSize = () => {
+  const [windowSize, setWindowSize] = React.useState<{ width: number | undefined; height: number | undefined }>({
+    width: undefined,
+    height: undefined,
+  });
+
+  React.useEffect(() => {
+    const handleResize = () => setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return windowSize;
+};
+
+interface StayAccordionProps {
+  activeFilter: StayFilter;
+  onFilterChange: (filter: StayFilter) => void;
+}
+
+const StayAccordion: React.FC<StayAccordionProps> = ({ activeFilter, onFilterChange }) => {
+  const [openId, setOpenId] = React.useState<Accommodation["id"]>(ACCOMMODATIONS[0].id);
+  const { width } = useWindowSize();
+  const isDesktop = Boolean(width && width >= 1024);
+  const openStay = ACCOMMODATIONS.find((stay) => stay.id === openId) ?? ACCOMMODATIONS[0];
+
+  const selectStay = (stay: Accommodation) => {
+    setOpenId(stay.id);
+    onFilterChange(stay.id);
+  };
+
+  return (
+    <section className="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-black/5 dark:bg-[#1C1C1E] dark:ring-white/10">
+      <div className="flex items-center justify-between gap-3 px-5 pb-3 pt-5">
+        <div>
+          <p className="text-xs font-bold tracking-[0.18em] text-indigo-500">BOOKED STAYS</p>
+          <h1 className="mt-1 text-2xl font-bold tracking-tight text-gray-950 dark:text-white">이번 여행의 숙소 3곳</h1>
+        </div>
+        <button
+          type="button"
+          onClick={() => onFilterChange("all")}
+          aria-pressed={activeFilter === "all"}
+          className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-bold transition-colors ${
+            activeFilter === "all"
+              ? "bg-indigo-600 text-white"
+              : "bg-indigo-50 text-indigo-700 dark:bg-indigo-400/15 dark:text-indigo-200"
+          }`}
+        >
+          전체 보기
+        </button>
+      </div>
+
+      <div className="flex flex-col overflow-hidden border-t border-gray-100 dark:border-white/10 lg:h-[260px] lg:flex-row">
+        {ACCOMMODATIONS.map((stay) => {
+          const isOpen = stay.id === openId;
+          const isFiltered = stay.id === activeFilter;
+
+          return (
+            <React.Fragment key={stay.id}>
+              <button
+                type="button"
+                onClick={() => selectStay(stay)}
+                aria-pressed={isFiltered}
+                className={`group relative z-10 flex shrink-0 items-center gap-3 border-b border-gray-100 p-3 text-left transition-colors dark:border-white/10 lg:w-16 lg:flex-col lg:justify-end lg:gap-3 lg:border-b-0 lg:border-r ${
+                  isOpen
+                    ? "bg-indigo-50 text-indigo-800 dark:bg-indigo-400/15 dark:text-indigo-100"
+                    : "bg-white text-gray-800 hover:bg-gray-50 dark:bg-[#1C1C1E] dark:text-gray-100 dark:hover:bg-white/5"
+                }`}
+              >
+                <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-indigo-600 text-xs font-bold text-white">{stay.date}</span>
+                <span className="text-sm font-semibold lg:[writing-mode:vertical-lr] lg:rotate-180">{stay.city}</span>
+                <span className="pointer-events-none absolute bottom-0 right-1/2 size-3 translate-x-1/2 translate-y-1/2 rotate-45 border-b border-r border-gray-100 bg-inherit dark:border-white/10 lg:bottom-1/2 lg:right-0 lg:translate-x-1/2 lg:translate-y-1/2 lg:border-b-0 lg:border-r lg:border-t" />
+              </button>
+
+              <AnimatePresence initial={false} mode="wait">
+                {isOpen ? (
+                  <motion.div
+                    key={stay.id}
+                    initial={isDesktop ? { width: 0, opacity: 0 } : { height: 0, opacity: 0 }}
+                    animate={isDesktop ? { width: "100%", opacity: 1 } : { height: 188, opacity: 1 }}
+                    exit={isDesktop ? { width: 0, opacity: 0 } : { height: 0, opacity: 0 }}
+                    transition={{ type: "spring", stiffness: 280, damping: 30, mass: 0.8 }}
+                    className="relative flex min-h-0 min-w-0 flex-1 items-end overflow-hidden bg-slate-950"
+                    style={{ backgroundImage: `linear-gradient(180deg, transparent 32%, rgba(0,0,0,.7)), url(${stay.imageUrl})`, backgroundPosition: "center", backgroundSize: "cover" }}
+                  >
+                    <motion.div
+                      initial={{ opacity: 0, y: 18 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 18 }}
+                      transition={{ delay: 0.12, duration: 0.2 }}
+                      className="w-full bg-black/35 px-4 py-3 text-white backdrop-blur-sm"
+                    >
+                      <p className="text-sm font-bold">{stay.name}</p>
+                      <p className="mt-0.5 text-xs text-white/80">{stay.dateLabel} · 체크인 {stay.checkIn} · 체크아웃 {stay.checkOut}</p>
+                    </motion.div>
+                  </motion.div>
+                ) : null}
+              </AnimatePresence>
+            </React.Fragment>
+          );
+        })}
+      </div>
+
+      <p className="px-5 py-3 text-xs text-gray-500 dark:text-gray-400">
+        {activeFilter === "all" ? "숙소를 탭하면 해당 숙소 정보만 볼 수 있어요." : `${openStay.city} 숙소 정보만 보고 있어요.`}
+      </p>
+    </section>
+  );
+};
 
 export const AccommodationActivity: React.FC = () => {
+  const [activeFilter, setActiveFilter] = React.useState<StayFilter>("all");
+  const visibleStays = activeFilter === "all"
+    ? ACCOMMODATIONS
+    : ACCOMMODATIONS.filter((stay) => stay.id === activeFilter);
+
   return (
     <AppScreen appBar={{ title: "숙소 자세히 보기" }}>
       <div className="min-h-full bg-gray-50 px-4 pb-24 pt-4 dark:bg-black">
-        <header className="mb-5 rounded-3xl bg-gradient-to-br from-violet-600 via-indigo-600 to-blue-600 p-5 text-white shadow-lg shadow-indigo-500/20">
-          <p className="text-xs font-bold tracking-[0.18em] text-white/65">BOOKED STAYS</p>
-          <h1 className="mt-2 text-2xl font-bold tracking-tight">이번 여행의 숙소 3곳</h1>
-          <p className="mt-1 text-sm text-white/80">방콕에서 코시창까지, 예약한 순서대로 정리했어요.</p>
-        </header>
+        <StayAccordion activeFilter={activeFilter} onFilterChange={setActiveFilter} />
 
-        <div className="flex flex-col gap-5">
-          {ACCOMMODATIONS.map((stay) => (
+        <div className="mt-5 flex flex-col gap-5">
+          {visibleStays.map((stay) => (
             <article key={stay.id} className="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-black/5 dark:bg-[#1C1C1E] dark:ring-white/10">
               <div
                 role="img"
