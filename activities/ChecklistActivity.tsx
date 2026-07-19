@@ -408,7 +408,7 @@ const SwipeableItem = ({
           isHighlighted ? "bg-yellow-50 dark:bg-yellow-900/20" : ""
         }`}
       >
-        <div className="relative size-5 shrink-0">
+        <div className="relative mt-0.5 size-5 shrink-0">
           <Checkbox
             variant="default"
             checked={isChecked}
