@@ -4,6 +4,11 @@ import * as React from "react";
 import { MoreHorizontal } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
+const AUTO_CARD_DURATION_MS = 4_000;
+const AUTO_CYCLE_PAUSE_MS = 4_000;
+const AUTO_START_DELAY_MS = 1_200;
+const USER_INTERACTION_PAUSE_MS = 5_000;
+
 export interface MinimalCardExpandItem {
   id: string;
   title: string;
@@ -152,7 +157,7 @@ export function MinimalCardExpand({
     resumeTimerRef.current = window.setTimeout(() => {
       setIsAutoCyclePaused(false);
       resumeTimerRef.current = null;
-    }, 5_000);
+    }, USER_INTERACTION_PAUSE_MS);
   }, [autoCycle, items, setExpanded]);
 
   React.useEffect(() => {
@@ -186,14 +191,14 @@ export function MinimalCardExpand({
       schedule(() => {
         if (isLastItem) {
           setExpanded(null);
-          schedule(playNext, 2_400);
+          schedule(playNext, AUTO_CYCLE_PAUSE_MS);
           return;
         }
         playNext();
-      }, 2_200);
+      }, AUTO_CARD_DURATION_MS);
     };
 
-    schedule(playNext, 900);
+    schedule(playNext, AUTO_START_DELAY_MS);
     return () => {
       isCancelled = true;
       if (timer) window.clearTimeout(timer);
