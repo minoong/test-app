@@ -16,6 +16,7 @@ import {
   TextField,
 } from "@heroui/react";
 import StatusButton from "@/components/animata/button/status-button";
+import { triggerHapticFeedback } from "@/components/BottomNav";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ImportanceChip } from "@/components/ui/chip";
 import {
@@ -132,6 +133,7 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
     const trimmedTitle = title.trim();
     if (!trimmedTitle || targets.length === 0) return;
 
+    triggerHapticFeedback(15);
     setSubmitError(null);
     addMutation.mutate({
       title: trimmedTitle,

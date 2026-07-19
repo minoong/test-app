@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { AppScreen } from "@stackflow/plugin-basic-ui";
-import { BottomNav } from "../components/BottomNav";
+import { BottomNav, triggerHapticFeedback } from "../components/BottomNav";
 import { Plus, Bell, ChevronDown, Trash2 } from "lucide-react";
 import { ChecklistDrawer } from "../components/checklist/ChecklistDrawer";
 import { toast } from "sonner";
@@ -369,6 +369,7 @@ const SwipeableItem = ({
         }}
         onDragEnd={(e, info) => {
           if (info.offset.x < -80) {
+            triggerHapticFeedback(18);
             animate(x, -500, {
               duration: prefersReducedMotion ? 0 : 0.25,
               ease: "easeOut",
@@ -377,6 +378,7 @@ const SwipeableItem = ({
               }
             });
           } else if (isNudgeAllowed && info.offset.x > 80) {
+            triggerHapticFeedback(12);
             animate(x, 200, {
               duration: prefersReducedMotion ? 0 : 0.2,
               ease: "easeOut",
@@ -631,6 +633,7 @@ export const ChecklistActivity: React.FC = () => {
     entry.desired = requestedState ?? !currentItem.completed_by.includes(targetUser);
     if (!entry.baseItems) entry.baseItems = currentItems;
     toggleEntriesRef.current.set(key, entry);
+    triggerHapticFeedback(10);
     updateOptimisticToggle(id, targetUser, entry.desired);
     scheduleToggle(key);
   };
@@ -822,6 +825,7 @@ export const ChecklistActivity: React.FC = () => {
           style={{ bottom: "calc(88px + env(safe-area-inset-bottom))" }}
           onClick={() => {
             if (drawerOpen) return;
+            triggerHapticFeedback(15);
             setRotation((prev) => prev + 90);
             setDrawerOpen(true);
           }}

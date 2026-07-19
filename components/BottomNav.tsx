@@ -6,9 +6,9 @@ interface BottomNavProps {
   active: "home" | "schedule" | "checklist" | "dictionary";
 }
 
-export const triggerHapticFeedback = () => {
+export const triggerHapticFeedback = (duration = 15) => {
   if (typeof navigator !== "undefined" && navigator.vibrate) {
-    navigator.vibrate(15);
+    navigator.vibrate(duration);
   }
   // Programmatic click for iOS WebKit inside trusted gestures (like touchend/click)
   if (typeof document !== "undefined") {
