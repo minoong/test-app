@@ -4,8 +4,9 @@ import { AppScreen } from "@stackflow/plugin-basic-ui";
 import { BottomNav } from "../components/BottomNav";
 import { motion } from "framer-motion";
 import NeumorphButton from "../components/ui/neumorph-button";
-import { Anchor, Bookmark, Cloud, Copy, SlidersHorizontal, Sparkles } from "lucide-react";
+import { Anchor, Bookmark, ChevronRight, Clock3, Cloud, Copy, Hotel, MapPin, SlidersHorizontal, Sparkles } from "lucide-react";
 import { MinimalCardExpand } from "../components/ui/minimal-card-expand";
+import { ACCOMMODATIONS } from "../lib/accommodations";
 
 export const HomeActivity: React.FC = () => {
   const { push, replace } = useFlow();
@@ -21,7 +22,7 @@ export const HomeActivity: React.FC = () => {
           <NeumorphButton intent={tripState === "after" ? "primary" : "secondary"} size="small" onClick={() => setTripState("after")}>여행 후</NeumorphButton>
         </div>
 
-        <div className="p-4 flex flex-col gap-6">
+        <div className="flex flex-col gap-6 p-4 pb-28">
           {tripState === "before" && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-4">
               <div className="bg-blue-100 dark:bg-blue-900 rounded-2xl p-6 text-center">
@@ -133,6 +134,45 @@ export const HomeActivity: React.FC = () => {
                 </div>
                 <span className="text-2xl">👉</span>
               </button>
+
+              <section className="overflow-hidden rounded-3xl bg-[#121417] p-4 text-white shadow-lg shadow-black/10">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <span className="flex size-8 items-center justify-center rounded-xl bg-white/10"><Hotel size={17} /></span>
+                    <div>
+                      <p className="text-sm font-bold">예약한 숙소</p>
+                      <p className="text-[11px] text-white/55">8/29–9/1 · 3곳</p>
+                    </div>
+                  </div>
+                  <span className="rounded-full bg-emerald-400/15 px-2.5 py-1 text-[11px] font-bold text-emerald-300">예약 완료</span>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  {ACCOMMODATIONS.map((stay) => (
+                    <div key={stay.id} className="flex min-h-[76px] items-center gap-3 rounded-2xl bg-white/[0.07] p-2.5">
+                      <div
+                        role="img"
+                        aria-label={`${stay.name} 대표 이미지`}
+                        className="h-14 w-16 shrink-0 rounded-xl bg-cover bg-center"
+                        style={{ backgroundImage: `url(${stay.imageUrl})` }}
+                      />
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-indigo-200"><MapPin size={12} /> {stay.date} · {stay.city}</div>
+                        <p className="mt-0.5 truncate text-sm font-bold">{stay.name}</p>
+                        <p className="mt-0.5 flex items-center gap-1 text-[11px] text-white/55"><Clock3 size={11} /> 체크인 {stay.checkIn} · 체크아웃 {stay.checkOut}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => push("AccommodationActivity", {})}
+                  className="mt-3 flex h-11 w-full items-center justify-center gap-1 rounded-xl bg-white text-sm font-bold text-gray-900 transition-transform active:scale-[0.98]"
+                >
+                  숙소 자세히 보기 <ChevronRight size={17} />
+                </button>
+              </section>
             </motion.div>
           )}
 
