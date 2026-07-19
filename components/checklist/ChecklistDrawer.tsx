@@ -162,37 +162,34 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
               <Description>짧고 알아보기 쉬운 이름이 좋아요.</Description>
             </TextField>
 
-            <RadioGroup
-              isRequired
-              name="importance"
-              value={importance}
-              onChange={(value) => setImportance(value as Importance)}
-            >
+            <div className="flex flex-col gap-3">
               <Label>중요도</Label>
               <Description>준비 순서를 정할 때 사용해요.</Description>
-              <div className="grid grid-cols-3 gap-2 pt-1">
+              <RadioGroup
+                className="pt-1"
+                isRequired
+                name="importance"
+                orientation="horizontal"
+                value={importance}
+                onChange={(value) => setImportance(value as Importance)}
+              >
                 {importanceOptions.map((option) => (
                   <Radio key={option.value} value={option.value}>
-                    <Radio.Content className="flex h-full min-h-20 w-full flex-col items-start justify-between gap-2 rounded-2xl border border-border bg-surface p-3 transition-colors data-[selected=true]:border-accent data-[selected=true]:bg-accent/10">
+                    <Radio.Content className="flex items-center gap-2">
                       <Radio.Control>
                         <Radio.Indicator />
                       </Radio.Control>
-                      <span className="flex flex-col text-left">
-                        <span className="flex items-center gap-2 text-sm font-semibold">
-                          {option.label}
-                          <Badge color={option.value === "high" ? "danger" : option.value === "normal" ? "accent" : "success"} size="sm" variant="soft">
-                            {option.value === "high" ? "필수" : option.value === "normal" ? "기본" : "선택"}
-                          </Badge>
-                        </span>
-                        <span className="text-xs leading-4 text-muted">
-                          {option.description}
-                        </span>
+                      <span className="flex items-center gap-2 text-left text-sm font-semibold">
+                        {option.label}
+                        <Badge color={option.value === "high" ? "danger" : option.value === "normal" ? "accent" : "success"} size="sm" variant="soft">
+                          {option.value === "high" ? "필수" : option.value === "normal" ? "기본" : "선택"}
+                        </Badge>
                       </span>
                     </Radio.Content>
                   </Radio>
                 ))}
-              </div>
-            </RadioGroup>
+              </RadioGroup>
+            </div>
 
             <CheckboxGroup
               className="gap-3"
