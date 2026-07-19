@@ -41,7 +41,7 @@ export function ImportanceChip({ importance }: { importance: LegacyImportance })
   const meta = importanceChipMeta[importance];
 
   return (
-    <Chip color={meta.color} size="sm" variant="primary">
+    <Chip color={meta.color} data-theme="light" size="sm" variant="primary">
       <span aria-hidden className="size-1.5 rounded-full bg-current" />
       <Chip.Label>{meta.label}</Chip.Label>
     </Chip>
