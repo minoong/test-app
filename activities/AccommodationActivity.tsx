@@ -1,6 +1,6 @@
 import React from "react";
 import { AppScreen } from "@stackflow/plugin-basic-ui";
-import { ExternalLink, MapPin, CalendarDays, Clock3, Star, Wifi, Waves, Dumbbell, Luggage, Coffee, CircleParking, Flame, KeyRound, Snowflake, Utensils, type LucideIcon } from "lucide-react";
+import { BellRing, ExternalLink, MapPin, CalendarDays, Clock3, Star, Wifi, Waves, Dumbbell, Luggage, Coffee, CircleParking, Flame, KeyRound, Snowflake, Utensils, Plane, Shirt, Umbrella, Wine, type LucideIcon } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { BottomNav } from "../components/BottomNav";
 import { ACCOMMODATIONS, type Accommodation } from "../lib/accommodations";
@@ -15,7 +15,14 @@ const amenityIconMap: Record<string, LucideIcon> = {
   "사우나": Flame,
   "무료 주차": CircleParking,
   "레스토랑": Utensils,
-  "무료 조식": Coffee,
+  "해변": Umbrella,
+  "전망 수영장": Waves,
+  "24시간 프런트": Clock3,
+  "바": Wine,
+  "공항 셔틀": Plane,
+  "조식": Coffee,
+  "세탁 서비스": Shirt,
+  "룸서비스": BellRing,
 };
 type StayFilter = "all" | Accommodation["id"];
 
@@ -179,7 +186,7 @@ export const AccommodationActivity: React.FC = () => {
                 </div>
 
                 <div className="mt-4">
-                  <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100">주요 편의시설</h2>
+                  <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100">편의시설 · 서비스</h2>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {stay.amenities.map((amenity) => {
                       const Icon = amenityIconMap[amenity] ?? Wifi;
