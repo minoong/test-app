@@ -201,19 +201,19 @@ export const AccommodationActivity: React.FC = () => {
                     className="h-44 w-full border-0"
                     referrerPolicy="no-referrer-when-downgrade"
                   />
-                  <div className="flex items-center justify-between gap-3 px-3 py-2.5">
-                    <p className="min-w-0 truncate text-xs text-gray-500 dark:text-gray-400"><MapPin className="mr-1 inline text-indigo-500" size={13} />{stay.address}</p>
-                    <a className="shrink-0 text-xs font-bold text-indigo-600 dark:text-indigo-300" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(stay.mapQuery)}`} target="_blank" rel="noreferrer">지도 열기</a>
+                  <div className="px-3 py-2.5">
+                    <p className="truncate text-xs text-gray-500 dark:text-gray-400"><MapPin className="mr-1 inline text-indigo-500" size={13} />{stay.address}</p>
                   </div>
                 </div>
 
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {stay.highlights.map((highlight) => <span key={highlight} className="rounded-full bg-gray-100 px-2.5 py-1.5 text-xs font-medium text-gray-600 dark:bg-white/10 dark:text-gray-300">{highlight}</span>)}
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(stay.mapQuery)}`} target="_blank" rel="noreferrer" className="flex h-10 items-center justify-center gap-1.5 rounded-xl border border-gray-200 bg-white text-xs font-bold text-gray-700 transition-transform active:scale-[0.98] dark:border-white/10 dark:bg-white/[0.05] dark:text-gray-100">
+                    Google 지도 <ExternalLink size={14} />
+                  </a>
+                  <a href={stay.agodaUrl} target="_blank" rel="noreferrer" className="flex h-10 items-center justify-center gap-1.5 rounded-xl bg-[#5392f9] text-xs font-bold text-white transition-transform active:scale-[0.98]">
+                    Agoda 예약 정보 <ExternalLink size={14} />
+                  </a>
                 </div>
-
-                <a href={stay.agodaUrl} target="_blank" rel="noreferrer" className="mt-4 flex h-11 items-center justify-center gap-2 rounded-xl bg-[#5392f9] text-sm font-bold text-white transition-transform active:scale-[0.98]">
-                  Agoda 예약 정보 열기 <ExternalLink size={16} />
-                </a>
 
                 <section className="mt-5">
                   <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100">편의시설 · 서비스</h2>
