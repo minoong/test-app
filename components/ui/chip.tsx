@@ -4,6 +4,12 @@ import { Chip as HeroChip, type ChipProps as HeroChipProps } from "@heroui/react
 
 type LegacyImportance = "high" | "normal" | "low";
 
+export const importanceChipMeta = {
+  high: { color: "danger", label: "높음" },
+  normal: { color: "warning", label: "보통" },
+  low: { color: "success", label: "낮음" },
+} as const satisfies Record<LegacyImportance, { color: NonNullable<HeroChipProps["color"]>; label: string }>;
+
 export type ChipProps = Omit<HeroChipProps, "color" | "variant"> & {
   color?: HeroChipProps["color"];
   variant?: HeroChipProps["variant"] | LegacyImportance;
@@ -30,5 +36,16 @@ function ChipRoot({ variant = "secondary", color, ...props }: ChipProps) {
 export const Chip = Object.assign(ChipRoot, {
   Label: HeroChip.Label,
 });
+
+export function ImportanceChip({ importance }: { importance: LegacyImportance }) {
+  const meta = importanceChipMeta[importance];
+
+  return (
+    <Chip color={meta.color} size="sm" variant="primary">
+      <span aria-hidden className="size-1.5 rounded-full bg-current" />
+      <Chip.Label>{meta.label}</Chip.Label>
+    </Chip>
+  );
+}
 
 export { HeroChip };

@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { supabase } from "../lib/supabase";
 import NumberFlow from "@number-flow/react";
 import { Skeleton } from "../components/ui/skeleton";
-import { Chip } from "../components/ui/chip";
+import { ImportanceChip } from "../components/ui/chip";
 import NeumorphButton from "../components/ui/neumorph-button";
 import { Checkbox } from "../components/animate-ui/components/radix/checkbox";
 import { motion, AnimatePresence, useMotionValue, animate, useTransform, type Transition } from "framer-motion";
@@ -343,12 +343,7 @@ const SwipeableItem = ({
                 />
               </motion.svg>
             </div>
-            <Chip variant={item.importance} size="sm">
-              <span aria-hidden className="size-1.5 rounded-full bg-current" />
-              <Chip.Label>
-                {item.importance === "high" ? "높음" : item.importance === "low" ? "낮음" : "보통"}
-              </Chip.Label>
-            </Chip>
+            <ImportanceChip importance={item.importance} />
           </div>
         </div>
       </motion.div>

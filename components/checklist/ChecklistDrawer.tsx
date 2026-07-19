@@ -16,7 +16,7 @@ import {
 } from "@heroui/react";
 import StatusButton from "@/components/animata/button/status-button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Chip } from "@/components/ui/chip";
+import { ImportanceChip } from "@/components/ui/chip";
 import {
   Drawer,
   DrawerDescription,
@@ -36,12 +36,10 @@ type Importance = "high" | "normal" | "low";
 
 const importanceOptions: Array<{
   value: Importance;
-  label: string;
-  description: string;
 }> = [
-  { value: "high", label: "높음", description: "꼭 챙겨야 해요" },
-  { value: "normal", label: "보통", description: "일반 준비물이에요" },
-  { value: "low", label: "낮음", description: "여유가 되면 챙겨요" },
+  { value: "high" },
+  { value: "normal" },
+  { value: "low" },
 ];
 
 const targetOptions = [
@@ -179,13 +177,7 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
                       <Radio.Control>
                         <Radio.Indicator />
                       </Radio.Control>
-                      <span className="flex items-center gap-2 text-left text-sm font-semibold">
-                        {option.label}
-                        <Chip color={option.value === "high" ? "danger" : option.value === "normal" ? "warning" : "success"} size="sm" variant="primary">
-                          <span aria-hidden className="size-1.5 rounded-full bg-current" />
-                          <Chip.Label>{option.value === "high" ? "필수" : option.value === "normal" ? "기본" : "선택"}</Chip.Label>
-                        </Chip>
-                      </span>
+                      <ImportanceChip importance={option.value} />
                     </Radio.Content>
                   </Radio>
                 ))}
