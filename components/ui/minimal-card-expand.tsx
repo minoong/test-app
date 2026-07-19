@@ -53,12 +53,12 @@ const SkiperCard = ({
         ? { duration: 0 }
         : { type: "spring", stiffness: 280, damping: 28, mass: 0.75 },
     }}
-    className={`relative flex shrink-0 flex-col items-start justify-between overflow-hidden rounded-[24px] p-3 text-white ${item.colorClassName} ${
+    className={`relative flex min-w-0 flex-col items-start justify-between overflow-hidden rounded-[24px] p-3 text-white ${item.colorClassName} ${
       expanded
-        ? "order-0 h-[180px] w-full"
+        ? "col-span-3 row-start-1 h-[180px] w-full"
         : condensed
-          ? "order-1 h-[100px] w-[calc((100%-2rem)/3)]"
-          : "h-[125px] w-[calc((100%-1rem)/2)]"
+          ? "col-span-1 row-start-2 h-[100px] w-full"
+          : "col-span-1 h-[125px] w-full"
     }`}
   >
     <div className="flex w-full items-start justify-between gap-3">
@@ -134,7 +134,11 @@ export function MinimalCardExpand({
 
   return (
     <div
-      className={`flex h-[300px] w-full max-w-none flex-wrap content-end gap-4 ${className ?? ""}`}
+      className={`grid h-[300px] w-full min-w-0 max-w-none gap-4 ${
+        expandedId
+          ? "grid-cols-3 grid-rows-[180px_100px]"
+          : "grid-cols-2 grid-rows-[125px_125px]"
+      } ${className ?? ""}`}
       aria-label="확장 카드 데모"
     >
       {items.map((item) => {
