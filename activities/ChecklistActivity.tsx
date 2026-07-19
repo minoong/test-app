@@ -191,21 +191,47 @@ interface SwipeableItemProps {
 
 const SwipeHint = () => {
   const prefersReducedMotion = useReducedMotion();
+  const [isOpen, setIsOpen] = useState(true);
 
   return (
     <section
       aria-label="할 일 스와이프 사용 안내"
       className="mb-5 overflow-hidden rounded-2xl border border-gray-200 bg-gray-50/80 p-3 dark:border-white/10 dark:bg-white/[0.04]"
     >
-      <div className="flex items-center justify-between gap-3 px-1 text-xs">
+      <button
+        type="button"
+        aria-controls="checklist-swipe-hint-content"
+        aria-expanded={isOpen}
+        onClick={() => setIsOpen((open) => !open)}
+        className="flex w-full items-center justify-between gap-3 rounded-lg px-1 py-0.5 text-left text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+      >
         <div className="flex min-w-0 items-center gap-2 font-semibold text-gray-700 dark:text-gray-200">
           <span aria-hidden="true" className="text-base">↔</span>
           <span className="truncate">할 일을 좌우로 밀어보세요</span>
         </div>
-        <span className="shrink-0 text-[11px] text-gray-500 dark:text-gray-400">삭제 · 알림</span>
-      </div>
+        <div className="flex shrink-0 items-center gap-2 text-[11px] text-gray-500 dark:text-gray-400">
+          <span>삭제 · 알림</span>
+          <motion.span
+            aria-hidden="true"
+            animate={{ rotate: isOpen ? 180 : 0 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.2 }}
+          >
+            <ChevronDown size={15} />
+          </motion.span>
+        </div>
+      </button>
 
-      <div className="relative mt-2 h-14 overflow-hidden rounded-xl bg-gray-200/70 dark:bg-white/10">
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            id="checklist-swipe-hint-content"
+            initial={{ height: 0, opacity: 0, marginTop: 0 }}
+            animate={{ height: "auto", opacity: 1, marginTop: 8 }}
+            exit={{ height: 0, opacity: 0, marginTop: 0 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.2, ease: "easeOut" }}
+            className="relative overflow-hidden"
+          >
+      <div className="relative h-14 overflow-hidden rounded-xl bg-gray-200/70 dark:bg-white/10">
         <div className="absolute inset-0 flex items-center justify-between text-white" aria-hidden="true">
           <div className="flex h-full w-1/2 items-center gap-1.5 bg-amber-500 px-3 text-xs font-semibold">
             <Bell size={14} />
@@ -232,6 +258,9 @@ const SwipeHint = () => {
           <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700 dark:bg-amber-400/15 dark:text-amber-300">보통</span>
         </motion.div>
       </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
