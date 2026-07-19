@@ -278,6 +278,7 @@ const SwipeableItem = ({
   const prefersReducedMotion = useReducedMotion();
   const [willDelete, setWillDelete] = useState(false);
   const [willNudge, setWillNudge] = useState(false);
+  const swipeHapticRef = useRef<"delete" | "nudge" | null>(null);
   const didDragRef = useRef(false);
   const x = useMotionValue(0);
   const rightBackgroundOpacity = useTransform(x, [0, -20], [0, 1]);
@@ -354,22 +355,31 @@ const SwipeableItem = ({
           // Left drag (delete)
           if (info.offset.x < -80 && !willDelete) {
             setWillDelete(true);
+            if (swipeHapticRef.current !== "delete") {
+              swipeHapticRef.current = "delete";
+              triggerHapticFeedback(18);
+            }
           } else if (info.offset.x >= -80 && willDelete) {
             setWillDelete(false);
+            if (info.offset.x >= 0) swipeHapticRef.current = null;
           }
 
           // Right drag (nudge)
           if (isNudgeAllowed) {
             if (info.offset.x > 80 && !willNudge) {
               setWillNudge(true);
+              if (swipeHapticRef.current !== "nudge") {
+                swipeHapticRef.current = "nudge";
+                triggerHapticFeedback(12);
+              }
             } else if (info.offset.x <= 80 && willNudge) {
               setWillNudge(false);
+              if (info.offset.x <= 0) swipeHapticRef.current = null;
             }
           }
         }}
         onDragEnd={(e, info) => {
           if (info.offset.x < -80) {
-            triggerHapticFeedback(18);
             animate(x, -500, {
               duration: prefersReducedMotion ? 0 : 0.25,
               ease: "easeOut",
@@ -378,7 +388,6 @@ const SwipeableItem = ({
               }
             });
           } else if (isNudgeAllowed && info.offset.x > 80) {
-            triggerHapticFeedback(12);
             animate(x, 200, {
               duration: prefersReducedMotion ? 0 : 0.2,
               ease: "easeOut",
@@ -393,6 +402,7 @@ const SwipeableItem = ({
             setWillNudge(false);
             animate(x, 0, { type: "spring", stiffness: 300, damping: 20 });
           }
+          swipeHapticRef.current = null;
           window.setTimeout(() => {
             didDragRef.current = false;
           }, prefersReducedMotion ? 0 : 120);
@@ -825,9 +835,11 @@ export const ChecklistActivity: React.FC = () => {
           style={{ bottom: "calc(88px + env(safe-area-inset-bottom))" }}
           onClick={() => {
             if (drawerOpen) return;
-            triggerHapticFeedback(15);
             setRotation((prev) => prev + 90);
             setDrawerOpen(true);
+          }}
+          onPointerDown={() => {
+            if (!drawerOpen) triggerHapticFeedback(15);
           }}
         >
           <motion.div

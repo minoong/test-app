@@ -133,7 +133,6 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
     const trimmedTitle = title.trim();
     if (!trimmedTitle || targets.length === 0) return;
 
-    triggerHapticFeedback(15);
     setSubmitError(null);
     addMutation.mutate({
       title: trimmedTitle,
@@ -285,6 +284,7 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
                         : "idle"
                   }
                   type="submit"
+                  onPress={() => triggerHapticFeedback(15)}
                 />
               </DrawerFooter>
             </motion.div>
