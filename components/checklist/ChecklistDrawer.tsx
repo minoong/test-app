@@ -79,7 +79,7 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
     onSuccess: () => {
       setSuccess(true);
       queryClient.invalidateQueries({ queryKey: ["checklist"] });
-      
+
       // 성공 메시지 표시 후 닫기 및 초기화
       setTimeout(() => {
         onOpenChange(false);
@@ -120,10 +120,10 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 15 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { type: "spring" as const, stiffness: 300, damping: 24 } 
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { type: "spring" as const, stiffness: 300, damping: 24 }
     },
   };
 
@@ -289,7 +289,7 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
         </DrawerPanel>
 
         <DrawerFooter className="flex-row gap-4 justify-center mt-4 px-6 pb-8">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={open ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
             transition={{ type: "spring" as const, stiffness: 300, damping: 24, delay: 0.35 }}
