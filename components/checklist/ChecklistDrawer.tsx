@@ -19,6 +19,7 @@ import StatusButton from "@/components/animata/button/status-button";
 import { triggerHapticFeedback } from "@/components/BottomNav";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ImportanceChip } from "@/components/ui/chip";
+import { NativeHapticSwitch } from "@/components/ui/native-haptic-switch";
 import {
   Drawer,
   DrawerDescription,
@@ -76,6 +77,7 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prefersReducedMotion = useReducedMotion();
 
@@ -152,6 +154,7 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerPopup id="checklist-drawer" variant="inset" showBar>
         <Form
+          ref={formRef}
           aria-label="준비물 추가"
           className="flex min-h-0 w-full flex-1 flex-col"
           data-theme="light"
@@ -269,23 +272,34 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
                 >
                   취소
                 </Button>
-                <StatusButton
-                  className="h-12 rounded-2xl text-base"
-                  fullWidth
-                  isDisabled={!canSubmit || success}
-                  idleText="추가하기"
-                  size="lg"
-                  loadingText="등록 중…"
-                  status={
-                    addMutation.isPending
-                      ? "loading"
-                      : success
-                        ? "success"
-                        : "idle"
-                  }
-                  type="submit"
-                  onPress={() => triggerHapticFeedback(15)}
-                />
+                <div className="relative h-12 min-w-0">
+                  <StatusButton
+                    aria-hidden="true"
+                    className="pointer-events-none h-12 rounded-2xl text-base"
+                    fullWidth
+                    isDisabled={!canSubmit || success}
+                    idleText="추가하기"
+                    size="lg"
+                    loadingText="등록 중…"
+                    status={
+                      addMutation.isPending
+                        ? "loading"
+                        : success
+                          ? "success"
+                          : "idle"
+                    }
+                    type="submit"
+                  />
+                  <NativeHapticSwitch
+                    ariaLabel="준비물 등록하기"
+                    checked={false}
+                    disabled={!canSubmit || addMutation.isPending || success}
+                    onChange={() => {
+                      triggerHapticFeedback(15);
+                      formRef.current?.requestSubmit();
+                    }}
+                  />
+                </div>
               </DrawerFooter>
             </motion.div>
           </motion.div>

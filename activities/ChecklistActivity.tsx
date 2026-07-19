@@ -21,6 +21,7 @@ import {
 } from "../components/ui/dynamic-island";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import { NativeHapticSwitch } from "../components/ui/native-haptic-switch";
 
 const avatarSources = {
   gahyun: "/avatars/gahyun.webp",
@@ -278,7 +279,6 @@ const SwipeableItem = ({
   const prefersReducedMotion = useReducedMotion();
   const [willDelete, setWillDelete] = useState(false);
   const [willNudge, setWillNudge] = useState(false);
-  const swipeHapticRef = useRef<"delete" | "nudge" | null>(null);
   const didDragRef = useRef(false);
   const x = useMotionValue(0);
   const rightBackgroundOpacity = useTransform(x, [0, -20], [0, 1]);
@@ -355,26 +355,16 @@ const SwipeableItem = ({
           // Left drag (delete)
           if (info.offset.x < -80 && !willDelete) {
             setWillDelete(true);
-            if (swipeHapticRef.current !== "delete") {
-              swipeHapticRef.current = "delete";
-              triggerHapticFeedback(18);
-            }
           } else if (info.offset.x >= -80 && willDelete) {
             setWillDelete(false);
-            if (info.offset.x >= 0) swipeHapticRef.current = null;
           }
 
           // Right drag (nudge)
           if (isNudgeAllowed) {
             if (info.offset.x > 80 && !willNudge) {
               setWillNudge(true);
-              if (swipeHapticRef.current !== "nudge") {
-                swipeHapticRef.current = "nudge";
-                triggerHapticFeedback(12);
-              }
             } else if (info.offset.x <= 80 && willNudge) {
               setWillNudge(false);
-              if (info.offset.x <= 0) swipeHapticRef.current = null;
             }
           }
         }}
@@ -402,7 +392,6 @@ const SwipeableItem = ({
             setWillNudge(false);
             animate(x, 0, { type: "spring", stiffness: 300, damping: 20 });
           }
-          swipeHapticRef.current = null;
           window.setTimeout(() => {
             didDragRef.current = false;
           }, prefersReducedMotion ? 0 : 120);
@@ -410,7 +399,7 @@ const SwipeableItem = ({
         onClick={(event) => {
           if (didDragRef.current) return;
           const target = event.target as HTMLElement;
-          if (target.closest("button, label, a")) return;
+          if (target.closest("button, label, a, input")) return;
           onToggleCheck(item.id, targetUser);
         }}
         className={`relative z-10 flex min-h-16 select-none items-start justify-between gap-3 px-4 py-3 touch-pan-y bg-white dark:bg-[#1C1C1E] transition-colors hover:bg-gray-50 active:bg-gray-100 dark:hover:bg-white/5 dark:active:bg-white/10 ${
@@ -418,15 +407,23 @@ const SwipeableItem = ({
         }`}
       >
         <div className="flex min-w-0 flex-1 items-start gap-3 py-1">
-          <Checkbox
-            variant="default"
-            checked={isChecked}
-            onCheckedChange={(val) => {
-              onToggleCheck(item.id, targetUser, val === true);
-            }}
-            id={checkboxId}
-            className="flex-shrink-0 cursor-pointer"
-          />
+          <div className="relative size-5 shrink-0">
+            <Checkbox
+              variant="default"
+              checked={isChecked}
+              id={`${checkboxId}-visual`}
+              className="pointer-events-none absolute inset-0 size-5"
+            />
+            <NativeHapticSwitch
+              ariaLabel={`${item.title} 완료 여부`}
+              checked={isChecked}
+              id={checkboxId}
+              onChange={(event) => {
+                triggerHapticFeedback(10);
+                onToggleCheck(item.id, targetUser, event.currentTarget.checked);
+              }}
+            />
+          </div>
           <div className="flex min-w-0 flex-1 items-start gap-3">
             <div className="min-w-0 flex-1">
               <label
@@ -825,31 +822,37 @@ export const ChecklistActivity: React.FC = () => {
         </div>
 
         {/* Floating Action Button */}
-        <NeumorphButton
-          aria-label="준비물 추가"
-          aria-expanded={drawerOpen}
-          aria-controls="checklist-drawer"
-          type="button"
-          intent="primary"
-          className="fixed right-6 w-14 h-14 !rounded-full !p-0 z-50 flex items-center justify-center shadow-xl overflow-hidden touch-manipulation"
+        <div
+          className="fixed right-6 z-50 h-14 w-14"
           style={{ bottom: "calc(88px + env(safe-area-inset-bottom))" }}
-          onClick={() => {
-            if (drawerOpen) return;
-            setRotation((prev) => prev + 90);
-            setDrawerOpen(true);
-          }}
-          onPointerDown={() => {
-            if (!drawerOpen) triggerHapticFeedback(15);
-          }}
         >
-          <motion.div
-            animate={{ rotate: rotation }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.3, ease: "easeInOut" }}
-            className="flex items-center justify-center pointer-events-none"
+          <NeumorphButton
+            aria-hidden="true"
+            type="button"
+            intent="primary"
+            tabIndex={-1}
+            className="pointer-events-none h-14 w-14 !rounded-full !p-0 flex items-center justify-center shadow-xl overflow-hidden"
           >
-            <Plus size={24} />
-          </motion.div>
-        </NeumorphButton>
+            <motion.div
+              animate={{ rotate: rotation }}
+              transition={{ duration: prefersReducedMotion ? 0 : 0.3, ease: "easeInOut" }}
+              className="flex items-center justify-center pointer-events-none"
+            >
+              <Plus size={24} />
+            </motion.div>
+          </NeumorphButton>
+          <NativeHapticSwitch
+            ariaLabel="준비물 추가"
+            checked={drawerOpen}
+            disabled={drawerOpen}
+            onChange={() => {
+              if (drawerOpen) return;
+              triggerHapticFeedback(15);
+              setRotation((prev) => prev + 90);
+              setDrawerOpen(true);
+            }}
+          />
+        </div>
 
           <ChecklistDrawer
           open={drawerOpen}
