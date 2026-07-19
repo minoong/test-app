@@ -21,6 +21,16 @@ export interface Accommodation {
     primary: string;
     details: string[];
   };
+  importantInfo?: {
+    breakfast: {
+      title: string;
+      details: string;
+    };
+    shuttle: {
+      title: string;
+      details: string;
+    };
+  };
   notice?: string;
 }
 
@@ -106,6 +116,15 @@ export const ACCOMMODATIONS: Accommodation[] = [
       primary: "The Verandah Restaurant",
       details: ["유럽식 조식", "인터내셔널 · 태국식", "뷔페 · 알라카르트"],
     },
-    notice: "공항 이동 교통편은 요청 시 제공되며 추가 요금이 부과될 수 있어요.",
+    importantInfo: {
+      breakfast: {
+        title: "The Verandah Restaurant",
+        details: "유럽식 조식 · 조식 뷔페 이용 가능",
+      },
+      shuttle: {
+        title: "공항 셔틀 · 셔틀 서비스",
+        details: "요청 시 제공되며 추가 요금이 부과될 수 있어요.",
+      },
+    },
   },
 ];
