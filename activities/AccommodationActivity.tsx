@@ -60,9 +60,8 @@ interface StayAccordionItem {
   title: string;
   label: string;
   imageUrl: string;
-  description?: string;
-  from?: string;
-  to?: string;
+  from: string;
+  to: string;
 }
 
 const getFollowingDate = (dateLabel: string) => {
@@ -77,7 +76,8 @@ const STAY_ACCORDION_ITEMS: StayAccordionItem[] = [
     title: "전체",
     label: "ALL",
     imageUrl: "/accommodation-overview.jpg",
-    description: "방콕 · 팟타야 · 코시창 · 예약한 숙소 3곳",
+    from: `${ACCOMMODATIONS[0].date} · ${ACCOMMODATIONS[0].checkIn}`,
+    to: `${getFollowingDate(ACCOMMODATIONS[ACCOMMODATIONS.length - 1].date)} · ${ACCOMMODATIONS[ACCOMMODATIONS.length - 1].checkOut}`,
   },
   ...ACCOMMODATIONS.map((stay) => ({
     id: stay.id,
@@ -154,21 +154,17 @@ const StayAccordion: React.FC<StayAccordionProps> = ({ onFilterChange }) => {
                       className="flex h-[70px] w-full flex-col bg-black/35 px-3 py-2.5 text-white backdrop-blur-sm"
                     >
                       <p className="text-sm font-bold">{item.title === "전체" ? "예약한 숙소" : item.title}</p>
-                      {item.id === "all" ? (
-                        <p className="mt-0.5 line-clamp-2 text-xs text-white/80">{item.description}</p>
-                      ) : (
-                        <div className="mt-1.5 flex items-end gap-2">
-                          <div>
-                            <p className="text-[9px] font-semibold tracking-[0.08em] text-white/55">체크인</p>
-                            <p className="mt-0.5 text-xs font-semibold tabular-nums text-white/95">{item.from}</p>
-                          </div>
-                          <span className="mb-1 h-px min-w-4 flex-1 bg-white/30" />
-                          <div className="text-right">
-                            <p className="text-[9px] font-semibold tracking-[0.08em] text-white/55">체크아웃</p>
-                            <p className="mt-0.5 text-xs font-semibold tabular-nums text-white/95">{item.to}</p>
-                          </div>
+                      <div className="mt-1.5 flex items-end gap-2">
+                        <div>
+                          <p className="text-[9px] font-semibold tracking-[0.08em] text-white/55">체크인</p>
+                          <p className="mt-0.5 text-xs font-semibold tabular-nums text-white/95">{item.from}</p>
                         </div>
-                      )}
+                        <span className="mb-1 h-px min-w-4 flex-1 bg-white/30" />
+                        <div className="text-right">
+                          <p className="text-[9px] font-semibold tracking-[0.08em] text-white/55">체크아웃</p>
+                          <p className="mt-0.5 text-xs font-semibold tabular-nums text-white/95">{item.to}</p>
+                        </div>
+                      </div>
                     </motion.div>
                   </motion.div>
                 ) : null}
