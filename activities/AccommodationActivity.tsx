@@ -32,7 +32,7 @@ interface StayAccordionProps {
 const StayAccordion: React.FC<StayAccordionProps> = ({ activeFilter, onFilterChange }) => {
   const [openId, setOpenId] = React.useState<Accommodation["id"]>(ACCOMMODATIONS[0].id);
   const { width } = useWindowSize();
-  const isDesktop = Boolean(width && width >= 1024);
+  const accordionHeight = width && width >= 1024 ? 260 : 216;
   const openStay = ACCOMMODATIONS.find((stay) => stay.id === openId) ?? ACCOMMODATIONS[0];
 
   const selectStay = (stay: Accommodation) => {
@@ -61,7 +61,10 @@ const StayAccordion: React.FC<StayAccordionProps> = ({ activeFilter, onFilterCha
         </button>
       </div>
 
-      <div className="flex flex-col overflow-hidden border-t border-gray-100 dark:border-white/10 lg:h-[260px] lg:flex-row">
+      <div
+        className="flex flex-row overflow-hidden border-t border-gray-100 dark:border-white/10"
+        style={{ height: accordionHeight }}
+      >
         {ACCOMMODATIONS.map((stay) => {
           const isOpen = stay.id === openId;
           const isFiltered = stay.id === activeFilter;
@@ -72,26 +75,26 @@ const StayAccordion: React.FC<StayAccordionProps> = ({ activeFilter, onFilterCha
                 type="button"
                 onClick={() => selectStay(stay)}
                 aria-pressed={isFiltered}
-                className={`group relative z-10 flex shrink-0 items-center gap-3 border-b border-gray-100 p-3 text-left transition-colors dark:border-white/10 lg:w-16 lg:flex-col lg:justify-end lg:gap-3 lg:border-b-0 lg:border-r ${
+                className={`group relative z-10 flex w-14 shrink-0 flex-col justify-end gap-3 border-r border-gray-100 p-3 text-left transition-colors dark:border-white/10 lg:w-16 ${
                   isOpen
                     ? "bg-indigo-50 text-indigo-800 dark:bg-indigo-400/15 dark:text-indigo-100"
                     : "bg-white text-gray-800 hover:bg-gray-50 dark:bg-[#1C1C1E] dark:text-gray-100 dark:hover:bg-white/5"
                 }`}
               >
                 <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-indigo-600 text-xs font-bold text-white">{stay.date}</span>
-                <span className="text-sm font-semibold lg:[writing-mode:vertical-lr] lg:rotate-180">{stay.city}</span>
-                <span className="pointer-events-none absolute bottom-0 right-1/2 size-3 translate-x-1/2 translate-y-1/2 rotate-45 border-b border-r border-gray-100 bg-inherit dark:border-white/10 lg:bottom-1/2 lg:right-0 lg:translate-x-1/2 lg:translate-y-1/2 lg:border-b-0 lg:border-r lg:border-t" />
+                <span className="text-sm font-semibold [writing-mode:vertical-lr] rotate-180">{stay.city}</span>
+                <span className="pointer-events-none absolute bottom-1/2 right-0 size-3 translate-x-1/2 translate-y-1/2 rotate-45 border-r border-t border-gray-100 bg-inherit dark:border-white/10" />
               </button>
 
-              <AnimatePresence initial={false} mode="wait">
+              <AnimatePresence initial={false}>
                 {isOpen ? (
                   <motion.div
                     key={stay.id}
-                    initial={isDesktop ? { width: 0, opacity: 0 } : { height: 0, opacity: 0 }}
-                    animate={isDesktop ? { width: "100%", opacity: 1 } : { height: 188, opacity: 1 }}
-                    exit={isDesktop ? { width: 0, opacity: 0 } : { height: 0, opacity: 0 }}
-                    transition={{ type: "spring", stiffness: 280, damping: 30, mass: 0.8 }}
-                    className="relative flex min-h-0 min-w-0 flex-1 items-end overflow-hidden bg-slate-950"
+                    initial={{ width: "0%" }}
+                    animate={{ width: "100%" }}
+                    exit={{ width: "0%" }}
+                    transition={{ type: "spring", stiffness: 280, damping: 28, mass: 0.75 }}
+                    className="relative flex h-full min-h-0 min-w-0 shrink items-end overflow-hidden bg-slate-950"
                     style={{ backgroundImage: `linear-gradient(180deg, transparent 32%, rgba(0,0,0,.7)), url(${stay.imageUrl})`, backgroundPosition: "center", backgroundSize: "cover" }}
                   >
                     <motion.div
