@@ -71,6 +71,12 @@ const SkiperCard = ({
           type="button"
           aria-label={`${item.title} 펼치기`}
           aria-expanded={false}
+          onPointerDown={(event) => {
+            // When another card is expanded, its outside-click listener would
+            // otherwise collapse it before this button receives its click.
+            event.stopPropagation();
+            onExpand(item.id);
+          }}
           onClick={() => onExpand(item.id)}
           className="flex size-6 items-center justify-center rounded-full bg-white/20 p-0.5 text-white transition-colors duration-150 ease-out hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
         >
