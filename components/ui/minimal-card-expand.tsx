@@ -57,8 +57,8 @@ const SkiperCard = ({
       expanded
         ? "order-0 h-[180px] w-full"
         : condensed
-          ? "order-1 h-[100px] w-[100px] sm:w-[120px]"
-          : "h-[125px] w-[140px] sm:w-[160px]"
+          ? "order-1 h-[100px] w-[calc((100%-2rem)/3)]"
+          : "h-[125px] w-[calc((100%-1rem)/2)]"
     }`}
   >
     <div className="flex w-full items-start justify-between gap-3">
@@ -134,7 +134,7 @@ export function MinimalCardExpand({
 
   return (
     <div
-      className={`flex h-[300px] w-full max-w-[360px] flex-wrap content-end gap-4 ${className ?? ""}`}
+      className={`flex h-[300px] w-full max-w-none flex-wrap content-end gap-4 ${className ?? ""}`}
       aria-label="확장 카드 데모"
     >
       {items.map((item) => {
