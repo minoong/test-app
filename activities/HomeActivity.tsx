@@ -4,7 +4,7 @@ import { AppScreen } from "@stackflow/plugin-basic-ui";
 import { BottomNav } from "../components/BottomNav";
 import { motion } from "framer-motion";
 import NeumorphButton from "../components/ui/neumorph-button";
-import { Anchor, Bookmark, ChevronRight, Clock3, Cloud, Copy, Hotel, MapPin, SlidersHorizontal, Sparkles } from "lucide-react";
+import { Anchor, Bookmark, ChevronRight, Cloud, Copy, Hotel, MapPin, SlidersHorizontal, Sparkles } from "lucide-react";
 import { MinimalCardExpand } from "../components/ui/minimal-card-expand";
 import { ACCOMMODATIONS } from "../lib/accommodations";
 
@@ -147,23 +147,58 @@ export const HomeActivity: React.FC = () => {
                   <span className="rounded-full bg-emerald-400/15 px-2.5 py-1 text-[11px] font-bold text-emerald-300">예약 완료</span>
                 </div>
 
-                <div className="flex flex-col gap-2">
-                  {ACCOMMODATIONS.map((stay) => (
-                    <div key={stay.id} className="flex min-h-[76px] items-center gap-3 rounded-2xl bg-white/[0.07] p-2.5">
-                      <div
-                        role="img"
-                        aria-label={`${stay.name} 대표 이미지`}
-                        className="h-14 w-16 shrink-0 rounded-xl bg-cover bg-center"
-                        style={{ backgroundImage: `url(${stay.imageUrl})` }}
-                      />
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-indigo-200"><MapPin size={12} /> {stay.date} · {stay.city}</div>
-                        <p className="mt-0.5 truncate text-sm font-bold">{stay.name}</p>
-                        <p className="mt-0.5 flex items-center gap-1 text-[11px] text-white/55"><Clock3 size={11} /> 체크인 {stay.checkIn} · 체크아웃 {stay.checkOut}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <MinimalCardExpand
+                  className="h-[300px]"
+                  items={[
+                    {
+                      id: ACCOMMODATIONS[0].id,
+                      title: ACCOMMODATIONS[0].city,
+                      value: `${ACCOMMODATIONS[0].date} · 체크인 ${ACCOMMODATIONS[0].checkIn}`,
+                      icon: <MapPin size={24} aria-hidden="true" />,
+                      colorClassName: "bg-slate-800",
+                      imageUrl: ACCOMMODATIONS[0].imageUrl,
+                      expandedActions: {
+                        primary: <span className="text-sm font-semibold">{ACCOMMODATIONS[0].name}</span>,
+                        secondary: <span className="rounded-full bg-white/20 px-3 py-1.5 text-sm font-semibold">체크아웃 {ACCOMMODATIONS[0].checkOut}</span>,
+                      },
+                    },
+                    {
+                      id: ACCOMMODATIONS[1].id,
+                      title: ACCOMMODATIONS[1].city,
+                      value: `${ACCOMMODATIONS[1].date} · 체크인 ${ACCOMMODATIONS[1].checkIn}`,
+                      icon: <MapPin size={24} aria-hidden="true" />,
+                      colorClassName: "bg-slate-800",
+                      imageUrl: ACCOMMODATIONS[1].imageUrl,
+                      expandedActions: {
+                        primary: <span className="text-sm font-semibold">{ACCOMMODATIONS[1].name}</span>,
+                        secondary: <span className="rounded-full bg-white/20 px-3 py-1.5 text-sm font-semibold">체크아웃 {ACCOMMODATIONS[1].checkOut}</span>,
+                      },
+                    },
+                    {
+                      id: ACCOMMODATIONS[2].id,
+                      title: ACCOMMODATIONS[2].city,
+                      value: `${ACCOMMODATIONS[2].date} · 체크인 ${ACCOMMODATIONS[2].checkIn}`,
+                      icon: <MapPin size={24} aria-hidden="true" />,
+                      colorClassName: "bg-slate-800",
+                      imageUrl: ACCOMMODATIONS[2].imageUrl,
+                      expandedActions: {
+                        primary: <span className="text-sm font-semibold">{ACCOMMODATIONS[2].name}</span>,
+                        secondary: <span className="rounded-full bg-white/20 px-3 py-1.5 text-sm font-semibold">체크아웃 {ACCOMMODATIONS[2].checkOut}</span>,
+                      },
+                    },
+                    {
+                      id: "stay-summary",
+                      title: "숙소 전체",
+                      value: "3곳 예약 완료",
+                      icon: <Hotel size={24} aria-hidden="true" />,
+                      colorClassName: "bg-gradient-to-br from-indigo-600 to-violet-700",
+                      expandedActions: {
+                        primary: <span className="text-sm font-semibold">8월 29일 – 9월 1일</span>,
+                        secondary: <span className="rounded-full bg-white/20 px-3 py-1.5 text-sm font-semibold">3박 4일</span>,
+                      },
+                    },
+                  ]}
+                />
 
                 <button
                   type="button"

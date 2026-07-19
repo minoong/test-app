@@ -10,6 +10,7 @@ export interface MinimalCardExpandItem {
   value: string;
   icon?: React.ReactNode;
   colorClassName: string;
+  imageUrl?: string;
   expandedActions?: {
     primary?: React.ReactNode;
     secondary?: React.ReactNode;
@@ -53,6 +54,11 @@ const SkiperCard = ({
         ? { duration: 0 }
         : { type: "spring", stiffness: 280, damping: 28, mass: 0.75 },
     }}
+    style={item.imageUrl ? {
+      backgroundImage: `linear-gradient(180deg, rgba(8, 10, 18, 0.08) 0%, rgba(8, 10, 18, 0.72) 100%), url(${item.imageUrl})`,
+      backgroundPosition: "center",
+      backgroundSize: "cover",
+    } : undefined}
     className={`relative flex min-w-0 flex-col items-start justify-between overflow-hidden rounded-[24px] p-3 text-white ${item.colorClassName} ${
       expanded
         ? "col-span-3 row-start-1 h-[180px] w-full"
