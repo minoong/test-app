@@ -20,7 +20,6 @@ import {
   useDynamicIslandSize,
 } from "../components/ui/dynamic-island";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { format } from "date-fns";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 
 const AnimatedNumber = ({ value }: { value: number }) => {
@@ -236,7 +235,7 @@ const SwipeableItem = ({
             className="absolute inset-0 bg-orange-500 flex items-center justify-start px-6 text-white"
           >
             <motion.div animate={{ scale: willNudge ? 1.3 : 1 }} transition={{ type: "spring", stiffness: 400, damping: 20 }}>
-              <Bell size={24} />
+              <Bell size={18} />
             </motion.div>
           </motion.div>
         )}
@@ -247,7 +246,7 @@ const SwipeableItem = ({
           className="absolute inset-0 bg-red-500 flex items-center justify-end px-6 text-white"
         >
           <motion.div animate={{ scale: willDelete ? 1.3 : 1 }} transition={{ type: "spring", stiffness: 400, damping: 20 }}>
-            <Trash2 size={24} />
+            <Trash2 size={18} />
           </motion.div>
         </motion.div>
       </div>
