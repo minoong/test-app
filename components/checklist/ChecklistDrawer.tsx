@@ -13,10 +13,9 @@ import {
   Label,
   Radio,
   RadioGroup,
-  Spinner,
   TextField,
 } from "@heroui/react";
-import { Check, Plus } from "lucide-react";
+import StatusButton from "@/components/animata/button/status-button";
 import {
   Drawer,
   DrawerDescription,
@@ -140,9 +139,6 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
           validationBehavior="native"
         >
           <DrawerHeader className="px-6 pb-4 text-left">
-            <div className="mb-3 flex size-11 items-center justify-center rounded-2xl bg-accent/10 text-accent">
-              <Plus aria-hidden="true" className="size-5" strokeWidth={2.5} />
-            </div>
             <DrawerTitle>준비물 추가</DrawerTitle>
             <DrawerDescription>
               무엇을 누가 챙길지 정해 두면 여행 준비가 한결 가벼워져요.
@@ -243,26 +239,22 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
             >
               취소
             </Button>
-            <Button
-              fullWidth
-              isDisabled={!isFormValid || success}
-              isPending={addMutation.isPending}
+            <StatusButton
+              className="h-14 flex-1 rounded-xl text-lg"
+              disabled={!isFormValid || success}
+              idleText="추가하기"
+              intent="primary"
+              loadingText="등록 중..."
+              size="large"
+              status={
+                addMutation.isPending
+                  ? "loading"
+                  : success
+                    ? "success"
+                    : "idle"
+              }
               type="submit"
-            >
-              {addMutation.isPending ? (
-                <>
-                  <Spinner color="current" size="sm" />
-                  등록 중
-                </>
-              ) : success ? (
-                <>
-                  <Check aria-hidden="true" className="size-4" />
-                  등록 완료
-                </>
-              ) : (
-                "추가하기"
-              )}
-            </Button>
+            />
           </DrawerFooter>
         </Form>
       </DrawerPopup>
