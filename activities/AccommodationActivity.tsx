@@ -2,7 +2,6 @@ import React from "react";
 import { AppScreen } from "@stackflow/plugin-basic-ui";
 import { Ban, BellRing, Check, ExternalLink, MapPin, CalendarDays, Clock3, Star, Wifi, Waves, Dumbbell, Luggage, Coffee, CircleParking, Flame, KeyRound, Snowflake, Sparkles, TreePine, Utensils, Plane, Shirt, Umbrella, Wine, type LucideIcon } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import { BottomNav } from "../components/BottomNav";
 import { ACCOMMODATIONS, type Accommodation } from "../lib/accommodations";
 
 const amenityIconMap: Record<string, LucideIcon> = {
@@ -180,7 +179,7 @@ export const AccommodationActivity: React.FC = () => {
 
   return (
     <AppScreen appBar={{ title: "숙소 자세히 보기" }}>
-      <div className="min-h-full bg-gray-50 px-4 pb-24 pt-4 dark:bg-black">
+      <div className="min-h-full bg-gray-50 px-4 pb-8 pt-4 dark:bg-black">
         <StayAccordion activeFilter={activeFilter} onFilterChange={setActiveFilter} />
 
         <div className="mt-5 flex flex-col gap-5">
@@ -302,7 +301,6 @@ export const AccommodationActivity: React.FC = () => {
           ))}
         </div>
       </div>
-      <BottomNav active="home" />
     </AppScreen>
   );
 };

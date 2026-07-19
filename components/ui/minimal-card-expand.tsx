@@ -97,7 +97,7 @@ const SkiperCard = ({
           layout="position"
           className={`font-semibold leading-tight ${
             expanded
-              ? "truncate text-[clamp(1.25rem,6vw,1.5rem)]"
+              ? "line-clamp-2 break-words text-[clamp(1rem,5vw,1.25rem)]"
               : "line-clamp-2 break-words text-[clamp(0.8125rem,3.8vw,1rem)]"
           }`}
         >
