@@ -235,12 +235,6 @@ body {
   --code-foreground: var(--foreground);
   --code-highlight: --alpha(var(--color-black) / 4%);
 
-  /* HeroUI variable overrides */
-  --border-width-field: 1px;
-  --field-border: var(--input);
-  --field-background: var(--background);
-  --accent: var(--primary);
-  --accent-foreground: var(--primary-foreground);
 }
 
 .dark {
@@ -286,12 +280,6 @@ body {
   --code-foreground: var(--foreground);
   --code-highlight: --alpha(var(--color-white) / 4%);
 
-  /* HeroUI variable overrides */
-  --border-width-field: 1px;
-  --field-border: var(--input);
-  --field-background: var(--background);
-  --accent: var(--primary);
-  --accent-foreground: var(--primary-foreground);
 }
 
 @layer base {

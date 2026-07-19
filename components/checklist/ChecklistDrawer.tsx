@@ -70,11 +70,9 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
     if (!open) return;
 
     const resetTimer = setTimeout(resetForm, 0);
-    const focusTimer = setTimeout(() => inputRef.current?.focus(), 400);
 
     return () => {
       clearTimeout(resetTimer);
-      clearTimeout(focusTimer);
       if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
     };
   }, [open]);
@@ -127,25 +125,24 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
     if (!addMutation.isPending) onOpenChange(false);
   };
 
-  const isFormValid = title.trim().length > 0 && targets.length > 0;
-
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerPopup variant="inset" showBar>
         <Form
           aria-label="준비물 추가"
           className="flex min-h-0 w-full flex-1 flex-col"
+          data-theme="light"
           onSubmit={handleSubmit}
           validationBehavior="native"
         >
           <DrawerHeader className="px-6 pb-4 text-left">
             <DrawerTitle>준비물 추가</DrawerTitle>
-            <DrawerDescription>
+            <DrawerDescription className="text-pretty">
               무엇을 누가 챙길지 정해 두면 여행 준비가 한결 가벼워져요.
             </DrawerDescription>
           </DrawerHeader>
 
-          <DrawerPanel className="flex min-h-0 flex-1 flex-col gap-7 overflow-y-auto px-6 py-5">
+          <DrawerPanel className="flex min-h-0 flex-1 flex-col gap-7 overflow-y-auto overscroll-contain px-6 py-5">
             <TextField
               fullWidth
               isRequired
@@ -160,7 +157,7 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
               <Input
                 ref={inputRef}
                 autoComplete="off"
-                placeholder="예: 보조배터리"
+                placeholder="예: 보조배터리…"
               />
               <Description>짧고 알아보기 쉬운 이름이 좋아요.</Description>
               <FieldError />
@@ -227,7 +224,7 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
             ) : null}
           </DrawerPanel>
 
-          <DrawerFooter className="grid grid-cols-2 gap-3 border-t border-border px-6 pb-8 pt-4">
+          <DrawerFooter className="grid grid-cols-2 gap-3 border-t border-border px-6 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-4">
             <Button
               fullWidth
               className="h-12 rounded-2xl text-base"
@@ -242,10 +239,10 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
             <StatusButton
               className="h-12 rounded-2xl text-base"
               fullWidth
-              isDisabled={!isFormValid || success}
+              isDisabled={success}
               idleText="추가하기"
               size="lg"
-              loadingText="등록 중..."
+              loadingText="등록 중…"
               status={
                 addMutation.isPending
                   ? "loading"
