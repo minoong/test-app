@@ -151,11 +151,11 @@ const StayAccordion: React.FC<StayAccordionProps> = ({ onFilterChange }) => {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 18 }}
                       transition={{ delay: 0.12, duration: 0.2 }}
-                      className="w-full bg-black/35 px-3 py-2.5 text-white backdrop-blur-sm"
+                      className="flex h-[70px] w-full flex-col bg-black/35 px-3 py-2.5 text-white backdrop-blur-sm"
                     >
                       <p className="text-sm font-bold">{item.title === "전체" ? "예약한 숙소" : item.title}</p>
                       {item.id === "all" ? (
-                        <p className="mt-0.5 text-xs text-white/80">{item.description}</p>
+                        <p className="mt-0.5 line-clamp-2 text-xs text-white/80">{item.description}</p>
                       ) : (
                         <div className="mt-1.5 flex items-end gap-2">
                           <div>
