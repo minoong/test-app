@@ -208,11 +208,6 @@ export const AccommodationActivity: React.FC = () => {
 
                 {stay.importantInfo ? (
                   <section className="mt-3 overflow-hidden rounded-2xl border border-gray-100 bg-white dark:border-white/10 dark:bg-transparent">
-                    <div className="flex items-center gap-2 border-b border-gray-100 px-3.5 py-2.5 dark:border-white/10">
-                      <span className="flex size-6 items-center justify-center rounded-lg bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-gray-400"><Sparkles size={13} /></span>
-                      <p className="text-xs font-bold text-gray-800 dark:text-gray-100">여행 전 확인</p>
-                      <span className="text-[11px] text-gray-400 dark:text-gray-500">조식 · 이동 안내</span>
-                    </div>
                     <div className="divide-y divide-gray-100 dark:divide-white/10">
                       <div className="flex gap-3 px-3.5 py-3">
                         <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-gray-50 text-gray-500 dark:bg-white/5 dark:text-gray-400"><Coffee size={17} /></span>
