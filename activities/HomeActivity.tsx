@@ -8,6 +8,79 @@ import { Anchor, Bookmark, ChevronRight, Cloud, Copy, Hotel, SlidersHorizontal, 
 import { MinimalCardExpand } from "../components/ui/minimal-card-expand";
 import { ACCOMMODATIONS } from "../lib/accommodations";
 
+const ReservationStayCard: React.FC<{ onOpen: () => void }> = ({ onOpen }) => (
+  <section className="overflow-hidden rounded-3xl border border-gray-200 bg-white p-4 shadow-sm">
+    <div className="mb-3 flex items-center justify-between gap-3">
+      <div className="flex items-center gap-2">
+        <span className="flex size-8 items-center justify-center rounded-xl bg-gray-100 text-gray-600"><Hotel size={17} /></span>
+        <div>
+          <p className="text-sm font-bold text-gray-900">예약한 숙소</p>
+          <p className="text-[11px] text-gray-400">8/29–9/1 · 3곳</p>
+        </div>
+      </div>
+      <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-bold text-gray-600">예약 완료</span>
+    </div>
+
+    <MinimalCardExpand
+      className="h-[300px]"
+      items={[
+        {
+          id: ACCOMMODATIONS[0].id,
+          title: ACCOMMODATIONS[0].city,
+          value: `${ACCOMMODATIONS[0].date} · ${ACCOMMODATIONS[0].checkIn}`,
+          colorClassName: "bg-slate-800",
+          imageUrl: ACCOMMODATIONS[0].imageUrl,
+          expandedActions: {
+            primary: <span className="max-w-44 truncate text-sm font-semibold">{ACCOMMODATIONS[0].name}</span>,
+            secondary: <span className="rounded-full bg-white/20 px-3 py-1.5 text-sm font-semibold">체크아웃 {ACCOMMODATIONS[0].checkOut}</span>,
+          },
+        },
+        {
+          id: ACCOMMODATIONS[1].id,
+          title: ACCOMMODATIONS[1].city,
+          value: `${ACCOMMODATIONS[1].date} · ${ACCOMMODATIONS[1].checkIn}`,
+          colorClassName: "bg-slate-800",
+          imageUrl: ACCOMMODATIONS[1].imageUrl,
+          expandedActions: {
+            primary: <span className="max-w-44 truncate text-sm font-semibold">{ACCOMMODATIONS[1].name}</span>,
+            secondary: <span className="rounded-full bg-white/20 px-3 py-1.5 text-sm font-semibold">체크아웃 {ACCOMMODATIONS[1].checkOut}</span>,
+          },
+        },
+        {
+          id: ACCOMMODATIONS[2].id,
+          title: ACCOMMODATIONS[2].city,
+          value: `${ACCOMMODATIONS[2].date} · ${ACCOMMODATIONS[2].checkIn}`,
+          colorClassName: "bg-slate-800",
+          imageUrl: ACCOMMODATIONS[2].imageUrl,
+          expandedActions: {
+            primary: <span className="max-w-44 truncate text-sm font-semibold">{ACCOMMODATIONS[2].name}</span>,
+            secondary: <span className="rounded-full bg-white/20 px-3 py-1.5 text-sm font-semibold">체크아웃 {ACCOMMODATIONS[2].checkOut}</span>,
+          },
+        },
+        {
+          id: "stay-summary",
+          title: "숙소 전체",
+          value: "3곳 예약 완료",
+          icon: <Hotel size={24} aria-hidden="true" />,
+          colorClassName: "bg-indigo-600",
+          expandedActions: {
+            primary: <span className="text-sm font-semibold">8월 29일 – 9월 1일</span>,
+            secondary: <span className="rounded-full bg-white/20 px-3 py-1.5 text-sm font-semibold">3박 4일</span>,
+          },
+        },
+      ]}
+    />
+
+    <button
+      type="button"
+      onClick={onOpen}
+      className="mt-3 flex h-11 w-full items-center justify-center gap-1 rounded-xl bg-indigo-600 text-sm font-bold text-white transition-transform active:scale-[0.98]"
+    >
+      숙소 자세히 보기 <ChevronRight size={17} />
+    </button>
+  </section>
+);
+
 export const HomeActivity: React.FC = () => {
   const { push, replace } = useFlow();
   const [tripState, setTripState] = useState<"before" | "during" | "after">("before");
@@ -40,6 +113,8 @@ export const HomeActivity: React.FC = () => {
                   <span className="font-semibold">환율 계산기</span>
                 </button>
               </div>
+
+              <ReservationStayCard onOpen={() => push("AccommodationActivity", {})} />
 
               <section className="w-full rounded-3xl bg-[#111] p-4 text-white">
                 <div className="mb-1 flex items-end justify-between gap-3">
@@ -135,76 +210,7 @@ export const HomeActivity: React.FC = () => {
                 <span className="text-2xl">👉</span>
               </button>
 
-              <section className="overflow-hidden rounded-3xl bg-[#121417] p-4 text-white shadow-lg shadow-black/10">
-                <div className="mb-3 flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    <span className="flex size-8 items-center justify-center rounded-xl bg-white/10"><Hotel size={17} /></span>
-                    <div>
-                      <p className="text-sm font-bold">예약한 숙소</p>
-                      <p className="text-[11px] text-white/55">8/29–9/1 · 3곳</p>
-                    </div>
-                  </div>
-                  <span className="rounded-full bg-emerald-400/15 px-2.5 py-1 text-[11px] font-bold text-emerald-300">예약 완료</span>
-                </div>
-
-                <MinimalCardExpand
-                  className="h-[300px]"
-                  items={[
-                    {
-                      id: ACCOMMODATIONS[0].id,
-                      title: ACCOMMODATIONS[0].city,
-                      value: `${ACCOMMODATIONS[0].date} · ${ACCOMMODATIONS[0].checkIn}`,
-                      colorClassName: "bg-slate-800",
-                      imageUrl: ACCOMMODATIONS[0].imageUrl,
-                      expandedActions: {
-                        primary: <span className="max-w-44 truncate text-sm font-semibold">{ACCOMMODATIONS[0].name}</span>,
-                        secondary: <span className="rounded-full bg-white/20 px-3 py-1.5 text-sm font-semibold">체크아웃 {ACCOMMODATIONS[0].checkOut}</span>,
-                      },
-                    },
-                    {
-                      id: ACCOMMODATIONS[1].id,
-                      title: ACCOMMODATIONS[1].city,
-                      value: `${ACCOMMODATIONS[1].date} · ${ACCOMMODATIONS[1].checkIn}`,
-                      colorClassName: "bg-slate-800",
-                      imageUrl: ACCOMMODATIONS[1].imageUrl,
-                      expandedActions: {
-                        primary: <span className="max-w-44 truncate text-sm font-semibold">{ACCOMMODATIONS[1].name}</span>,
-                        secondary: <span className="rounded-full bg-white/20 px-3 py-1.5 text-sm font-semibold">체크아웃 {ACCOMMODATIONS[1].checkOut}</span>,
-                      },
-                    },
-                    {
-                      id: ACCOMMODATIONS[2].id,
-                      title: ACCOMMODATIONS[2].city,
-                      value: `${ACCOMMODATIONS[2].date} · ${ACCOMMODATIONS[2].checkIn}`,
-                      colorClassName: "bg-slate-800",
-                      imageUrl: ACCOMMODATIONS[2].imageUrl,
-                      expandedActions: {
-                        primary: <span className="max-w-44 truncate text-sm font-semibold">{ACCOMMODATIONS[2].name}</span>,
-                        secondary: <span className="rounded-full bg-white/20 px-3 py-1.5 text-sm font-semibold">체크아웃 {ACCOMMODATIONS[2].checkOut}</span>,
-                      },
-                    },
-                    {
-                      id: "stay-summary",
-                      title: "숙소 전체",
-                      value: "3곳 예약 완료",
-                      icon: <Hotel size={24} aria-hidden="true" />,
-                      colorClassName: "bg-gradient-to-br from-indigo-600 to-violet-700",
-                      expandedActions: {
-                        primary: <span className="text-sm font-semibold">8월 29일 – 9월 1일</span>,
-                        secondary: <span className="rounded-full bg-white/20 px-3 py-1.5 text-sm font-semibold">3박 4일</span>,
-                      },
-                    },
-                  ]}
-                />
-
-                <button
-                  type="button"
-                  onClick={() => push("AccommodationActivity", {})}
-                  className="mt-3 flex h-11 w-full items-center justify-center gap-1 rounded-xl bg-white text-sm font-bold text-gray-900 transition-transform active:scale-[0.98]"
-                >
-                  숙소 자세히 보기 <ChevronRight size={17} />
-                </button>
-              </section>
+              <ReservationStayCard onOpen={() => push("AccommodationActivity", {})} />
             </motion.div>
           )}
 
