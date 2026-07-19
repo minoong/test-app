@@ -232,7 +232,9 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
           <DrawerFooter className="grid grid-cols-2 gap-3 border-t border-border px-6 pb-8 pt-4">
             <Button
               fullWidth
+              className="h-12 rounded-2xl text-base"
               isDisabled={addMutation.isPending}
+              size="lg"
               type="button"
               variant="secondary"
               onPress={handleCancel}
@@ -240,12 +242,12 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
               취소
             </Button>
             <StatusButton
-              className="h-14 flex-1 rounded-xl text-lg"
-              disabled={!isFormValid || success}
+              className="h-12 rounded-2xl text-base"
+              fullWidth
+              isDisabled={!isFormValid || success}
               idleText="추가하기"
-              intent="primary"
+              size="lg"
               loadingText="등록 중..."
-              size="large"
               status={
                 addMutation.isPending
                   ? "loading"

@@ -1,9 +1,9 @@
 import { CheckCircle2, CircleDashed } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { cn } from "@/lib/utils";
-import NeumorphButton from "@/components/ui/neumorph-button";
+import { Button } from "@heroui/react";
 
-interface StatusButtonProps extends Omit<React.ComponentProps<typeof NeumorphButton>, "children"> {
+interface StatusButtonProps extends Omit<React.ComponentProps<typeof Button>, "children"> {
   status: "idle" | "loading" | "success";
   idleText?: string;
   loadingText?: string;
@@ -17,16 +17,16 @@ export default function StatusButton({
   loadingText = "처리 중...",
   successText = "등록 완료!",
   className,
-  disabled,
+  isDisabled,
   ...props
 }: StatusButtonProps) {
-  const isEnabled = status === "idle" && !disabled;
+  const isEnabled = status === "idle" && !isDisabled;
 
   return (
-    <NeumorphButton
-      disabled={!isEnabled}
+    <Button
       className={cn("group/status relative overflow-hidden", className)}
-      loading={false}
+      isDisabled={!isEnabled}
+      isPending={status === "loading"}
       {...props}
     >
       <AnimatePresence mode="wait" initial={false}>
@@ -61,6 +61,6 @@ export default function StatusButton({
           )}
         </motion.span>
       </AnimatePresence>
-    </NeumorphButton>
+    </Button>
   );
 }
