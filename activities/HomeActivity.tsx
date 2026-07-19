@@ -4,6 +4,8 @@ import { AppScreen } from "@stackflow/plugin-basic-ui";
 import { BottomNav } from "../components/BottomNav";
 import { motion } from "framer-motion";
 import NeumorphButton from "../components/ui/neumorph-button";
+import { Anchor, Bookmark, Cloud, Sparkles } from "lucide-react";
+import { MinimalCardExpand } from "../components/ui/minimal-card-expand";
 
 export const HomeActivity: React.FC = () => {
   const { push, replace } = useFlow();
@@ -37,6 +39,52 @@ export const HomeActivity: React.FC = () => {
                   <span className="font-semibold">환율 계산기</span>
                 </button>
               </div>
+
+              <section className="rounded-3xl border border-gray-200/80 bg-gray-50/70 p-4 dark:border-white/10 dark:bg-white/[0.04]">
+                <div className="mb-3 flex items-end justify-between gap-3">
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-gray-400">INTERACTIVE PREVIEW</p>
+                    <h3 className="mt-1 text-base font-bold text-gray-900 dark:text-gray-100">여행 요약 카드</h3>
+                  </div>
+                  <span className="text-xs font-medium text-gray-400">메뉴를 눌러 펼치기</span>
+                </div>
+                <MinimalCardExpand
+                  items={[
+                    {
+                      id: "flight",
+                      title: "출발 준비",
+                      value: "D-14",
+                      colorClassName: "bg-purple-500",
+                      icon: <Sparkles size={28} aria-hidden="true" />,
+                      content: <p className="text-sm font-semibold text-white/80">여권과 환전 준비를 확인해보세요.</p>,
+                    },
+                    {
+                      id: "stay",
+                      title: "숙소",
+                      value: "3박 4일",
+                      colorClassName: "bg-cyan-500",
+                      icon: <Cloud size={28} aria-hidden="true" />,
+                      content: <p className="text-sm font-semibold text-white/80">방콕 시내 숙소 체크인 15:00</p>,
+                    },
+                    {
+                      id: "packing",
+                      title: "준비물",
+                      value: "68% 완료",
+                      colorClassName: "bg-blue-500",
+                      icon: <Bookmark size={28} aria-hidden="true" />,
+                      content: <p className="text-sm font-semibold text-white/80">남은 항목 7개를 확인하세요.</p>,
+                    },
+                    {
+                      id: "route",
+                      title: "이동",
+                      value: "공항 → 호텔",
+                      colorClassName: "bg-emerald-500",
+                      icon: <Anchor size={28} aria-hidden="true" />,
+                      content: <p className="text-sm font-semibold text-white/80">공항철도 이용을 추천해요.</p>,
+                    },
+                  ]}
+                />
+              </section>
 
               <button onClick={() => push("DiscoverActivity", {})} className="p-4 bg-orange-50 dark:bg-orange-900/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-left active:scale-95 transition-transform">
                 <h3 className="font-bold text-lg">태국 맛집 & 쇼핑 추천 🇹🇭</h3>

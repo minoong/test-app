@@ -50,7 +50,7 @@ export function MinimalCardExpand({
     };
     document.addEventListener("pointerdown", handleOutsidePointerDown);
     return () => document.removeEventListener("pointerdown", handleOutsidePointerDown);
-  }, [expandedId]);
+  }, [expandedId, setExpanded]);
 
   return (
     <div
