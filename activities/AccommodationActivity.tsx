@@ -60,8 +60,16 @@ interface StayAccordionItem {
   title: string;
   label: string;
   imageUrl: string;
-  description: string;
+  description?: string;
+  from?: string;
+  to?: string;
 }
+
+const getFollowingDate = (dateLabel: string) => {
+  const [month, day] = dateLabel.split("/").map(Number);
+  const date = new Date(Date.UTC(2026, month - 1, day + 1));
+  return `${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
+};
 
 const STAY_ACCORDION_ITEMS: StayAccordionItem[] = [
   {
@@ -76,7 +84,8 @@ const STAY_ACCORDION_ITEMS: StayAccordionItem[] = [
     title: stay.city,
     label: stay.date,
     imageUrl: stay.imageUrl,
-    description: `${stay.name} · 체크인 ${stay.checkIn} · 체크아웃 ${stay.checkOut}`,
+    from: `${stay.date} · ${stay.checkIn}`,
+    to: `${getFollowingDate(stay.date)} · ${stay.checkOut}`,
   })),
 ];
 
@@ -136,7 +145,21 @@ const StayAccordion: React.FC<StayAccordionProps> = ({ activeFilter, onFilterCha
                       className="w-full bg-black/35 px-4 py-3 text-white backdrop-blur-sm"
                     >
                       <p className="text-sm font-bold">{item.title === "전체" ? "예약한 숙소" : item.title}</p>
-                      <p className="mt-0.5 text-xs text-white/80">{item.description}</p>
+                      {item.id === "all" ? (
+                        <p className="mt-0.5 text-xs text-white/80">{item.description}</p>
+                      ) : (
+                        <div className="mt-2 flex items-end gap-2">
+                          <div>
+                            <p className="text-[9px] font-semibold tracking-[0.16em] text-white/55">FROM</p>
+                            <p className="mt-0.5 text-xs font-semibold tabular-nums text-white/95">{item.from}</p>
+                          </div>
+                          <span className="mb-1 h-px min-w-4 flex-1 bg-white/30" />
+                          <div className="text-right">
+                            <p className="text-[9px] font-semibold tracking-[0.16em] text-white/55">TO</p>
+                            <p className="mt-0.5 text-xs font-semibold tabular-nums text-white/95">{item.to}</p>
+                          </div>
+                        </div>
+                      )}
                     </motion.div>
                   </motion.div>
                 ) : null}
