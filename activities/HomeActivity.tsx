@@ -11,15 +11,13 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const ROLL_STAGGER = 0.035;
 
-const AutoTextRoll: React.FC<{ labels: readonly string[] }> = ({ labels }) => {
+const useAutomaticRoll = (itemCount: number) => {
   const controls = useAnimationControls();
   const prefersReducedMotion = useReducedMotion();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const currentLabel = labels[currentIndex] ?? "숙소 자세히 보기";
-  const nextLabel = labels[(currentIndex + 1) % labels.length] ?? currentLabel;
 
   React.useEffect(() => {
-    if (prefersReducedMotion || labels.length < 2) {
+    if (prefersReducedMotion || itemCount < 2) {
       controls.set("initial");
       return;
     }
@@ -37,7 +35,7 @@ const AutoTextRoll: React.FC<{ labels: readonly string[] }> = ({ labels }) => {
         if (cancelled) return;
         await wait(3_800);
         controls.set("initial");
-        setCurrentIndex((index) => (index + 1) % labels.length);
+        setCurrentIndex((index) => (index + 1) % itemCount);
         await wait(80);
       }
     };
@@ -47,7 +45,15 @@ const AutoTextRoll: React.FC<{ labels: readonly string[] }> = ({ labels }) => {
       cancelled = true;
       if (timer) window.clearTimeout(timer);
     };
-  }, [controls, labels, prefersReducedMotion]);
+  }, [controls, itemCount, prefersReducedMotion]);
+
+  return { controls, currentIndex };
+};
+
+const AutoTextRoll: React.FC<{ labels: readonly string[] }> = ({ labels }) => {
+  const { controls, currentIndex } = useAutomaticRoll(labels.length);
+  const currentLabel = labels[currentIndex] ?? "숙소 자세히 보기";
+  const nextLabel = labels[(currentIndex + 1) % labels.length] ?? currentLabel;
 
   return (
     <motion.span
@@ -86,6 +92,37 @@ const AutoTextRoll: React.FC<{ labels: readonly string[] }> = ({ labels }) => {
           );
         })}
       </span>
+    </motion.span>
+  );
+};
+
+const AutoImageRoll: React.FC<{ imageUrls: readonly (string | null)[] }> = ({ imageUrls }) => {
+  const { controls, currentIndex } = useAutomaticRoll(imageUrls.length);
+  const currentImageUrl = imageUrls[currentIndex] ?? null;
+  const nextImageUrl = imageUrls[(currentIndex + 1) % imageUrls.length] ?? currentImageUrl;
+  const imageStyle = (imageUrl: string | null) => imageUrl
+    ? { backgroundImage: `linear-gradient(90deg, rgba(20, 30, 66, 0.6), rgba(20, 30, 66, 0.32)), url(${imageUrl})` }
+    : undefined;
+
+  return (
+    <motion.span
+      aria-hidden="true"
+      initial="initial"
+      animate={controls}
+      className="pointer-events-none absolute inset-0 overflow-hidden"
+    >
+      <motion.span
+        variants={{ initial: { y: 0 }, rolled: { y: "-100%" } }}
+        transition={{ ease: "easeInOut", duration: 0.5 }}
+        className="absolute inset-0 bg-cover bg-center"
+        style={imageStyle(currentImageUrl)}
+      />
+      <motion.span
+        variants={{ initial: { y: "100%" }, rolled: { y: 0 } }}
+        transition={{ ease: "easeInOut", duration: 0.5 }}
+        className="absolute inset-0 bg-cover bg-center"
+        style={imageStyle(nextImageUrl)}
+      />
     </motion.span>
   );
 };
@@ -164,9 +201,10 @@ const ReservationStayCard: React.FC<{ onOpen: () => void }> = ({ onOpen }) => (
       type="button"
       onClick={onOpen}
       aria-label="숙소 자세히 보기"
-      className="mt-3 flex h-11 w-full items-center justify-center gap-1 rounded-xl bg-indigo-600 text-sm font-bold text-white transition-transform active:scale-[0.98]"
+      className="relative mt-3 flex h-11 w-full items-center justify-center overflow-hidden rounded-xl bg-indigo-600 text-sm font-bold text-white transition-transform active:scale-[0.98]"
     >
-      <span className="flex w-64 max-w-[calc(100%-1rem)] items-center gap-1">
+      <AutoImageRoll imageUrls={[null, ...ACCOMMODATIONS.map((stay) => stay.imageUrl)]} />
+      <span className="relative z-10 flex w-64 max-w-[calc(100%-1rem)] items-center gap-1 drop-shadow-sm">
         <AutoTextRoll labels={["숙소 자세히 보기", ...ACCOMMODATIONS.map((stay) => stay.name)]} />
         <ChevronRight size={17} className="shrink-0" />
       </span>
