@@ -14,8 +14,7 @@ import NeumorphButton from "../ui/neumorph-button";
 import StatusButton from "../animata/button/status-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, Radio } from "@/components/ui/radio-group";
-import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, Radio, CheckboxGroup, Checkbox } from "@heroui/react";
 import { Badge } from "../ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { motion } from "framer-motion";
@@ -30,10 +29,7 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
   const queryClient = useQueryClient();
   const [title, setTitle] = useState("");
   const [importance, setImportance] = useState<"high" | "normal" | "low">("normal");
-  const [targets, setTargets] = useState<{ gahyun: boolean; minu: boolean }>({
-    gahyun: false,
-    minu: false,
-  });
+  const [targets, setTargets] = useState<string[]>([]);
   const [success, setSuccess] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -43,7 +39,7 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
       const resetTimer = setTimeout(() => {
         setTitle("");
         setImportance("normal");
-        setTargets({ gahyun: false, minu: false });
+        setTargets([]);
         setSuccess(false);
       }, 0);
 
@@ -59,12 +55,7 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
     }
   }, [open]);
 
-  // 대상자 체크 핸들러
-  const handleTargetChange = (key: keyof typeof targets) => (checked: boolean) => {
-    setTargets((prev) => ({ ...prev, [key]: checked }));
-  };
-
-  const isFormValid = title.trim() !== "" && (targets.gahyun || targets.minu);
+  const isFormValid = title.trim() !== "" && targets.length > 0;
 
   const addMutation = useMutation({
     mutationFn: async (payload: { title: string; type: string; assignees: string[]; importance: string }) => {
@@ -87,7 +78,7 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
         setTimeout(() => {
           setTitle("");
           setImportance("normal");
-          setTargets({ gahyun: false, minu: false });
+          setTargets([]);
           setSuccess(false);
         }, 300); // 닫히는 애니메이션 시간 대기
       }, 1000);
@@ -102,10 +93,7 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
     if (!isFormValid) return;
 
     const type = "personal";
-    const assignees: string[] = [];
-    
-    if (targets.gahyun) assignees.push("gahyun");
-    if (targets.minu) assignees.push("minu");
+    const assignees = targets;
 
     addMutation.mutate({ title, type, assignees, importance });
   };
@@ -193,21 +181,34 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
               </Label>
               <RadioGroup
                 value={importance}
-                onValueChange={(val) => setImportance(val as "high" | "normal" | "low")}
-                className="flex flex-row gap-5 mt-1"
+                onChange={(val) => setImportance(val as "high" | "normal" | "low")}
+                orientation="horizontal"
+                className="gap-5 mt-1"
               >
-                <Label className="flex items-center gap-2.5 cursor-pointer text-base">
-                  <Radio value="high" className="scale-125" />
-                  <Badge variant="high" className="text-xs px-3 py-1 h-auto">높음</Badge>
-                </Label>
-                <Label className="flex items-center gap-2.5 cursor-pointer text-base">
-                  <Radio value="normal" className="scale-125" />
-                  <Badge variant="normal" className="text-xs px-3 py-1 h-auto">보통</Badge>
-                </Label>
-                <Label className="flex items-center gap-2.5 cursor-pointer text-base">
-                  <Radio value="low" className="scale-125" />
-                  <Badge variant="low" className="text-xs px-3 py-1 h-auto">낮음</Badge>
-                </Label>
+                <Radio value="high">
+                  <Radio.Content>
+                    <Radio.Control>
+                      <Radio.Indicator />
+                    </Radio.Control>
+                    <Badge variant="high" className="text-xs px-3 py-1 h-auto select-none">높음</Badge>
+                  </Radio.Content>
+                </Radio>
+                <Radio value="normal">
+                  <Radio.Content>
+                    <Radio.Control>
+                      <Radio.Indicator />
+                    </Radio.Control>
+                    <Badge variant="normal" className="text-xs px-3 py-1 h-auto select-none">보통</Badge>
+                  </Radio.Content>
+                </Radio>
+                <Radio value="low">
+                  <Radio.Content>
+                    <Radio.Control>
+                      <Radio.Indicator />
+                    </Radio.Control>
+                    <Badge variant="low" className="text-xs px-3 py-1 h-auto select-none">낮음</Badge>
+                  </Radio.Content>
+                </Radio>
               </RadioGroup>
             </motion.div>
 
@@ -229,32 +230,40 @@ export function ChecklistDrawer({ open, onOpenChange }: ChecklistDrawerProps) {
                   대상자 (최소 1명 선택)
                 </TextEffect>
               </Label>
-              <div className="flex flex-row gap-6 mt-1">
-                <Label className="flex items-center gap-3 cursor-pointer text-base font-medium">
-                  <Checkbox
-                    checked={targets.gahyun}
-                    onCheckedChange={handleTargetChange("gahyun")}
-                    className="scale-125"
-                  />
-                  <Avatar className="w-8 h-8 ring-2 ring-gray-100 dark:ring-gray-800">
-                    <AvatarImage src="" />
-                    <AvatarFallback className="text-xs bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold">G</AvatarFallback>
-                  </Avatar>
-                  가현쨩
-                </Label>
-                <Label className="flex items-center gap-3 cursor-pointer text-base font-medium">
-                  <Checkbox
-                    checked={targets.minu}
-                    onCheckedChange={handleTargetChange("minu")}
-                    className="scale-125"
-                  />
-                  <Avatar className="w-8 h-8 ring-2 ring-gray-100 dark:ring-gray-800">
-                    <AvatarImage src="" />
-                    <AvatarFallback className="text-xs bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold">M</AvatarFallback>
-                  </Avatar>
-                  미누쿤
-                </Label>
-              </div>
+              <CheckboxGroup
+                value={targets}
+                onChange={setTargets}
+                className="flex flex-row gap-6 mt-1"
+              >
+                <Checkbox value="gahyun">
+                  <Checkbox.Content>
+                    <Checkbox.Control>
+                      <Checkbox.Indicator />
+                    </Checkbox.Control>
+                    <div className="flex items-center gap-3 font-medium text-base select-none">
+                      <Avatar className="w-8 h-8 ring-2 ring-gray-100 dark:ring-gray-800">
+                        <AvatarImage src="" />
+                        <AvatarFallback className="text-xs bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold">G</AvatarFallback>
+                      </Avatar>
+                      가현쨩
+                    </div>
+                  </Checkbox.Content>
+                </Checkbox>
+                <Checkbox value="minu">
+                  <Checkbox.Content>
+                    <Checkbox.Control>
+                      <Checkbox.Indicator />
+                    </Checkbox.Control>
+                    <div className="flex items-center gap-3 font-medium text-base select-none">
+                      <Avatar className="w-8 h-8 ring-2 ring-gray-100 dark:ring-gray-800">
+                        <AvatarImage src="" />
+                        <AvatarFallback className="text-xs bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold">M</AvatarFallback>
+                      </Avatar>
+                      미누쿤
+                    </div>
+                  </Checkbox.Content>
+                </Checkbox>
+              </CheckboxGroup>
             </motion.div>
           </motion.div>
         </DrawerPanel>
