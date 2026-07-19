@@ -195,22 +195,22 @@ export const AccommodationActivity: React.FC = () => {
 
                 <section className="mt-5">
                   <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100">편의시설 · 서비스</h2>
-                  <div className="mt-2 space-y-2">
+                  <div className="mt-3 columns-2 gap-x-5 sm:columns-3 lg:columns-4">
                     {stay.facilityGroups.map((group) => (
-                      <div key={group.title} className="rounded-2xl border border-gray-100 bg-gray-50/70 p-3 dark:border-white/10 dark:bg-white/[0.035]">
-                        <p className="text-[11px] font-bold tracking-wide text-gray-400 dark:text-gray-500">{group.title}</p>
-                        <div className="mt-2 flex flex-wrap gap-1.5">
+                      <section key={group.title} className="mb-5 break-inside-avoid">
+                        <h3 className="text-xs font-bold text-gray-800 dark:text-gray-100">{group.title}</h3>
+                        <ul className="mt-2 space-y-2">
                           {group.items.map((item) => {
                             const Icon = amenityIconMap[item] ?? Wifi;
                             return (
-                              <span key={item} className="flex h-7 items-center gap-1 rounded-md bg-white px-2 text-[11px] font-medium text-gray-600 shadow-sm ring-1 ring-black/[0.03] dark:bg-white/[0.06] dark:text-gray-300 dark:ring-white/[0.04]">
-                                <Icon size={13} strokeWidth={1.8} className="text-gray-400 dark:text-gray-500" />
-                                {item}
-                              </span>
+                              <li key={item} className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
+                                <Icon size={14} strokeWidth={1.7} className="shrink-0 text-gray-400 dark:text-gray-500" />
+                                <span>{item}</span>
+                              </li>
                             );
                           })}
-                        </div>
-                      </div>
+                        </ul>
+                      </section>
                     ))}
                   </div>
                 </section>
