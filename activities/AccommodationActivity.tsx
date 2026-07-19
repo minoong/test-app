@@ -1,6 +1,6 @@
 import React from "react";
 import { AppScreen } from "@stackflow/plugin-basic-ui";
-import { Ban, BellRing, ExternalLink, MapPin, CalendarDays, Clock3, Star, Wifi, Waves, Dumbbell, Luggage, Coffee, CircleParking, Flame, KeyRound, Snowflake, Sparkles, TreePine, Utensils, Plane, Shirt, Umbrella, Wine, type LucideIcon } from "lucide-react";
+import { Ban, BellRing, Check, ExternalLink, MapPin, CalendarDays, Clock3, Star, Wifi, Waves, Dumbbell, Luggage, Coffee, CircleParking, Flame, KeyRound, Snowflake, Sparkles, TreePine, Utensils, Plane, Shirt, Umbrella, Wine, type LucideIcon } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { BottomNav } from "../components/BottomNav";
 import { ACCOMMODATIONS, type Accommodation } from "../lib/accommodations";
@@ -201,7 +201,7 @@ export const AccommodationActivity: React.FC = () => {
                         <h3 className="text-xs font-bold text-gray-800 dark:text-gray-100">{group.title}</h3>
                         <ul className="mt-2 space-y-2">
                           {group.items.map((item) => {
-                            const Icon = amenityIconMap[item] ?? Wifi;
+                            const Icon = amenityIconMap[item] ?? Check;
                             return (
                               <li key={item} className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
                                 <Icon size={14} strokeWidth={1.7} className="shrink-0 text-gray-400 dark:text-gray-500" />
