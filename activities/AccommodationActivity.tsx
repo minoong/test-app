@@ -92,7 +92,7 @@ const STAY_ACCORDION_ITEMS: StayAccordionItem[] = [
 const StayAccordion: React.FC<StayAccordionProps> = ({ activeFilter, onFilterChange }) => {
   const [openId, setOpenId] = React.useState<StayFilter>("all");
   const { width } = useWindowSize();
-  const accordionHeight = width && width >= 1024 ? 240 : 200;
+  const accordionHeight = width && width >= 1024 ? 220 : 184;
 
   const selectStay = (item: StayAccordionItem) => {
     setOpenId(item.id);
@@ -115,7 +115,7 @@ const StayAccordion: React.FC<StayAccordionProps> = ({ activeFilter, onFilterCha
                 type="button"
                 onClick={() => selectStay(item)}
                 aria-pressed={isFiltered}
-                className={`group relative z-10 flex w-11 shrink-0 flex-col justify-end gap-1.5 border-r border-gray-100 px-2 py-3 text-left transition-colors dark:border-white/10 lg:w-12 ${
+                className={`group relative z-10 flex w-11 shrink-0 flex-col justify-end gap-1 border-r border-gray-100 px-2 py-2 text-left transition-colors dark:border-white/10 lg:w-12 ${
                   isOpen
                     ? "bg-gray-50 text-gray-950 dark:bg-white/10 dark:text-white"
                     : "bg-white text-gray-800 hover:bg-gray-50 dark:bg-[#1C1C1E] dark:text-gray-100 dark:hover:bg-white/5"
@@ -142,20 +142,20 @@ const StayAccordion: React.FC<StayAccordionProps> = ({ activeFilter, onFilterCha
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 18 }}
                       transition={{ delay: 0.12, duration: 0.2 }}
-                      className="w-full bg-black/35 px-4 py-3 text-white backdrop-blur-sm"
+                      className="w-full bg-black/35 px-3 py-2.5 text-white backdrop-blur-sm"
                     >
                       <p className="text-sm font-bold">{item.title === "전체" ? "예약한 숙소" : item.title}</p>
                       {item.id === "all" ? (
                         <p className="mt-0.5 text-xs text-white/80">{item.description}</p>
                       ) : (
-                        <div className="mt-2 flex items-end gap-2">
+                        <div className="mt-1.5 flex items-end gap-2">
                           <div>
-                            <p className="text-[9px] font-semibold tracking-[0.16em] text-white/55">FROM</p>
+                            <p className="text-[9px] font-semibold tracking-[0.08em] text-white/55">체크인</p>
                             <p className="mt-0.5 text-xs font-semibold tabular-nums text-white/95">{item.from}</p>
                           </div>
                           <span className="mb-1 h-px min-w-4 flex-1 bg-white/30" />
                           <div className="text-right">
-                            <p className="text-[9px] font-semibold tracking-[0.16em] text-white/55">TO</p>
+                            <p className="text-[9px] font-semibold tracking-[0.08em] text-white/55">체크아웃</p>
                             <p className="mt-0.5 text-xs font-semibold tabular-nums text-white/95">{item.to}</p>
                           </div>
                         </div>
