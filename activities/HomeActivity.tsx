@@ -11,12 +11,15 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const ROLL_STAGGER = 0.035;
 
-const AutoTextRoll: React.FC<{ children: string }> = ({ children }) => {
+const AutoTextRoll: React.FC<{ labels: readonly string[] }> = ({ labels }) => {
   const controls = useAnimationControls();
   const prefersReducedMotion = useReducedMotion();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const currentLabel = labels[currentIndex] ?? "숙소 자세히 보기";
+  const nextLabel = labels[(currentIndex + 1) % labels.length] ?? currentLabel;
 
   React.useEffect(() => {
-    if (prefersReducedMotion) {
+    if (prefersReducedMotion || labels.length < 2) {
       controls.set("initial");
       return;
     }
@@ -34,6 +37,7 @@ const AutoTextRoll: React.FC<{ children: string }> = ({ children }) => {
         if (cancelled) return;
         await wait(3_800);
         controls.set("initial");
+        setCurrentIndex((index) => (index + 1) % labels.length);
         await wait(80);
       }
     };
@@ -43,18 +47,18 @@ const AutoTextRoll: React.FC<{ children: string }> = ({ children }) => {
       cancelled = true;
       if (timer) window.clearTimeout(timer);
     };
-  }, [controls, prefersReducedMotion]);
+  }, [controls, labels, prefersReducedMotion]);
 
   return (
     <motion.span
       aria-hidden="true"
       initial="initial"
       animate={controls}
-      className="relative block overflow-hidden leading-none"
+      className="relative block min-w-0 flex-1 overflow-hidden whitespace-nowrap text-center leading-none"
     >
       <span className="block">
-        {children.split("").map((letter, index) => {
-          const delay = ROLL_STAGGER * Math.abs(index - (children.length - 1) / 2);
+        {currentLabel.split("").map((letter, index) => {
+          const delay = ROLL_STAGGER * Math.abs(index - (currentLabel.length - 1) / 2);
           return (
             <motion.span
               key={index}
@@ -68,8 +72,8 @@ const AutoTextRoll: React.FC<{ children: string }> = ({ children }) => {
         })}
       </span>
       <span className="absolute inset-0 block">
-        {children.split("").map((letter, index) => {
-          const delay = ROLL_STAGGER * Math.abs(index - (children.length - 1) / 2);
+        {nextLabel.split("").map((letter, index) => {
+          const delay = ROLL_STAGGER * Math.abs(index - (nextLabel.length - 1) / 2);
           return (
             <motion.span
               key={index}
@@ -111,34 +115,34 @@ const ReservationStayCard: React.FC<{ onOpen: () => void }> = ({ onOpen }) => (
       items={[
         {
           id: ACCOMMODATIONS[0].id,
-          title: ACCOMMODATIONS[0].name,
-          value: `${ACCOMMODATIONS[0].city} · ${ACCOMMODATIONS[0].date} · ${ACCOMMODATIONS[0].checkIn}`,
+          title: ACCOMMODATIONS[0].city,
+          value: `${ACCOMMODATIONS[0].date} · ${ACCOMMODATIONS[0].checkIn}`,
           colorClassName: "bg-slate-800",
           imageUrl: ACCOMMODATIONS[0].imageUrl,
           expandedActions: {
-            primary: <span className="text-sm font-semibold">{ACCOMMODATIONS[0].city}</span>,
+            primary: <span className="max-w-44 truncate text-sm font-semibold">{ACCOMMODATIONS[0].name}</span>,
             secondary: <span className="rounded-full bg-white/20 px-3 py-1.5 text-sm font-semibold">체크아웃 {ACCOMMODATIONS[0].checkOut}</span>,
           },
         },
         {
           id: ACCOMMODATIONS[1].id,
-          title: ACCOMMODATIONS[1].name,
-          value: `${ACCOMMODATIONS[1].city} · ${ACCOMMODATIONS[1].date} · ${ACCOMMODATIONS[1].checkIn}`,
+          title: ACCOMMODATIONS[1].city,
+          value: `${ACCOMMODATIONS[1].date} · ${ACCOMMODATIONS[1].checkIn}`,
           colorClassName: "bg-slate-800",
           imageUrl: ACCOMMODATIONS[1].imageUrl,
           expandedActions: {
-            primary: <span className="text-sm font-semibold">{ACCOMMODATIONS[1].city}</span>,
+            primary: <span className="max-w-44 truncate text-sm font-semibold">{ACCOMMODATIONS[1].name}</span>,
             secondary: <span className="rounded-full bg-white/20 px-3 py-1.5 text-sm font-semibold">체크아웃 {ACCOMMODATIONS[1].checkOut}</span>,
           },
         },
         {
           id: ACCOMMODATIONS[2].id,
-          title: ACCOMMODATIONS[2].name,
-          value: `${ACCOMMODATIONS[2].city} · ${ACCOMMODATIONS[2].date} · ${ACCOMMODATIONS[2].checkIn}`,
+          title: ACCOMMODATIONS[2].city,
+          value: `${ACCOMMODATIONS[2].date} · ${ACCOMMODATIONS[2].checkIn}`,
           colorClassName: "bg-slate-800",
           imageUrl: ACCOMMODATIONS[2].imageUrl,
           expandedActions: {
-            primary: <span className="text-sm font-semibold">{ACCOMMODATIONS[2].city}</span>,
+            primary: <span className="max-w-44 truncate text-sm font-semibold">{ACCOMMODATIONS[2].name}</span>,
             secondary: <span className="rounded-full bg-white/20 px-3 py-1.5 text-sm font-semibold">체크아웃 {ACCOMMODATIONS[2].checkOut}</span>,
           },
         },
@@ -162,7 +166,7 @@ const ReservationStayCard: React.FC<{ onOpen: () => void }> = ({ onOpen }) => (
       aria-label="숙소 자세히 보기"
       className="mt-3 flex h-11 w-full items-center justify-center gap-1 rounded-xl bg-indigo-600 text-sm font-bold text-white transition-transform active:scale-[0.98]"
     >
-      <AutoTextRoll>숙소 자세히 보기</AutoTextRoll> <ChevronRight size={17} />
+      <AutoTextRoll labels={["숙소 자세히 보기", ...ACCOMMODATIONS.map((stay) => stay.name)]} /> <ChevronRight size={17} />
     </button>
   </section>
 );
