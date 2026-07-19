@@ -4,7 +4,7 @@ import { AppScreen } from "@stackflow/plugin-basic-ui";
 import { BottomNav } from "../components/BottomNav";
 import { motion } from "framer-motion";
 import NeumorphButton from "../components/ui/neumorph-button";
-import { Anchor, Bookmark, ChevronRight, Cloud, Copy, Hotel, SlidersHorizontal, Sparkles } from "lucide-react";
+import { ChevronRight, Hotel } from "lucide-react";
 import { MinimalCardExpand } from "../components/ui/minimal-card-expand";
 import { ACCOMMODATIONS } from "../lib/accommodations";
 
@@ -115,61 +115,6 @@ export const HomeActivity: React.FC = () => {
               </div>
 
               <ReservationStayCard onOpen={() => push("AccommodationActivity", {})} />
-
-              <section className="w-full rounded-3xl bg-[#111] p-4 text-white">
-                <div className="mb-1 flex items-end justify-between gap-3">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/40">INTERACTIVE PREVIEW</p>
-                  <span className="text-xs font-medium text-white/45">카드 메뉴를 눌러 펼치기</span>
-                </div>
-                <MinimalCardExpand
-                  items={[
-                    {
-                      id: "flight",
-                      title: "출발 준비",
-                      value: "D-14",
-                      colorClassName: "bg-purple-500",
-                      icon: <Sparkles size={28} aria-hidden="true" />,
-                      expandedActions: {
-                        primary: <button type="button" className="flex items-center gap-1.5 text-sm font-semibold text-white"><Copy size={18} /> 일정 복사</button>,
-                        secondary: <button type="button" className="rounded-full bg-white/20 px-3 py-1.5 text-sm font-semibold text-white">준비 확인</button>,
-                      },
-                    },
-                    {
-                      id: "stay",
-                      title: "숙소",
-                      value: "3박 4일",
-                      colorClassName: "bg-neutral-900",
-                      icon: <Cloud size={28} aria-hidden="true" />,
-                      expandedActions: {
-                        primary: <button type="button" className="flex items-center gap-1.5 text-sm font-semibold text-white"><Copy size={18} /> 주소 복사</button>,
-                        secondary: <button type="button" className="rounded-full bg-white/20 px-3 py-1.5 text-sm font-semibold text-white">상세 보기</button>,
-                      },
-                    },
-                    {
-                      id: "packing",
-                      title: "준비물",
-                      value: "68% 완료",
-                      colorClassName: "bg-cyan-500",
-                      icon: <Bookmark size={28} aria-hidden="true" />,
-                      expandedActions: {
-                        primary: <button type="button" className="flex items-center gap-1.5 text-sm font-semibold text-white"><SlidersHorizontal size={18} /> 정리</button>,
-                        secondary: <button type="button" className="rounded-full bg-white/20 px-3 py-1.5 text-sm font-semibold text-white">목록 열기</button>,
-                      },
-                    },
-                    {
-                      id: "route",
-                      title: "이동",
-                      value: "공항 → 호텔",
-                      colorClassName: "bg-blue-500",
-                      icon: <Anchor size={28} aria-hidden="true" />,
-                      expandedActions: {
-                        primary: <button type="button" className="flex items-center gap-1.5 text-sm font-semibold text-white"><Copy size={18} /> 경로 복사</button>,
-                        secondary: <button type="button" className="rounded-full bg-white/20 px-3 py-1.5 text-sm font-semibold text-white">경로 보기</button>,
-                      },
-                    },
-                  ]}
-                />
-              </section>
 
               <button onClick={() => push("DiscoverActivity", {})} className="p-4 bg-orange-50 dark:bg-orange-900/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-left active:scale-95 transition-transform">
                 <h3 className="font-bold text-lg">태국 맛집 & 쇼핑 추천 🇹🇭</h3>
