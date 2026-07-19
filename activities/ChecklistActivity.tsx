@@ -339,36 +339,38 @@ const SwipeableItem = ({
             id={checkboxId}
             className="flex-shrink-0 cursor-pointer"
           />
-          <div className="flex min-w-0 flex-1 items-start justify-between gap-3">
-            <label
-              htmlFor={checkboxId}
-              className={`relative block min-w-0 flex-1 break-words text-[16px] font-medium leading-6 tracking-tight transition-colors cursor-pointer select-none ${
-                isChecked ? "text-gray-400 dark:text-gray-500" : "text-gray-800 dark:text-gray-100"
-              }`}
-            >
-              {item.title}
-              <motion.svg
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 top-1/2 h-4 w-full -translate-y-1/2 overflow-visible text-gray-400 dark:text-gray-500"
-                viewBox="0 0 100 20"
-                preserveAspectRatio="none"
-                initial={false}
-                animate={{ opacity: isChecked ? 1 : 0 }}
-                transition={{ duration: prefersReducedMotion ? 0 : 0.2, ease: "easeOut" }}
+          <div className="flex min-w-0 flex-1 items-start gap-3">
+            <div className="min-w-0 flex-1">
+              <label
+                htmlFor={checkboxId}
+                className={`relative inline-block max-w-full break-words text-[16px] font-medium leading-6 tracking-tight transition-colors cursor-pointer select-none ${
+                  isChecked ? "text-gray-400 dark:text-gray-500" : "text-gray-800 dark:text-gray-100"
+                }`}
               >
-                <motion.path
-                  d="M 0 10 C 12 2, 22 18, 35 10 S 58 2, 70 10 S 88 18, 100 10"
-                  fill="none"
-                  pathLength={1}
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeWidth="2.5"
+                {item.title}
+                <motion.svg
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-x-0 top-1/2 h-4 w-full -translate-y-1/2 overflow-visible text-gray-400 dark:text-gray-500"
+                  viewBox="0 0 100 20"
+                  preserveAspectRatio="none"
                   initial={false}
-                  animate={{ pathLength: isChecked ? 1 : 0 }}
-                  transition={{ duration: prefersReducedMotion ? 0 : 0.45, ease: "easeInOut" }}
-                />
-              </motion.svg>
-            </label>
+                  animate={{ opacity: isChecked ? 1 : 0 }}
+                  transition={{ duration: prefersReducedMotion ? 0 : 0.2, ease: "easeOut" }}
+                >
+                  <motion.path
+                    d="M 0 10 C 12 2, 22 18, 35 10 S 58 2, 70 10 S 88 18, 100 10"
+                    fill="none"
+                    pathLength={1}
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeWidth="2.5"
+                    initial={false}
+                    animate={{ pathLength: isChecked ? 1 : 0 }}
+                    transition={{ duration: prefersReducedMotion ? 0 : 0.45, ease: "easeInOut" }}
+                  />
+                </motion.svg>
+              </label>
+            </div>
             <div className="shrink-0 pt-0.5">
               <ImportanceChip importance={item.importance} />
             </div>
