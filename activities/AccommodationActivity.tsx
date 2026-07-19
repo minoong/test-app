@@ -83,7 +83,7 @@ const STAY_ACCORDION_ITEMS: StayAccordionItem[] = [
 const StayAccordion: React.FC<StayAccordionProps> = ({ activeFilter, onFilterChange }) => {
   const [openId, setOpenId] = React.useState<StayFilter>("all");
   const { width } = useWindowSize();
-  const accordionHeight = width && width >= 1024 ? 260 : 216;
+  const accordionHeight = width && width >= 1024 ? 240 : 200;
 
   const selectStay = (item: StayAccordionItem) => {
     setOpenId(item.id);
@@ -106,14 +106,14 @@ const StayAccordion: React.FC<StayAccordionProps> = ({ activeFilter, onFilterCha
                 type="button"
                 onClick={() => selectStay(item)}
                 aria-pressed={isFiltered}
-                className={`group relative z-10 flex w-14 shrink-0 flex-col justify-end gap-3 border-r border-gray-100 p-3 text-left transition-colors dark:border-white/10 lg:w-16 ${
+                className={`group relative z-10 flex w-11 shrink-0 flex-col justify-end gap-1.5 border-r border-gray-100 px-2 py-3 text-left transition-colors dark:border-white/10 lg:w-12 ${
                   isOpen
-                    ? "bg-indigo-50 text-indigo-800 dark:bg-indigo-400/15 dark:text-indigo-100"
+                    ? "bg-gray-50 text-gray-950 dark:bg-white/10 dark:text-white"
                     : "bg-white text-gray-800 hover:bg-gray-50 dark:bg-[#1C1C1E] dark:text-gray-100 dark:hover:bg-white/5"
                 }`}
               >
-                <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-indigo-600 text-[10px] font-bold text-white">{item.label}</span>
-                <span className="text-sm font-semibold [writing-mode:vertical-rl]">{item.title}</span>
+                <span className="text-[9px] font-medium tracking-tight text-gray-400 dark:text-gray-500">{item.label}</span>
+                <span className="text-[13px] font-semibold [writing-mode:vertical-rl]">{item.title}</span>
                 <span className="pointer-events-none absolute bottom-1/2 right-0 size-3 translate-x-1/2 translate-y-1/2 rotate-45 border-r border-t border-gray-100 bg-inherit dark:border-white/10" />
               </button>
 
