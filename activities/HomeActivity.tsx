@@ -9,7 +9,7 @@ import { MinimalCardExpand } from "../components/ui/minimal-card-expand";
 import { ACCOMMODATIONS } from "../lib/accommodations";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { NativeHapticSwitch } from "../components/ui/native-haptic-switch";
-import { SlidingNumber } from "../components/ui/sliding-number";
+import { SlidingNumber } from "../components/core/sliding-number";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -49,7 +49,13 @@ const TravelClock: React.FC<TravelClockProps> = ({ city, country, zone, accentCl
         </p>
       </div>
       <div className="ml-auto shrink-0 text-right font-mono text-[clamp(1.45rem,7vw,2rem)] font-bold tracking-[-0.08em] text-slate-950 dark:text-white" aria-label={`${city} 현재 시각 ${now.format("HH시 mm분 ss초")}`}>
-        <SlidingNumber value={now.format("HH:mm:ss")} padStart />
+        <div className="flex items-center gap-0.5 font-mono">
+          <SlidingNumber value={now.hour()} padStart />
+          <span className="text-slate-300 dark:text-slate-600">:</span>
+          <SlidingNumber value={now.minute()} padStart />
+          <span className="text-slate-300 dark:text-slate-600">:</span>
+          <SlidingNumber value={now.second()} padStart />
+        </div>
       </div>
     </div>
   );
