@@ -9,8 +9,76 @@ import { MinimalCardExpand } from "../components/ui/minimal-card-expand";
 import { ACCOMMODATIONS } from "../lib/accommodations";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { NativeHapticSwitch } from "../components/ui/native-haptic-switch";
+import NumberFlow from "@number-flow/react";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const ROLL_STAGGER = 0.035;
+
+const CLOCK_FORMAT = { minimumIntegerDigits: 2, useGrouping: false } as const;
+
+type TravelClockProps = {
+  city: string;
+  country: string;
+  zone: string;
+  accentClassName: string;
+};
+
+const TravelClock: React.FC<TravelClockProps> = ({ city, country, zone, accentClassName }) => {
+  const [now, setNow] = useState(() => dayjs().tz(zone));
+
+  React.useEffect(() => {
+    const timer = window.setInterval(() => setNow(dayjs().tz(zone)), 1_000);
+    return () => window.clearInterval(timer);
+  }, [zone]);
+
+  return (
+    <div className="flex min-w-0 flex-1 items-center gap-3">
+      <span className={`flex size-10 shrink-0 items-center justify-center rounded-2xl text-xl ${accentClassName}`} aria-hidden="true">
+        {zone === "Asia/Bangkok" ? "🇹🇭" : "🇰🇷"}
+      </span>
+      <div className="min-w-0">
+        <div className="flex items-baseline gap-1.5">
+          <p className="truncate text-sm font-bold text-slate-900 dark:text-white">{city}</p>
+          <span className="text-[10px] font-medium text-slate-400">{country}</span>
+        </div>
+        <p className="mt-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400">
+          {now.format("M월 D일 (ddd)")}
+        </p>
+      </div>
+      <div className="ml-auto shrink-0 text-right font-mono text-[clamp(1.45rem,7vw,2rem)] font-bold tracking-[-0.08em] text-slate-950 dark:text-white" aria-label={`${city} 현재 시각 ${now.format("HH시 mm분 ss초")}`}>
+        <NumberFlow value={now.hour()} format={CLOCK_FORMAT} />
+        <span className="px-0.5 text-slate-300 dark:text-slate-600">:</span>
+        <NumberFlow value={now.minute()} format={CLOCK_FORMAT} />
+        <span className="px-0.5 text-slate-300 dark:text-slate-600">:</span>
+        <NumberFlow value={now.second()} format={CLOCK_FORMAT} />
+      </div>
+    </div>
+  );
+};
+
+const WorldClockCard: React.FC = () => (
+  <section className="sticky top-0 z-30 -mx-0 border-b border-slate-200/80 bg-white/90 px-4 pb-3 pt-3 shadow-[0_6px_18px_-18px_rgba(15,23,42,0.55)] backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-950/90" aria-label="한국과 태국의 현재 시각">
+    <div className="mb-2 flex items-center justify-between px-0.5">
+      <div>
+        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-indigo-500">World clock</p>
+        <h2 className="mt-0.5 text-base font-extrabold tracking-tight text-slate-900 dark:text-white">한국 · 태국 현재 시간</h2>
+      </div>
+      <span className="flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
+        <span className="size-1.5 animate-pulse rounded-full bg-emerald-500" aria-hidden="true" /> LIVE
+      </span>
+    </div>
+    <div className="flex gap-2 rounded-2xl bg-slate-50 p-3 dark:bg-slate-900">
+      <TravelClock city="서울" country="KST" zone="Asia/Seoul" accentClassName="bg-rose-100 dark:bg-rose-950/60" />
+      <div className="w-px self-stretch bg-slate-200 dark:bg-slate-800" aria-hidden="true" />
+      <TravelClock city="방콕" country="ICT" zone="Asia/Bangkok" accentClassName="bg-sky-100 dark:bg-sky-950/60" />
+    </div>
+  </section>
+);
 
 const useAutomaticRoll = (itemCount: number) => {
   const controls = useAnimationControls();
@@ -231,6 +299,7 @@ export const HomeActivity: React.FC = () => {
   return (
     <AppScreen appBar={{ title: "태국 여행 2026" }}>
       <div className="flex flex-col flex-1 pb-24 overflow-y-auto">
+        <WorldClockCard />
         {/* State Toggle for Mockup */}
         <div className="flex justify-center gap-2 p-4 bg-muted/30 border-b">
           <NeumorphButton intent={tripState === "before" ? "primary" : "secondary"} size="small" onClick={() => setTripState("before")}>여행 전</NeumorphButton>
