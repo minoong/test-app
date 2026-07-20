@@ -13,6 +13,7 @@ import { SlidingNumber } from "../components/core/sliding-number";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import { KR, TH } from "country-flag-icons/react/3x2";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -21,12 +22,11 @@ const ROLL_STAGGER = 0.035;
 
 type TravelClockProps = {
   city: string;
-  country: string;
   zone: string;
-  accentClassName: string;
+  flag: React.ReactNode;
 };
 
-const TravelClock: React.FC<TravelClockProps> = ({ city, country, zone, accentClassName }) => {
+const TravelClock: React.FC<TravelClockProps> = ({ city, zone, flag }) => {
   const [now, setNow] = useState(() => dayjs().tz(zone));
 
   React.useEffect(() => {
@@ -35,20 +35,12 @@ const TravelClock: React.FC<TravelClockProps> = ({ city, country, zone, accentCl
   }, [zone]);
 
   return (
-    <div className="flex min-w-0 flex-1 items-center gap-3">
-      <span className={`flex size-10 shrink-0 items-center justify-center rounded-2xl text-xl ${accentClassName}`} aria-hidden="true">
-        {zone === "Asia/Bangkok" ? "🇹🇭" : "🇰🇷"}
+    <div className="flex min-w-0 flex-1 items-center gap-2">
+      <span className="w-5 shrink-0 overflow-hidden rounded-[3px] shadow-[0_0_0_1px_rgba(15,23,42,0.08)]" aria-hidden="true">
+        {flag}
       </span>
-      <div className="min-w-0">
-        <div className="flex items-baseline gap-1.5">
-          <p className="truncate text-sm font-bold text-slate-900 dark:text-white">{city}</p>
-          <span className="text-[10px] font-medium text-slate-400">{country}</span>
-        </div>
-        <p className="mt-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-          {now.format("M월 D일 (ddd)")}
-        </p>
-      </div>
-      <div className="ml-auto shrink-0 text-right font-mono text-[clamp(1.45rem,7vw,2rem)] font-bold tracking-[-0.08em] text-slate-950 dark:text-white" aria-label={`${city} 현재 시각 ${now.format("HH시 mm분 ss초")}`}>
+      <span className="shrink-0 text-xs font-semibold text-slate-700 dark:text-slate-200">{city}</span>
+      <div className="ml-auto shrink-0 text-right font-mono text-base font-semibold tracking-[-0.06em] text-slate-950 dark:text-white" aria-label={`${city} 현재 시각 ${now.format("HH시 mm분 ss초")}`}>
         <div className="flex items-center gap-0.5 font-mono">
           <SlidingNumber value={now.hour()} padStart />
           <span className="text-slate-300 dark:text-slate-600">:</span>
@@ -62,11 +54,11 @@ const TravelClock: React.FC<TravelClockProps> = ({ city, country, zone, accentCl
 };
 
 const WorldClockCard: React.FC = () => (
-  <section className="sticky top-0 z-30 -mx-0 border-b border-slate-200/80 bg-white/90 px-4 pb-3 pt-3 shadow-[0_6px_18px_-18px_rgba(15,23,42,0.55)] backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-950/90" aria-label="한국과 태국의 현재 시각">
-    <div className="flex gap-2 rounded-2xl bg-slate-50 p-3 dark:bg-slate-900">
-      <TravelClock city="서울" country="KST" zone="Asia/Seoul" accentClassName="bg-rose-100 dark:bg-rose-950/60" />
+  <section className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 px-3 py-2 shadow-[0_6px_18px_-18px_rgba(15,23,42,0.55)] backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-950/90" aria-label="한국과 태국의 현재 시각">
+    <div className="flex gap-3 rounded-xl bg-slate-50 px-3 py-2 dark:bg-slate-900">
+      <TravelClock city="서울" zone="Asia/Seoul" flag={<KR className="block h-auto w-full" />} />
       <div className="w-px self-stretch bg-slate-200 dark:bg-slate-800" aria-hidden="true" />
-      <TravelClock city="방콕" country="ICT" zone="Asia/Bangkok" accentClassName="bg-sky-100 dark:bg-sky-950/60" />
+      <TravelClock city="방콕" zone="Asia/Bangkok" flag={<TH className="block h-auto w-full" />} />
     </div>
   </section>
 );
