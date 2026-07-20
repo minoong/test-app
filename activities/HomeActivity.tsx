@@ -35,13 +35,17 @@ const TravelClock: React.FC<TravelClockProps> = ({ city, zone, flag }) => {
   }, [zone]);
 
   return (
-    <div className="flex min-w-0 flex-1 items-center gap-2">
-      <span className="w-5 shrink-0 overflow-hidden rounded-[3px] shadow-[0_0_0_1px_rgba(15,23,42,0.08)]" aria-hidden="true">
+    <div className="flex min-w-0 flex-1 items-center gap-1.5">
+      <span className="w-4 shrink-0 overflow-hidden rounded-[2px] shadow-[0_0_0_1px_rgba(15,23,42,0.08)]" aria-hidden="true">
         {flag}
       </span>
-      <span className="shrink-0 text-xs font-semibold text-slate-700 dark:text-slate-200">{city}</span>
-      <div className="ml-auto shrink-0 text-right font-mono text-base font-semibold tracking-[-0.06em] text-slate-950 dark:text-white" aria-label={`${city} 현재 시각 ${now.format("HH시 mm분 ss초")}`}>
-        <div className="flex items-center gap-0.5 font-mono">
+      <span className="shrink-0 text-[11px] font-semibold text-slate-700 dark:text-slate-200">{city}</span>
+      <div
+        className="ml-auto shrink-0 text-right text-sm font-semibold tracking-[-0.05em] text-slate-950 dark:text-white"
+        style={{ fontFamily: "var(--font-geist-mono)", fontVariantNumeric: "tabular-nums slashed-zero" }}
+        aria-label={`${city} 현재 시각 ${now.format("HH시 mm분 ss초")}`}
+      >
+        <div className="flex items-center gap-px">
           <SlidingNumber value={now.hour()} padStart />
           <span className="text-slate-300 dark:text-slate-600">:</span>
           <SlidingNumber value={now.minute()} padStart />
@@ -54,8 +58,8 @@ const TravelClock: React.FC<TravelClockProps> = ({ city, zone, flag }) => {
 };
 
 const WorldClockCard: React.FC = () => (
-  <section className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 px-3 py-2 shadow-[0_6px_18px_-18px_rgba(15,23,42,0.55)] backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-950/90" aria-label="한국과 태국의 현재 시각">
-    <div className="flex gap-3 rounded-xl bg-slate-50 px-3 py-2 dark:bg-slate-900">
+  <section className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 px-2 py-1 shadow-[0_6px_18px_-18px_rgba(15,23,42,0.55)] backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-950/90" aria-label="한국과 태국의 현재 시각">
+    <div className="flex gap-2 rounded-lg bg-slate-50 px-2 py-1.5 dark:bg-slate-900">
       <TravelClock city="서울" zone="Asia/Seoul" flag={<KR className="block h-auto w-full" />} />
       <div className="w-px self-stretch bg-slate-200 dark:bg-slate-800" aria-hidden="true" />
       <TravelClock city="방콕" zone="Asia/Bangkok" flag={<TH className="block h-auto w-full" />} />
